@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.26: kiriwrite_compile_clean_helper</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.26 kiriwrite_compile_clean_helper</span><br><br>
+
+kiriwrite_compile_clean_helper is a helper subroutine for the kiriwrite_compile_clean subroutine which is called recursively.<br><br>
+
+kiriwrite_compile_clean_helper returns a value if a file in the directory being cleaned and has invalid permissions set.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_compile_clean_helper(directory, keepdirectory, permissions);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    kiriwrite_compile_clean_helper(“directory”, 1);<br>
+    $permissions = kiriwrite_compile_clean_helper(“directory”, 1);<br>
+    kiriwrite_compile_clean_helper(“directory”, 1, 1);
+</div>
+
+<br>
+
+directory<br>
+Specifies the directory which should be cleaned.<br><br>
+
+keepdirectory<br>
+Keeps the parent directory.<br><br>
+
+<i>permissions</i><br>
+Checks if the permissions on all the files processed are valid before deleting and returns a value if they aren't.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.25: deletetemplate</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.25 deletetemplate</span><br><br>
+
+Deletes a template from the template database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->deletetemplate(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->deletetemplate({ TemplateFilename => “template.html” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TemplateFilename</td>
+        <td class="tabledata">Specifies the template with the filename to delete.</td>
+    </tr>
+</table>
+
+<br>
+
+If the template being deleted does not exist then the error returned should be 'TemplateDoesNotExist' in the $error scalar.<br><br>
+
+If a database error occurs while deleting a template in the template database then the error returned should be 'TemplateDatabaseError' in the $error scalar and information about the error should be placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

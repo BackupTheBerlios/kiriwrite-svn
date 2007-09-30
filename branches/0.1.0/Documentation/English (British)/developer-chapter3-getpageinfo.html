@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.27: getpageinfo</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.27 getpageinfo</span><br><br>
+
+Gets information about the page. The page information is returned as a hash.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->getpageinfo(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectdb(“database”);<br>
+    %pageinfo = $kiriwrite_dbmodule->getpageinfo({ PageFilename => “pagefilename.html” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageFilename</td>
+        <td class="tabledata">The page filename to get the page information from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Reduced</td>
+        <td class="tabledata">Returns a reduced version of the page information (page filename, page name, page description and last modified).</td>
+    </tr>
+</table>
+
+<br>
+
+If the page with the filename given does not exist then the error returned should be 'PageDoesNotExist' in the $error scalar.<br><br>
+
+If a database error occurs while getting the information about the page in the database then the error returned should be 'DatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.
+		</div>
+	</body>
+</html>

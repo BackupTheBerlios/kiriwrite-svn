@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 1.1: Obtaining Kiriwrite</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.1 Obtaining Kiriwrite</span><br><br>
+Kiriwrite can be obtained either through the Subversion repository or extracted from a source archive that is available on Kiriwrite homepage.<br><br>
+<span class="heading">1.1.1: Archive Extraction</span><br><br>
+The contents of the Kiriwrite archive can be extracted using gzip if it's a Gzip archive, bzip2 if it's a Bzip2'ed archive, 7za if it's a 7-Zip archive and unzip if it's a ZIP archive.<br><br>
+Bear in mind the following is done from a command console. GUI interfaces can also do the same as preformed here and mainly involves opening the archive and clicking on the Extract/Extract All button or simply dragging the folder containing from out of the archive (usually making a copy of the contents in the archive).<br><br>
+
+<div class="messagebox">
+    <div class="message note">
+        <b>Note</b><br>
+        The naming convention of the Kiriwrite archives go as the following:<br><br>
+        <div class="code">
+            kiriwrite-x.y.z(-e).arc
+        </div>
+        <br>
+        Where x is the major version, y is the minor version and z is the revision with (-e) meaning a very tiny modification that had to be done that did not merit an increment to the revision number.
+    </div>
+</div>
+
+<br>
+
+When downloading an archive, the archive can be checked (by downloading the file with the same name but with .sha256 or .md5 added to the end of it) using shasum<sup>1</sup> or md5sum by doing the following to ensure it is downloaded correctly:<br><br>
+
+<div class="code">
+    shasum -a 256 kiriwrite-x.y.z(-e).arc<br>
+    md5sum kiriwrite-x.y.z(-e).arc
+</div>
+
+<br>
+
+shasum or md5sum should then generate the SHA-256 or MD5 checksum that should match the one that appears in the file with .sha256 or .md5 appended to it. If it does not match (and the file containing the sha256 or md5sum hash is the correct version) then the archive should be downloaded again and repeat the same process.<br><br>
+To extract the gzip archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    gzip -d -c <i>(path)</i>/kiriwrite-0.1.0.tar.gz | tar -xv
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the bzip2 archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    bzip2 -d -c <i>(path)</i>/kiriwrite-0.1.0.tar.bzip2 | tar -xv
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the ZIP archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    unzip <i>(path)</i>/kiriwrite-0.1.0.zip
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the 7Zip archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    7za e <i>(path)</i>/kiriwrite-0.1.0.7z
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+
+<span class="heading">1.1.2: Subversion Access</span><br><br>
+Kiriwrite can also be obtained through checking out the code from the Subversion repository.<br><br>
+
+<div class="messagebox">
+    <div class="message note">
+        <b>Note</b><br>
+        Bear in mind that the code that is in the Kiriwrite Subversion repository is normally unstable and could very well cause unexpected problems (such as warnings that appear in the web server error log that can be easily fixed and alterations to the database structure which requires an upgrade script which hasn't been written yet for that particular version yet).
+    </div>
+</div>
+
+<br>
+
+Kiriwrite can be obtained from the Subversion repository by doing the following in a command console after selecting the correct directory to put it in:<br><br>
+
+<div class="code">
+    svn checkout svn://svn.berlios.de/kiriwrite/trunk
+</div>
+
+<br>
+
+A list of files then appear as they are received from the Subversion repository and placed in the directory the command console is currently in. To update the code stored locally with code that is in the Kiriwrite Subversion repository this command should be done after changing to the directory where the local copy of the Kiriwrite Subversion code is:<br><br>
+
+<div class="code">
+    svn update
+</div>
+
+<br>
+
+A list of files will then appear showing which files has been updated.
+
+<div class="footnote"></div>
+<sup>1</sup> The version of shasum talked about here is the shasum script that is used by the Digest::SHA::PurePerl Perl module which can produce checksums in SHA-1, SHA-224, SHA-256, SHA-384 and SHA-512 which can be installed via CPAN.
+		</div>
+	</body>
+</html>

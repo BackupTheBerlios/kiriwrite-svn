@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 2.2: Pages</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="">2.2 Pages</span><br><br>
+
+Pages are used for storing information that is relevant to that page.<br><br>
+
+Pages can be access from the 'View Pages' menu link. As no database is selected, a drop down box will appear listing the databases that are available, select a database and then click on the View button. A list of pages for that database will then appear and if there are no pages in the database a message will appear saying that no pages exist in this database.<br><br>
+
+<span class="heading">2.2.1: Creating a page</span><br><br>
+A page can be created in the selected database by clicking on the 'Add Page' link in the View Pages sub-menu, a form then appears allowing to enter the information about the new page.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the database that the page is being added to.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Specifies the name of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">Specifies the description of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the section name of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the page template to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">Specifies the page filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">Specifies the content of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies if the page name and section should be used for the title.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags can be used with the page content to automatically place information such as page name, description and section:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div>      
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+
+</table>
+
+<br>
+
+After entering the needed page information, the page can be added to the selected database by clicking on the 'Add Page' button and then a confirmation message would appear saying that the selected page has been added and offering a link to return to the page list for the selected database. The new page settings can be cleared by clicking on the 'Reset Settings' button.<br><br>
+
+<span class="heading">2.2.2: Editing a page</span><br><br>
+
+To edit a page, click on the 'Edit' link opposite the page filename you want to edit. A form then appears that is similar for adding a page.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the database that the page is being edited from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Specifies the new name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">Specifies the new description of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the new section name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the new page template to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">Specifies the new page filename.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">Specifies the new content of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies if there should be a new page name and section setting.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags are used for when adding a page can also be used when editing a page:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                        If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div>
+
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After entering the new information, the page can be edited by clicking on the 'Edit Page' button and a confirmation message appears saying that the page has been edited and offering a link back to the list of pages for the currently selected database. Clicking on the 'Restore current settings' button will undo any changes and revert to the current page settings.<br><br>
+
+<span class="heading">2.2.3: Deleting a page</span><br><br>
+
+To delete a page, click on the 'Delete' link opposite the page filename you want to delete, a message then appears asking to confirm that page will be deleted. Clicking on the 'Yes, delete the page' button will delete the page and offer a link back to the list of pages for the selected database. Clicking on the 'No, return to the page list for the (database name) database.' link will return to the list of pages for the selected database.<br><br>
+
+<span class="heading">2.2.4: Delete multiple pages</span><br><br>
+
+To delete multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to delete and then click on the 'Delete Selected' button at the top of the page, a form will then appear asking to confirm if the selected pages listed should be deleted.<br><br>
+
+Clicking on the 'Yes, delete the selected pages' button will display a confirmation message saying that the selected pages were deleted offering a link back to the list of pages for the selected database. Clicking on the 'No, return to the page list for the (database name) database.' will return to the list of pages for the selected database.<br><br>
+
+<span class="heading">2.2.5: Move multiple pages</span><br><br>
+
+To move multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to delete and then click on the 'Move Selected' button at the top of the page, a form will then appear asking to select which database the selected pages should go to and confirm that those pages are being moved to the new database.<br><br>
+
+Clicking on the 'Move selected pages' button will display a confirmation message saying that the selected pages were moved to the new database selected offering a link back to the selected database that the pages were moved from and a link to the selected database where the pages have moved to. Clicking on the 'Return to the page list for the (database name) database' will return to the list of pages in the selected database.<br><br>
+
+<span class="heading">2.2.6: Copy multiple pages</span><br><br>
+
+To copy multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to copy and then click on the 'Copy Selected' button at the top of the page, a form will then appear asking to select which database the selected pages should be copied to and confirm that those pages are being copied to the new database.<br><br>
+
+Clicking on the 'Copy selected pages' button will display a confirmation message saying that the selected pages were copied to the new database selected offering a link back to the selected pages that the pages were copied from and a link to the selected database where the pages have been copied to. Clicking on the 'Return to the page list for the (database name) database.' will return to the list of pages in the selected database.<br><br>
+
+<span class="heading">2.2.7: Edit multiple pages</span><br><br>
+
+To edit multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to edit and then click on the 'Edit Selected' button at the top of the page, a form will then appear that allows certain settings of each page to be edited as shown in the table below:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the new page section to be used on the selected pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the new page template to be used on the selected pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies the new page settings to be used on the selected pages.</td>
+    </tr>
+</table>
+
+<br>
+
+Each setting that needs to be changed needs to have the check-box on the left of the name needs to be checked otherwise the change will not take effect. This is done to make sure that only the selected page settings are changed.<br><br>
+Clicking on the 'Edit selected pages' button will display a confirmation message saying that the selected pages were edited offering a link back to the list of pages in the selected database, clicking on the 'Clear values' button will clear the currently selected values and clicking on the 'Return to the page list for the '(database name)' database.' link will return to the page list for selected database.
+		</div>
+	</body>
+</html>

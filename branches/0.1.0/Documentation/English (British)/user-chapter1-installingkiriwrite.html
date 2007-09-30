@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 1.2: Installing Kiriwrite</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.2.1 Copying files</span><br><br>
+Before Kiriwrite can be used, the files need to be copied to the correct place. After extracting the archive, the structure of the extracted archive should be like this:<br><br>
+<b>Documentation</b> – Documentation that is available in several languages.<br>
+<b>cgi-files</b> – The main Kiriwrite script, associated modules, installer script and language files.<br>
+&nbsp;<b>Modules</b> – Modules for Kiriwrite are stored here.<br>
+&nbsp;&nbsp;<b>Database</b> – Database modules are stored here.<br>
+&nbsp;&nbsp;<b>Presentation</b> – Presentation modules are stored here.<br>
+&nbsp;<b>db</b> – Default database directory (for file based Database modules).<br>
+&nbsp;<b>lang</b> – The directory for language files in Kiriwrite.<br>
+&nbsp;<b>output</b> – The output directory when pages are compiled.<br>
+<b>misc</b> – Miscellaneous files (mainly for developers).<br>
+<b>non-cgi-files</b> – Non CGI files that need to be placed outside of the cgi-bin folder.<br><br>
+The files in the cgi-files folder should be copied to the cgi-bin<sup>1</sup> folder<sup>2</sup> and the files in the non-cgi-files folder should be copied to a folder which can be accessed from the web server.<br><br>
+<span class="heading">1.2.2 Setting Permissions</span><br><br>
+The following permissions should be set for the files that have been copied to the cgi-files directory (the following file list should apply to those running *nix/BSD systems):<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Filename</td>
+        <td class="tableheading">Owner</td>
+        <td class="tableheading">Group</td>
+        <td class="tableheading">Others</td>
+    </tr>
+    <tr>
+        <td class="tabledata"><i>(Top Directory)</i></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules/Database</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Database/MySQL.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Database/SQLite.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules/Presentation</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Presentation/HTML4S.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>db</b></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>output</b></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>lang</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">lang/*.xml</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">kiriwrite.cgi</td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">install.cgi</td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">page.html</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+</table>
+
+<br><br>
+
+R = Read, W = Write, X = Execute/Allow directory listing<br><br>
+For the non-cgi files folder, read only permissions should be set on all files (and read and allow directory listings for directories) as no writing should be needed.<br><br>
+Once this is done, the installer script can be run by browsing to URI location of where the files in the cgi-files directory were in place and adding install.cgi to the end of it.<br><br>
+<div class="footnote"></div>
+<sup>1</sup>The cgi-bin folder is used for storing scripts that use the Common Gateway Interface (CGI). CGI scripts are typically associated with Perl scripts but can also be C++, C, Python, shell script and many others.<br>
+<sup>2</sup>Some servers are configured so that CGI scripts can run from any directory so in this case Kiriwrite doesn't have to be placed in the cgi-bin directory.
+		</div>
+	</body>
+</html>

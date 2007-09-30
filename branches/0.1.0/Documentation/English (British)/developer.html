@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">Developer Documentation</span><br>
+
+The Developer Documentation contains information on how to create presentation modules, database modules, language files, altering the page layout used internally by Kiriwrite and a list of subroutines used internally by Kiriwrite.
+
+<br><br>
+
+<a href="developer-introduction.html">Introduction</a><br>
+<a href="developer-chapter1.html">Chapter 1: Internal Kiriwrite Subroutines</a><br>
+&nbsp;<a href="developer-chapter1-begin.html">1.1 BEGIN</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagelist.html">1.2 kiriwrite_page_list</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepageadd.html">1.3 kiriwrite_page_add</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepageedit.html">1.4 kiriwrite_page_edit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagedelete.html">1.5 kiriwrite_page_delete</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagemultidelete.html">1.6 kiriwrite_page_multidelete</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagemultimove.html">1.7 kiriwrite_page_multimove</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagemulticopy.html">1.8 kiriwrite_page_multicopy</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritepagemultiedit.html">1.9 kiriwrite_page_multiedit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritedatabaselist.html">1.10 kiriwrite_database_list</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritedatabaseadd.html">1.11 kiriwrite_database_add</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritedatabaseedit.html">1.12 kiriwrite_database_edit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritedatabasedelete.html">1.13 kiriwrite_database_delete</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritetemplatelist.html">1.14 kiriwrite_template_list</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritetemplateadd.html">1.15 kiriwrite_template_add</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritetemplateedit.html">1.16 kiriwrite_template_edit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritetemplatedelete.html">1.17 kiriwrite_template_delete</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefilterlist.html">1.18 kiriwrite_filter_list</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefilteradd.html">1.19 kiriwrite_filter_add</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefilteredit.html">1.20 kiriwrite_filter_edit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefilterdelete.html">1.21 kiriwrite_filter_delete</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecompilelist.html">1.22 kiriwrite_compile_list</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecompilemakepages.html">1.23 kiriwrite_compile_makepages</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecompileall.html">1.24 kiriwrite_compile_all</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecompileclean.html">1.25 kiriwrite_compile_clean</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecompilecleanhelper.html">1.26 kiriwrite_compile_clean_helper</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritesettingsview.html">1.27 kiriwrite_settings_view</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritesettingsedit.html">1.28 kiriwrite_settings_edit</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteselectedlist.html">1.29 kiriwrite_selectedlist</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritesettingsload.html">1.30 kiriwrite_settings_load</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritevariablecheck.html">1.31 kiriwrite_variablecheck</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteprocessfilename.html">1.32 kiriwrite_processfilename</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritelanguage.html">1.33 kiriwrite_language</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteerror.html">1.34 kiriwrite_error</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritecritical.html">1.35 kiriwrite_critical</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefileexists.html">1.36 kiriwrite_fileexists</a><br>
+&nbsp;<a href="developer-chapter1-kiriwritefilepermissions.html">1.37 kiriwrite_filepermissions</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteutf8convert.html">1.38 kiriwrite_utf8convert</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteoutputheader.html">1.39 kiriwrite_output_header</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteoutputxml.html">1.40 kiriwrite_output_xml</a><br>
+&nbsp;<a href="developer-chapter1-kiriwriteoutputpage.html">1.41 kiriwrite_output_page</a><br>
+<a href="developer-chapter2.html">Chapter 2: Presentation Module</a><br>
+&nbsp;<a href="developer-chapter2-guidance.html">2.1 Guidance</a><br>
+&nbsp;<a href="developer-chapter2-new.html">2.2 new</a><br>
+&nbsp;<a href="developer-chapter2-clear.html">2.3 clear</a><br>
+&nbsp;<a href="developer-chapter2-grab.html">2.4 grab</a><br>
+&nbsp;<a href="developer-chapter2-convert.html">2.5 convert</a><br>
+&nbsp;<a href="developer-chapter2-starttable.html">2.6 starttable</a><br>
+&nbsp;<a href="developer-chapter2-startheader.html">2.7 startheader</a><br>
+&nbsp;<a href="developer-chapter2-addheader.html">2.8 addheader</a><br>
+&nbsp;<a href="developer-chapter2-endheader.html">2.9 endheader</a><br>
+&nbsp;<a href="developer-chapter2-startrow.html">2.10 startrow</a><br>
+&nbsp;<a href="developer-chapter2-addcell.html">2.11 addcell</a><br>
+&nbsp;<a href="developer-chapter2-endcell.html">2.12 endcell</a><br>
+&nbsp;<a href="developer-chapter2-endrow.html">2.13 endrow</a><br>
+&nbsp;<a href="developer-chapter2-endtable.html">2.14 endtable</a><br>
+&nbsp;<a href="developer-chapter2-startbox.html">2.15 startbox</a><br>
+&nbsp;<a href="developer-chapter2-enterdata.html">2.16 enterdata</a><br>
+&nbsp;<a href="developer-chapter2-endbox.html">2.17 endbox</a><br>
+&nbsp;<a href="developer-chapter2-startform.html">2.18 startform</a><br>
+&nbsp;<a href="developer-chapter2-addcheckbox.html">2.19 addcheckbox</a><br>
+&nbsp;<a href="developer-chapter2-addradiobox.html">2.20 addradiobox</a><br>
+&nbsp;<a href="developer-chapter2-addselectbox.html">2.21 addselectbox</a><br>
+&nbsp;<a href="developer-chapter2-addoption.html">2.22 addoption</a><br>
+&nbsp;<a href="developer-chapter2-endselectbox.html">2.23 endselectbox</a><br>
+&nbsp;<a href="developer-chapter2-addinputbox.html">2.24 addinputbox</a><br>
+&nbsp;<a href="developer-chapter2-addtextbox.html">2.25 addtextbox</a><br>
+&nbsp;<a href="developer-chapter2-addsubmit.html">2.26 addsubmit</a><br>
+&nbsp;<a href="developer-chapter2-addreset.html">2.27 addreset</a><br>
+&nbsp;<a href="developer-chapter2-addhiddendata.html">2.28 addhiddendata</a><br>
+&nbsp;<a href="developer-chapter2-addbutton.html">2.29 addbutton</a><br>
+&nbsp;<a href="developer-chapter2-endform.html">2.30 endform</a><br>
+&nbsp;<a href="developer-chapter2-addlink.html">2.31 addlink</a><br>
+&nbsp;<a href="developer-chapter2-addimage.html">2.32 addimage</a><br>
+&nbsp;<a href="developer-chapter2-addtext.html">2.33 addtext</a><br>
+&nbsp;<a href="developer-chapter2-addboldtext.html">2.34 addboldtext</a><br>
+&nbsp;<a href="developer-chapter2-additalictext.html">2.35 additalictext</a><br>
+&nbsp;<a href="developer-chapter2-addlinebreak.html">2.36 addlinebreak</a><br>
+&nbsp;<a href="developer-chapter2-addhorizontalline.html">2.37 addhorizontalline</a><br>
+&nbsp;<a href="developer-chapter2-startlist.html">2.38 startlist</a><br>
+&nbsp;<a href="developer-chapter2-additem.html">2.39 additem</a><br>
+&nbsp;<a href="developer-chapter2-endlist.html">2.40 endlist</a><br>
+<a href="developer-chapter3.html">Chapter 3: Database Module</a><br>
+&nbsp;<a href="developer-chapter3-guidance.html">3.1 Guidance</a><br>
+&nbsp;<a href="developer-chapter3-new.html">3.2 new</a><br>
+&nbsp;<a href="developer-chapter3-loadsettings.html">3.3 loadsettings</a><br>
+&nbsp;<a href="developer-chapter3-convert.html">3.4 convert</a><br>
+&nbsp;<a href="developer-chapter3-dateconvert.html">3.5 dateconvert</a><br>
+&nbsp;<a href="developer-chapter3-geterror.html">3.6 geterror</a><br>
+&nbsp;<a href="developer-chapter3-dbpermissions.html">3.7 dbpermissions</a><br>
+&nbsp;<a href="developer-chapter3-dbexists.html">3.8 dbexists</a><br>
+&nbsp;<a href="developer-chapter3-connect.html">3.9 connect</a><br>
+&nbsp;<a href="developer-chapter3-disconnect.html">3.10 disconnect</a><br>
+&nbsp;<a href="developer-chapter3-getdblist.html">3.11 getdblist</a><br>
+&nbsp;<a href="developer-chapter3-selectdb.html">3.12 selectdb</a><br>
+&nbsp;<a href="developer-chapter3-getdatabaseinfo.html">3.13 getdatabaseinfo</a><br>
+&nbsp;<a href="developer-chapter3-selectseconddb.html">3.14 selectseconddb</a><br>
+&nbsp;<a href="developer-chapter3-getseconddatabaseinfo.html">3.15 getseconddatabaseinfo</a><br>
+&nbsp;<a href="developer-chapter3-adddatabase.html">3.16 adddatabase</a><br>
+&nbsp;<a href="developer-chapter3-editdatabase.html">3.17 editdatabase</a><br>
+&nbsp;<a href="developer-chapter3-deletedatabase.html">3.18 deletedatabase</a><br>
+&nbsp;<a href="developer-chapter3-connecttemplate.html">3.19 connecttemplate</a><br>
+&nbsp;<a href="developer-chapter3-disconnecttemplate.html">3.20 disconnecttemplate</a><br>
+&nbsp;<a href="developer-chapter3-gettemplatelist.html">3.21 gettemplatelist</a><br>
+&nbsp;<a href="developer-chapter3-gettemplateinfo.html">3.22 gettemplateinfo</a><br>
+&nbsp;<a href="developer-chapter3-addtemplate.html">3.23 addtemplate</a><br>
+&nbsp;<a href="developer-chapter3-edittemplate.html">3.24 edittemplate</a><br>
+&nbsp;<a href="developer-chapter3-deletetemplate.html">3.25 deletetemplate</a><br>
+&nbsp;<a href="developer-chapter3-getpagelist.html">3.26 getpagelist</a><br>
+&nbsp;<a href="developer-chapter3-getpageinfo.html">3.27 getpageinfo</a><br>
+&nbsp;<a href="developer-chapter3-addpage.html">3.28 addpage</a><br>
+&nbsp;<a href="developer-chapter3-editpage.html">3.29 editpage</a><br>
+&nbsp;<a href="developer-chapter3-deletepage.html">3.30 deletepage</a><br>
+&nbsp;<a href="developer-chapter3-movepage.html">3.31 movepage</a><br>
+&nbsp;<a href="developer-chapter3-copypage.html">3.32 copypage</a><br>
+&nbsp;<a href="developer-chapter3-connectfilter.html">3.33 connectfilter</a><br>
+&nbsp;<a href="developer-chapter3-disconnectfilter.html">3.34 disconnectfilter</a><br>
+&nbsp;<a href="developer-chapter3-getfilterlist.html">3.35 getfilterlist</a><br>
+&nbsp;<a href="developer-chapter3-getfilterinfo.html">3.36 getfilterinfo</a><br>
+&nbsp;<a href="developer-chapter3-addfilter.html">3.37 addfilter</a><br>
+&nbsp;<a href="developer-chapter3-editfilter.html">3.38 editfilter</a><br>
+&nbsp;<a href="developer-chapter3-deletefilter.html">3.39 deletefilter</a><br>
+<a href="developer-chapter4.html">Chapter 4: Kiriwrite Page Format</a><br>
+<a href="developer-chapter5.html">Chapter 5: Languages</a><br>
+		</div>
+	</body>
+</html>

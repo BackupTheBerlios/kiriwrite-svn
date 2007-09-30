@@ -1,0 +1,12 @@
+/*
+Kiriwrite Filters Database Format
+Version 1.0
+*/
+
+create table kiriwrite_filters(
+        id int(7) primary key,
+        priority int(5),
+        findsetting varchar(1024),
+        replacesetting varchar(1024),
+        notes text
+);

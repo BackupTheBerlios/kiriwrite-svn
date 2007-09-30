@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Tutorial Documentation - Tutorial 3: 10 page website with 5 pages per layout.</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">Tutorial 3: 10 page website with 5 pages per layout.</span><br><br>
+
+This tutorial is to show that Kiriwrite isn't limited to one layout per database as each page is defined by a page template.<br><br>
+
+To begin, from knowing how to create a template from Tutorial 1, create a template using the following settings:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Value</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Name</td>
+        <td class="tabledata">The Second Template</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Description</td>
+        <td class="tabledata">The Second Template for the Kiriwrite tutorial.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Filename</td>
+        <td class="tabledata">secondtemplate.html</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Layout</td>
+        <td class="tabledata">&lt;html&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;head&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Second Website - &lt;kiriwrite:pagetitle&gt;&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/head&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;body bgcolor=”#000000”&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;font color=”#FFFFFF”&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;kiriwrite:pagecontent&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/font&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/body&gt;<br>
+&lt;/html&gt;
+        </td>
+    </tr>
+</table>
+
+<br>
+
+This template will have a black background with white text.<br><br>
+
+After creating the template, create a new database (as shown in Tutorial 1) with the following settings:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Value</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Tutorial 3</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Description</td>
+        <td class="tabledata">The database for Tutorial 3</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Categories</td>
+        <td class="tabledata"></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Notes</td>
+        <td class="tabledata"></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Filename</td>
+        <td class="tabledata">tutorial3</td>
+    </tr>
+</table>
+
+<br>
+
+From knowing how to add pages from tutorial 1, add ten pages with the following settings as written below to the 'Tutorial 3' database:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">page1.html</td>
+        <td class="tableheading">page2.html</td>
+        <td class="tableheading">page3.html</td>
+        <td class="tableheading">page4.html</td>
+        <td class="tableheading">page5.html</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Page One</td>
+        <td class="tabledata">Page Two</td>
+        <td class="tabledata">Page Three</td>
+        <td class="tabledata">Page Four</td>
+        <td class="tabledata">Page Five</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">This is page one.</td>
+        <td class="tabledata">This is page two.</td>
+        <td class="tabledata">This is page three.</td>
+        <td class="tabledata">This is page four.</td>
+        <td class="tabledata">This is page five.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Website One</td>
+        <td class="tabledata">Website One</td>
+        <td class="tabledata">Website One</td>
+        <td class="tabledata">Website One</td>
+        <td class="tabledata">Website One</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">The First Template (firsttemplate.html)</td>
+        <td class="tabledata">The First Template (firsttemplate.html)</td>
+        <td class="tabledata">The First Template (firsttemplate.html)</td>
+        <td class="tabledata">The First Template (firsttemplate.html)</td>
+        <td class="tabledata">The First Template (firsttemplate.html)</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">page1.html</td>
+        <td class="tabledata">page2.html</td>
+        <td class="tabledata">page3.html</td>
+        <td class="tabledata">page4.html</td>
+        <td class="tabledata">page5.html</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">This is the first page of the first website.</td>
+        <td class="tabledata">This is the second page of the first website.</td>
+        <td class="tabledata">This is the third page of the first website.</td>
+        <td class="tabledata">This is the fourth page of the first website.</td>
+        <td class="tabledata">This is the fifth page of the first website.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+    </tr>
+</table>
+
+<br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">page6.html</td>
+        <td class="tableheading">page7.html</td>
+        <td class="tableheading">page8.html</td>
+        <td class="tableheading">page9.html</td>
+        <td class="tableheading">page10.html</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Page Six</td>
+        <td class="tabledata">Page Seven</td>
+        <td class="tabledata">Page Eight</td>
+        <td class="tabledata">Page Nine</td>
+        <td class="tabledata">Page Ten</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">This is page six.</td>
+        <td class="tabledata">This is page seven.</td>
+        <td class="tabledata">This is page eight.</td>
+        <td class="tabledata">This is page nine.</td>
+        <td class="tabledata">This is page ten.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Website Two</td>
+        <td class="tabledata">Website Two</td>
+        <td class="tabledata">Website Two</td>
+        <td class="tabledata">Website Two</td>
+        <td class="tabledata">Website Two</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">The Second Template (secondtemplate.html)</td>
+        <td class="tabledata">The Second Template (secondtemplate.html)</td>
+        <td class="tabledata">The Second Template (secondtemplate.html)</td>
+        <td class="tabledata">The Second Template (secondtemplate.html)</td>
+        <td class="tabledata">The Second Template (secondtemplate.html)</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">page6.html</td>
+        <td class="tabledata">page7.html</td>
+        <td class="tabledata">page8.html</td>
+        <td class="tabledata">page9.html</td>
+        <td class="tabledata">page10.html</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">This is the first page of the second website.</td>
+        <td class="tabledata">This is the second page of the second website.</td>
+        <td class="tabledata">This is the third page of the second website.</td>
+        <td class="tabledata">This is the fourth page of the second website.</td>
+        <td class="tabledata">This is the fifth page of the second website.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+        <td class="tabledata">Use page name and section name.</td>
+    </tr>
+</table>
+
+<br>
+
+After the pages have been entered into the 'Tutorial 3' database. Compile the 'Tutorial 3' (as shown how to in tutorial 1) database and go in the Output Directory and check that pages 1-5 (page1.html, page2.html, page3.html, page4.html, page5.html) have First Website in the page title and pages 6-10 (page6.html, page7.html, page8.html, page9.html, page10.html) have Second Website in the page title and that the background of the page is black while using white text.
+		</div>
+	</body>
+</html>

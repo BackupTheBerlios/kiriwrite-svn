@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 2.4: Templates</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.4 Templates</span><br><br>
+
+Templates allows pages to use a common layout which is used to keep a consistent layout on a website or keep the format of documentation pages the same. Templates also allow small tweaks to the page layout to be made without needing to edit each page so the change is reflected in all of the pages by simply changing the template layout and then recompile the pages.<br><br>
+
+The list of templates can be accessed by clicking on the 'View Templates' link. A list of templates from the template database should then appear. If the template database does not exist then a message will appear saying that the template database does not exist and will be created when a template is added. If no templates exist in the template database then a message appears saying that there are no templates in the template database.<br><br>
+
+<span class="heading">2.4.1 Add a template</span><br><br>
+
+To add a template to the template database click on the 'Add Template' link from the View Templates sub-menu, a form then appears allowing to enter the new information about the template.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Name</td>
+        <td class="tabledata">Specifies the template name to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Description</td>
+        <td class="tabledata">Specifies the template description to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Filename</td>
+        <td class="tabledata">Specifies the template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Layout</td>
+        <td class="tabledata">Specifies the content of the template layout.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags can be used with the template layout to automatically place information such as page content, name, description and section:
+
+<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagecontent&gt;</td>
+        <td class="tabledata">Places the page content here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div> 
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After entering the needed template information, click on the 'Add Template' button to display a confirmation message saying that add the template to the list of templates in the template database and offering a link back to the list of templates in the template database. Clicking on the 'Clear values' button will clear all of the template settings entered. Clicking on the 'Return to the template list.' link will return to the list of templates in the template database.<br><br>
+
+<span class="heading">2.4.2 Edit a template</span><br><br>
+To edit a template click on the 'Edit' link opposite the template name you want to edit, a form then appears that is similar to adding a template.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Name</td>
+        <td class="tabledata">Specifies the new template name to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Description</td>
+        <td class="tabledata">Specifies the new template description to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Filename</td>
+        <td class="tabledata">Specifies the new template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Layout</td>
+        <td class="tabledata">Specifies the new content of the template layout.</td>
+    </tr>
+</table>
+
+<br>
+
+The Kiriwrite tags used when adding a template can also be used when editing a template.
+
+<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagecontent&gt;</td>
+        <td class="tabledata">Places the page content here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div> 
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After editing the information about the template, the template can be edited by clicking on the 'Edit Template' button which will display a confirmation message saying that the template information was edited offering a link back to the list of templates in the template database. Clicking on the 'Restore current settings' button will undo any changes and revert to the currently used settings. Clicking on the 'Return to the template list.' will return to the list of templates in the template database.<br><br>
+
+<span class="heading">2.4.3 Delete a template</span><br><br>
+
+To delete a template click on the 'Delete' link opposite the template name you want to delete, a message then appears asking to confirm the deletion of the selected template. Clicking on the 'Yes, delete the template' button will display a confirmation message saying that the selected template has been deleted offering a link back to the list of templates in the template database. Clicking on the 'No, return to the template list.' link will return to the list of templates in the template database.
+		</div>
+	</body>
+</html>
