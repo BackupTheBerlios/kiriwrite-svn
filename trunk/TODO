@@ -1,0 +1,13 @@
+- Add setting for altering the size of the large textarea boxes.
+- Add the ability to switch off and on a filter.
+- Optimise the speed of getting filters and templates when viewing them 
+as a list.
+- Allow a limit on the amount of pages viewed on each page to reduce CPU 
+and Database load.
+- Apply the same from the above to the template and filter lists.
+- Add overwrite template ability when compiling.
+- Optimise the speed of Kiriwrite in general (seperating the code into 
+smaller files perhaps stored in a new directory called lib).
+- Attempt to replace the usage of the CGI Perl module with CGI::Lite.
+- Possibly replace the use of XML files used for the configuration file 
+and language files to improve the speed of Kiriwrite.

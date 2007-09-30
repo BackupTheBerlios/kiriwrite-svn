@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 1.3: Kiriwrite Installer Script</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.3 Kiriwrite Installer Script</span><br><br>
+After pointing your browser to the installer script, a page appears which guides you through configuring the settings for Kiriwrite.<br><br>
+At the top of the page a drop down box is available to change the language of the installer script to another language which is more easier to understand, simply select the language from the drop down box and click on the Switch button, the script will then switch to the selected language.<br><br>
+The installer script will preform three tests, the first being to check if all the needed modules are there, the second test is to check if the modules needed for the database modules are there and finally a test to check if the directories have their correct permissions set.<br><br>
+Before the settings can be configured, checks are made to make sure that all of the needed modules are installed properly. If any of the needed modules are missing an error message will appear saying that one or more of the required Perl modules is missing and will need to be installed which can be done from the CPAN interface.<br><br>
+The installer script then checks to see if at least of the Perl modules for the database modules are installed. If none of the Perl modules needed for the database modules are found then an error message will appear saying that none of the Perl modules needed for the database modules are installed and will need to be installed which can be done from the CPAN interface.<br><br>
+Finally, the installer script then checks to see if the directories have the minimum correct permissions set. If one or more of the directories has an error, then a message appears saying to make sure that the correct permissions are set.<br><br>
+
+<div class="messagebox">
+    <div class="message hint">
+        <b>Hint</b><br>
+        More information on solving problems that occur while installing Kiriwrite can be found in Chapter 5: Troubleshooting.
+    </div>
+</div>
+
+<br>
+
+When the installer finds that everything is fine in regards to Perl modules and file permissions, a form appears allowing to configure the Kiriwrite installation to specific needs. Some default values are given which will work with the file-based database modules.<br><br>
+The configuration settings in detail:<br><br>
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Directory</td>
+        <td class="tabledata">Specifies the database directory to use for storing databases that are created by the file-based database modules. This option is ignored by the server-based modules.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Output Directory</td>
+        <td class="tabledata">Specifies the output directory to use to store the compiled pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Images (URI path)</td>
+        <td class="tabledata">Specifies the Images (URI path) to use for displaying images when using the page template with Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Date Format</td>
+        <td class="tabledata">Specifies the date format to use when list the pages from the database. A selection of date formats are available from the drop down box or a custom one can be entered into the text box next to the drop down box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Language</td>
+        <td class="tabledata">Specifies the system language to use in Kiriwrite. If the language used in the installer script is available as language to use in Kiriwrite then that language will be selected by default.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Presentation Module</td>
+        <td class="tabledata">Specifies the presentation module to use in Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Module</td>
+        <td class="tabledata">Specifies the database module to use in Kiriwrite. SQLite is a file-based database module which uses the database directory and the SQLite Perl module while MySQL5 is a server-based database module which uses a MySQL 5.x server from the MySQL Perl module.</td>
+    </tr>
+</table>
+
+<br>
+
+The following options are used only by the server-based database modules:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Server</td>
+        <td class="tabledata">Specifies the database server to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Port</td>
+        <td class="tabledata">Specifies the database port to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Protocol</td>
+        <td class="tabledata">Specifies the database protocol to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the database name to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Username</td>
+        <td class="tabledata">Specifies the database username to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Password</td>
+        <td class="tabledata">Specifies the database password to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Table Prefix</td>
+        <td class="tabledata">Specifies the table prefix to use. Multiple Kiriwrite installations can use the same server database so long as the table prefix is different.</td>
+    </tr>
+</table>
+
+<br>
+
+There is an option that is enabled by default to attempt to delete the installation script after the configuration file has been written since the installation script would no longer be needed after that. Unchecking the box for this option disables this.<br><br>
+Click on the Save Settings button to write the configuration file or the Reset Settings button to restore the settings to their default values.<br><br>
+After clicking on the Save Settings button, some checks are made to make sure that data passed is correct, the configuration file is written (and the installer script deleted if requested) and a message appears saying that Kiriwrite can now be used by clicking on the link at the bottom of the page.
+
+		</div>
+	</body>
+</html>

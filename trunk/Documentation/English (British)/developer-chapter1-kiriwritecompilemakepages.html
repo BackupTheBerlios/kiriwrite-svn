@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.23: kiriwrite_compile_makepages</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.23 kiriwrite_compile_makepages</span><br><br>
+
+kiriwrite_compile_makepages compiles the pages in the database with the templates (if they have one assigned), applies any filter settings (if any are in the filter database) and writes them to the output directory.<br><br>
+
+kiriwrite_compile_makepages will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_compile_makepages(type, confirm, selectedlist);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_compile_makepages(“single”, 0, ['database1']);<br>
+    $pagedata = kiriwrite_compile_makepages(“single”, 1, ['database1']);<br>
+    $pagedata = kiriwrite_compile_makepages(“multiple”, 0, ['database1','database2','database3','database4']);<br>
+    $pagedata = kiriwrite_compile_makepages(“multiple”, 1, ['database1','database2','database3','database4']);
+</div>
+
+<br>
+
+type<br>
+Specifies the type meaning if a single or multiple databases should be compiled. This is required every time the subroutine is called.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">single</td>
+        <td class="tabledata">Specifies that a single database should be compiled.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">multiple</td>
+        <td class="tabledata">Specifies that multiple databases should be compiled.</td>
+    </tr>
+</table>
+
+<br>
+
+confirm<br>
+Specifies if the action to compile the selected database should be confirmed by passing a '1'. This is required every time the subroutine is called.<br><br>
+
+selectedlist<br>
+Specifies the list of databases to compile as an array. This is required every time the subroutine is called.
+		</div>
+	</body>
+</html>

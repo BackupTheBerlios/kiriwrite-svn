@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.28: addpage</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.28 addpage</span><br><br>
+
+Adds a page to the selected database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->addpage(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectdb(“database”);<br>
+    $kiriwrite_dbmodule->addpage({ PageFilename => “newpage.html”, PageName => “New Page Name”, PageDescription => “New Page Description”, PageSection => “New Page Section”, PageTemplate => “pagetemplate.html”, PageContent => “This is the new page content.”, PageSettings => 0 });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageFilename</td>
+        <td class="tabledata">Specifies the page filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageName</td>
+        <td class="tabledata">Specifies the page name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageDescription</td>
+        <td class="tabledata">Specifies the page description.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageSection</td>
+        <td class="tabledata">Specifies the page section.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageTemplate</td>
+        <td class="tabledata">Specifies the page template to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageContent</td>
+        <td class="tabledata">Specifies the content of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageSettings</td>
+        <td class="tabledata">Specifies the page settings to use.<br><br>
+            1: Use page name and section name.<br>
+            2: Use the page name only.<br>
+            3: Use the section name only.<br>
+            0: Don't use page name or section name.
+        </td>
+    </tr>
+</table>
+
+<br>
+
+If a page with the filename given already exists then the error returned should be 'PageExists' in the $error scalar.<br><br>
+
+If a database error occurs while adding a page in the database then the error returned should be 'DatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+
+<kiriwrite-language>
+	<about>
+		<name>English (British)</name>
+		<creator>Steve Brokenshire</creator>
+		<mailaddress>sbrokenshire|ao|xestia|dottie|co|dottie|uk</mailaddress>
+	</about>
+	<database>
+		
+		<submenu>
+			<viewdatabases>View Databases</viewdatabases>
+			<adddatabase>Add Database</adddatabase>
+		</submenu>
+		
+		<databasename>Database Name</databasename>
+		<databasedescription>Database Description</databasedescription>
+		<databasecategories>Database Categories</databasecategories>
+		<databasenotes>Database Notes</databasenotes>
+		<databasefilename>Database Filename</databasefilename>
+		<databaselistreturnlink>Return to the database list.</databaselistreturnlink>
+		
+		<databaselist>Database List</databaselist>
+		<databaseoptions>Database Options</databaseoptions>
+		<nodatabasesavailable>There are no databases that can be used. To create a database click on the Add Database link.</nodatabasesavailable>
+		<databaseinvalidpermissions>Databases with invalid permissions</databaseinvalidpermissions>
+		<databaseinvalidpermissionstext>The following databases have invalid permissions set:</databaseinvalidpermissionstext>
+		<databaseerrors>Databases with errors</databaseerrors>
+		<databaseerrorstext>The following databases have errors:</databaseerrorstext>
+		
+		<adddatabase>Add Database</adddatabase>
+		<adddatabaseautogenerate>Leave the filename blank to automatically generate a filename.</adddatabaseautogenerate>
+		<adddatabasenoextensions>Don't include any extensions as it will be done automatically.</adddatabasenoextensions>
+		<adddatabasecharacterlength>The filename cannot be any more than 32 characters long.</adddatabasecharacterlength>
+		<adddatabasecharacters>The filename should only contain letters, numbers and no spaces.</adddatabasecharacters>
+		<adddatabasebutton>Add Database</adddatabasebutton>
+		<clearvaluesbutton>Clear values</clearvaluesbutton>
+		<databaseadded>Database '%s' has been created.</databaseadded>
+		
+		<editdatabasetitle>Edit Database</editdatabasetitle>
+		<editdatabase>Edit Database '%s'</editdatabase>
+		<editeddatabase>Edit Database</editeddatabase>
+		<editdatabasebutton>Edit Database</editdatabasebutton>
+		<databaseupdated>Database '%s' updated.</databaseupdated>
+		
+		<deletedatabase>Database Deletion</deletedatabase>
+		<deletedatabasemessage>Are you sure you want to delete '%s'?</deletedatabasemessage>
+		<deletedatabasebutton>Yes, delete the database</deletedatabasebutton>
+		<deletedatabasereturn>No, return to the database list.</deletedatabasereturn>
+		<deleteddatabase>Database Deleted</deleteddatabase>
+		<deleteddatabasemessage>Database '%s' was deleted.</deleteddatabasemessage>
+		
+	</database>
+	<pages>
+		
+		<submenu>
+			<addpage>Add Page</addpage>
+		</submenu>
+		
+		<database>Database</database>
+		<pagefilename>Page Filename</pagefilename>
+		<pagename>Page Name</pagename>
+		<pagedescription>Page Description</pagedescription>
+		<pagesection>Page Section</pagesection>
+		<pagetemplate>Page Template</pagetemplate>
+		<pagecontent>Page Content</pagecontent>
+		<pagesettings>Page Settings</pagesettings>
+		<lastmodified>Last Modified</lastmodified>
+		
+		<returnpagelist>Return to the page list for the '%s' database.</returnpagelist>
+		<viewpagelist>View the page list for the '%s' database.</viewpagelist>
+		
+		<databasepageerror>A database error occurred while getting the page information with the filename '%s': %s</databasepageerror>
+		<databasepagedoesnotexist>The page with the filename '%s' does not exist.</databasepagedoesnotexist>
+		<databasecopyfrompageerror>The page with the filename '%s' does not exist in the database that the page is to be copied from.</databasecopyfrompageerror>
+		<databasecopyfromdatabaseerror>A database error has occurred while copying the page with the filename '%s' from the old database: %s</databasecopyfromdatabaseerror>
+		<databasecopytodatabaseerror>A database error has occurred while copying the page with the filename '%s' to the new database: %s</databasecopytodatabaseerror>
+		<databasecopyfrompagenotexist>The page with the filename '%s' does not exist in the database that the page is to be copied from.</databasecopyfrompagenotexist>
+		<databasecopytopageexists>The page with the filename '%s' already exists in the database that the page is to be copied to.</databasecopytopageexists>
+		<databasemovefrompageerror>A database error has occurred while moving the page with the filename '%s' from the old database: %s</databasemovefrompageerror>
+		<databasemovetopageerror>A database error has occurred while moving the page with the filename '%s' to the new database: %s</databasemovetopageerror>
+		<databasemovefrompagenotexist>The page with the filename '%s' does not exist in the database that the page is to be moved from.</databasemovefrompagenotexist>
+		<databasemovetopageexists>The page with the filename '%s' already exists in the database that the page is to be moved to.</databasemovetopageexists>
+		<pagedoesnotexist>The page with the filename '%s' does not exist in the database that the page is to be moved from.</pagedoesnotexist>
+		
+		<usenotemplate>Don't use a template</usenotemplate>
+		<keeptemplatefilename>Keep current template filename (%s)</keeptemplatefilename>
+		
+		<usepageandsection>Use page name and section name.</usepageandsection>
+		<usepagename>Use the page name only.</usepagename>
+		<usesectionname>Use the section name only.</usesectionname>
+		<nopagesection>Don't use page name or section name.</nopagesection>
+		
+		<notemplatedatabase>Template database does not exist. No template will be used.</notemplatedatabase>
+		<notemplatedatabasekeep>Template database does not exist. Existing template settings can be kept.</notemplatedatabasekeep>
+		<templatepermissionserror>Template database has invalid permissions set. No template will be used.</templatepermissionserror>
+		<templatepermissionserrorkeep>Template database has invalid permissions set. Existing template settings can be kept.</templatepermissionserrorkeep>
+		<templatedatabaseerror>A database error occurred while trying to get the list of templates: %s</templatedatabaseerror>
+		<templatedatabaseerrorkeep>A database error occurred while trying to get the list of templates: '%s'. Existing template settings can be kept.</templatedatabaseerrorkeep>
+		<notemplatesavailable>There are no templates in the template database. No template will be used.</notemplatesavailable>
+		<templatedatabasenotexistmultieditkeep>The template database does not exist. Existing template settings for selected pages kept.</templatedatabasenotexistmultieditkeep>
+		<templatedatabasepermissionsinvalidmultieditkeep>The template database has invalid permissions set. Existing template settings for selected pages kept.</templatedatabasepermissionsinvalidmultieditkeep>
+		<templatedatabaseerrormultieditkeep>A database error occurred while trying to get the list of templates: %s. Existing template settings for selected pages kept.</templatedatabaseerrormultieditkeep>
+		
+		<viewingdatabase>Viewing Database</viewingdatabase>
+		<viewpages>View Pages</viewpages>
+		<databaseselecttitle>Database Selection</databaseselecttitle>
+		<nodatabaseselected>No database selected. Please select a database from the drop-down list below and then press the 'View' button to view the pages in the selected database.</nodatabaseselected>
+		<viewbutton>View</viewbutton>
+		
+		<pagelist>Page list for '%s'</pagelist>
+		<nopagesindatabase>No pages exist in this database. To create a page for this database, click on Add Page link at the top of the page.</nopagesindatabase>
+		<deleteselectedbutton>Delete Selected</deleteselectedbutton>
+		<moveselectedbutton>Move Selected</moveselectedbutton>
+		<copyselectedbutton>Copy Selected</copyselectedbutton>
+		<editselectedbutton>Edit Selected</editselectedbutton>
+		
+		<addpage>Add Page</addpage>
+		<addpagebutton>Add Page</addpagebutton>
+		<pageaddedmessage>The page called '%s' was added to the '%s' database successfully.</pageaddedmessage>
+		
+		<editpagetitle>Edit Page</editpagetitle>
+		<editpage>Editing Page '%s'</editpage>
+		<editpagebutton>Edit Page</editpagebutton>
+		<editedpage>Page Edited</editedpage>
+		<editedpagemessage>The page '%s' has been edited.</editedpagemessage>
+		
+		<deletepagetitle>Delete Page</deletepagetitle>
+		<deletepage>Delete page '%s'</deletepage>
+		<deletepagemessage>Are you sure you want to delete '%s' from the '%s' database?</deletepagemessage>
+		<deletepagebutton>Yes, delete the page</deletepagebutton>
+		<pagedeleted>Page Deleted</pagedeleted>
+		<pagedeletedmessage>The page named '%s' was deleted from the '%s' database.</pagedeletedmessage>
+		
+		<deletemultiplepages>Delete selected pages</deletemultiplepages>
+		<deletemultiplemessage>Are you sure you want to delete the selected pages below from the '%s' database?</deletemultiplemessage>
+		<deletepagesbutton>Yes, delete the selected pages</deletepagesbutton>
+		<deletepagesreturnlink>No, return to the page list for the '%s' database.</deletepagesreturnlink>
+		<selectedpagesdeleted>Selected pages deleted</selectedpagesdeleted>
+		<selectedpagesdeletedmessage>The following pages were deleted from the '%s' database:</selectedpagesdeletedmessage>
+		
+		<movepages>Move selected pages</movepages>
+		<movepagesmessage>Which database do you want to move the following pages from the '%s' database to?</movepagesmessage>
+		<movepagesto>Move pages to: </movepagesto>
+		<movepagesbutton>Move selected pages</movepagesbutton>
+		<movedpagesmessage>The following pages from the '%s' database were moved to the '%s' database:</movedpagesmessage>
+		<nopagesmoved>No pages were moved from the '%s' database to the '%s' database.</nopagesmoved>
+		<errormessages>The following errors/warnings have occurred while moving the pages:</errormessages>
+		
+		<copypages>Copy selected pages</copypages>
+		<copypagesmessage>Which database do you want to copy the following pages from the '%s' database to?</copypagesmessage>
+		<copypagesto>Copy pages to:</copypagesto>
+		<copypagesbutton>Copy selected pages</copypagesbutton>
+		<copypagesresultmessage>The following pages from the '%s' database were copied to the '%s' database:</copypagesresultmessage>
+		<nopagescopied>No pages were copied from the '%s' database to the '%s' database.</nopagescopied>
+		<copypageswarnings>The following errors/warnings have occurred while copying the pages:</copypageswarnings>
+		
+		<multiedit>Edit selected pages</multiedit>
+		<multieditmessage>The following pages from the '%s' database will be altered:</multieditmessage>
+		<multieditmessagevalues>Using the values below (click on the checkbox for each value to be edited on the selected pages):</multieditmessagevalues>
+		<editpagesbutton>Edit selected pages</editpagesbutton>
+		<nopagesedited>No pages were edited in the '%s' database.</nopagesedited>
+		<pagesedited>The selected pages in the '%s' database have been edited:</pagesedited>
+		<editedpageswarnings>The following errors/warnings occurred while editing the selected pages:</editedpageswarnings>
+		
+	</pages>
+	<filter>
+		
+		<submenu>
+			<showfilters>Show Filters</showfilters>
+			<addfilter>Add Filter</addfilter>
+		</submenu>
+		
+		<priority>Priority</priority>
+		<findsetting>Find Setting</findsetting>
+		<replacesetting>Replace Setting</replacesetting>
+		
+		<noprioritygiven>If no filter priority is specified, the filter priority will be set to 1.</noprioritygiven>
+		<returnfilterlist>Return to the filter list.</returnfilterlist>
+		
+		<viewfilters>View Filters</viewfilters>
+		<nofiltersavailable>There are no filters available in the filter database. To add a filter, click on the Add Filter link.</nofiltersavailable>
+		<filterdatabasedoesnotexist>The filter database does not exist and will be created when a filter is added.</filterdatabasedoesnotexist>
+		<warningtitle>Warning: </warningtitle>
+		<blankfindfilters>One (or more) of your filters has a blank find filter and needs to be fixed.</blankfindfilters>
+		<blankfindsetting>Blank Find Setting</blankfindsetting>
+		<blankreplacesetting>Blank Replace Setting</blankreplacesetting>
+		
+		<addfilter>Add Filter</addfilter>
+		<findfilter>Find...</findfilter>
+		<replacefilter>Replace with...</replacefilter>
+		<notes>Notes</notes>
+		<addfilterbutton>Add Filter</addfilterbutton>
+		<filteradded>Filter Added</filteradded>
+		<filteraddedmessage>The filter was added successfully to the filters list.</filteraddedmessage>
+		
+		<editfilter>Edit Filter</editfilter>
+		<editfilterbutton>Edit Filter</editfilterbutton>
+		<editedfilter>Filter edited</editedfilter>
+		<editedfiltermessage>The selected filter was edited.</editedfiltermessage>
+		
+		<deletefilter>Delete Filter</deletefilter>
+		<deletefiltermessage>Are you sure you want to delete the selected filter?</deletefiltermessage>
+		<deletefilterbutton>Yes, delete the selected filter.</deletefilterbutton>
+		<deletefilterreturn>No, return to the filter list.</deletefilterreturn>
+		<deletedfilter>Filter Deleted</deletedfilter>
+		<deletedfiltermessage>The selected filter was deleted from the filters list.</deletedfiltermessage>
+		
+	</filter>
+	<template>
+		
+		<submenu>
+			<showtemplates>Show Templates</showtemplates>
+			<addtemplate>Add Template</addtemplate>
+		</submenu>
+		
+		<templatefilename>Template Filename</templatefilename>
+		<templatename>Template Name</templatename>
+		<templatedescription>Template Description</templatedescription>
+		<templatelayout>Template Layout</templatelayout>
+		
+		<returntemplatelist>Return to the template list.</returntemplatelist>
+		
+		<viewtemplates>View Templates</viewtemplates>
+		<templatedatabasedoesnotexist>The template database doesn't exist and will be created when a template is added.</templatedatabasedoesnotexist>
+		<notemplatesavailable>There are no templates in the template database. To add a template click on the Add Template link.</notemplatesavailable>
+		
+		<addtemplate>Add Template</addtemplate>
+		<addtemplatebutton>Add Template</addtemplatebutton>
+		<addedtemplate>Template Added</addedtemplate>
+		<addedtemplatemessage>The template called '%s' was successfully created.</addedtemplatemessage>
+		
+		<edittemplate>Edit Template</edittemplate>
+		<edittemplatebutton>Edit Template</edittemplatebutton>
+		<editedtemplate>Template Edited</editedtemplate>
+		<editedtemplatemessage>The selected template called '%s' was edited.</editedtemplatemessage>
+		
+		<deletetemplate>Delete Template</deletetemplate>
+		<deletetemplatemessage>Are you sure you want to delete the template called '%s' (%s)?</deletetemplatemessage>
+		<deletetemplatebutton>Yes, delete the template.</deletetemplatebutton>
+		<deletetemplatereturntolist>No, return to the template list.</deletetemplatereturntolist>
+		<deletedtemplate>Template Deleted</deletedtemplate>
+		<deletedtemplatemessage>The selected template called '%s' was deleted.</deletedtemplatemessage>
+		
+	</template>
+	<compile>
+		
+		<submenu>
+			<listdatabases>List Databases</listdatabases>
+			<compileall>Compile All</compileall>
+			<cleanoutputdirectory>Clean Output Directory</cleanoutputdirectory>
+		</submenu>
+		
+		<returncompilelist>Return to the compile database list.</returncompilelist>
+		
+		<compilepages>Compile Pages</compilepages>
+		<nodatabasesavailable>There are no databases that can be used for compiling.</nodatabasesavailable>
+		<compileselectedbutton>Compile Selected</compileselectedbutton>
+		
+		<compilealldatabases>Compile All Databases</compilealldatabases>
+		<compilealldatabasesmessage>Do you want to compile all of the databases in the database directory?</compilealldatabasesmessage>
+		<compilealldatabasesbutton>Compile All Databases</compilealldatabasesbutton>
+		
+		<compileselecteddatabases>Compile Selected Databases</compileselecteddatabases>
+		<compileselecteddatabasesmessage>Do you want to compile the following databases?</compileselecteddatabasesmessage>
+		<compileselecteddatabasesbutton>Compile Selected Databases</compileselecteddatabasesbutton>
+		
+		<compiledatabase>Compile Database</compiledatabase>
+		<compiledatabasemessage>Are you sure you want to compile the '%s' database?</compiledatabasemessage>
+		<compiledatabasebutton>Compile Database</compiledatabasebutton>
+		
+		<informationprefix>[Information] </informationprefix>
+		<errorprefix>[Error] </errorprefix>
+		<warningprefix>[Warning] </warningprefix>
+		
+		<compiledatabases>Compile Databases</compiledatabases>
+		<filterdatabasemissing>The filter database does not exist. No filters will be used.</filterdatabasemissing>
+		<filterdatabasepermissions>The filter database has invalid permissions set. No filters will be used.</filterdatabasepermissions>
+		<filterdatabaseerror>A filter database error has occurred: %s. No filters will be used.</filterdatabaseerror>
+		<findfilterblank>One (or more) of the find filters from the filter database is blank.</findfilterblank>
+		<finishfilterdatabase>Finished processing the filter database.</finishfilterdatabase>
+		<templatedatabasemissing>The template database does not exist. Pages will be compiled without templates being used.</templatedatabasemissing>
+		<templatedatabasepermissions>The template database has invalid permissions set. Pages will be compiled without templates being used.</templatedatabasepermissions>
+		<templatedatabaseerror>A database error occurred while trying to get the list of templates: %s</templatedatabaseerror>
+		<finishtemplatedatabase>Finished processing the template database.</finishtemplatedatabase>
+		<databasefilenameinvalidcharacters>The database with the filename '%s' has invalid characters. Skipping this database...</databasefilenameinvalidcharacters>
+		<databasefilenametoolong>The database with the filename '%s' is too long. Skipping this database...</databasefilenametoolong>
+		<databasemissing>The database with the filename '%s' does not exist. Skipping this database...</databasemissing>
+		<databaseinvalidpermissions>The database with the filename '%s' has invalid permissions set. Skipping this database...</databaseinvalidpermissions>
+		<databaseerror>A database error has occurred on the database with the filename '%s': %s</databaseerror>
+		<compilingpages>Compiling pages in the '%s' database...</compilingpages>
+		<databasepageerror>A database error has occurred on the database with the filename '%s' while getting the list of pages: %s</databasepageerror>
+		<invalidpagefilename>The page '%s' has an invalid filename. Page skipped.</invalidpagefilename>
+		<templatefilemissing>The template with the filename '%s' for '%s' (%s) does not exist.</templatefilemissing>
+		<pageinvalidpermissions>The page with the filename '%s' has invalid permissions set. Page not written.</pageinvalidpermissions>
+		<pagenotwritten>An error occured while writing the page with the filename '%s': %s</pagenotwritten>
+		<compiledpageblankname> (%s) was compiled.</compiledpageblankname>
+		<compiledpage>'%s' (%s) was compiled.</compiledpage>
+		<databasefinish>Finished compiling pages in the '%s' database...</databasefinish>
+		<compileresults>%s pages compiled, %s errors, %s warnings.</compileresults>
+		
+		<cleanoutputdirectory>Clean Output Directory</cleanoutputdirectory>
+		<cleanoutputdirectorymessage>Are you sure you want to clean the output directory?</cleanoutputdirectorymessage>
+		<cleanoutputdirectorybutton>Yes, clean output directory</cleanoutputdirectorybutton>
+		<somecontentnotremoved>Some of the contents of the directory were removed. However, not all of the files in the output directory were deleted due to invalid permissions.</somecontentnotremoved>
+		<contentremoved>The contents of the output directory have been removed.</contentremoved>
+		
+	</compile>
+	<setting>
+		<submenu>
+			<viewsettings>View Settings</viewsettings>
+			<editsettings>Edit Settings</editsettings>
+		</submenu>
+		
+		<viewsettings>View Settings</viewsettings>
+		<currentsettings>The current settings being used are the following:</currentsettings>
+		<directories>Directories</directories>
+		<databasedirectory>Database Directory</databasedirectory>
+		<outputdirectory>Output Directory</outputdirectory>
+		<imagesuripath>Images (URI path)</imagesuripath>
+		<date>Date</date>
+		<dateformat>Date Format</dateformat>
+		<language>Language</language>
+		<systemlanguage>System Language</systemlanguage>
+		<modules>Modules</modules>
+		<presentationmodule>Presentation Module</presentationmodule>
+		<databasemodule>Database Module</databasemodule>
+		<altersettings>To alter the current settings, select the Edit Settings option at the top of the page.</altersettings>
+		
+		<editsettings>Edit Settings</editsettings>
+		<warning>Warning: </warning>
+		<warningmessage>Settings that have changed take effect after clicking on the 'Change Settings' button and viewing the confirmation message.</warningmessage>
+		<singleday>D - Show single digit day if day value is less than 10.</singleday>
+		<doubleday>DD - Show double digit day if day value is less than 10.</doubleday>
+		<singlemonth>M - Show single digit month if month value is less than 10.</singlemonth>
+		<doublemonth>MM - Show double digit month if month value is less than 10.</doublemonth>
+		<singleyear>Y - Show double digit year value.</singleyear>
+		<doubleyear>YY - Show four digit year value.</doubleyear>
+		<singlehour>h - Show single digit hour if hour value is less than 10.</singlehour>
+		<doublehour>hh - Show double digit hour if hour value is less than 10.</doublehour>
+		<singleminute>m - Show single digit minute if minute value is less than 10.</singleminute>
+		<doubleminute>mm - Show double digit minute if minute value is less than 10.</doubleminute>
+		<singlesecond>s - Show single digit second if second value is less than 10.</singlesecond>
+		<doublesecond>ss - Show double digit second if second value is less than 10.</doublesecond>
+		<othercharacters>Other Characters: / - &lt; &gt; ;</othercharacters>
+		<databaseserver>Database Server</databaseserver>
+		<databaseport>Database Port</databaseport>
+		<databaseprotocol>Database Protocol</databaseprotocol>
+		<databasename>Database Name</databasename>
+		<databaseusername>Database Username</databaseusername>
+		<databasepassword>Database Password</databasepassword>
+		<keepcurrentpassword>Keep the current password</keepcurrentpassword>
+		<tableprefix>Table Prefix</tableprefix>
+		<changesettingsbutton>Change Settings</changesettingsbutton>
+		<returnsettingslist>Return to the list of settings.</returnsettingslist>
+		<settingsedited>Settings Edited</settingsedited>
+		<settingseditedmessage>The page settings have been changed and will take effect on the next page load of Kiriwrite.</settingseditedmessage>
+		
+	</setting>
+	<error>
+		<error>Error!</error>
+		<extendederror>The extended information about the error is:</extendederror>
+		<generic>An error has occurred but not an error that is known to Kiriwrite.</generic>
+		<blankfilename>The filename specified was blank.</blankfilename>
+		<blankvariable>A blank variable was specified.</blankvariable>
+		<fileexists>A filename specified already exists.</fileexists>
+		<internalerror>An internal error has occurred within Kiriwrite.</internalerror>
+		<invalidoption>An invalid option was given.</invalidoption>
+		<invalidaction>An invalid action was specified.</invalidaction>
+		<invalidfilename>The filename given contains invalid characters.</invalidfilename>
+		<invalidmode>An invalid mode was specified.</invalidmode>
+		<invalidutf8>A UTF-8 string is invalid.</invalidutf8>
+		<invalidvariable>An variable with invalid data has been found.</invalidvariable>
+		<variabletoolong>A variable given is too long.</variabletoolong>
+		<blankcompiletype>The compile type specified was blank.</blankcompiletype>
+		<blankdatabasepageadd>No database was specified when trying to add a page.</blankdatabasepageadd>
+		<blankdirectory>The directory name specified was blank.</blankdirectory>
+		<blankfindfilter>The find filter was blank.</blankfindfilter>
+		<blankdatetimeformat>The date and time format given is blank.</blankdatetimeformat>
+		<databaseconnectionerror>A database connection error has occurred.</databaseconnectionerror>
+		<databasecategoriestoolong>The database categories list is too long.</databasecategoriestoolong>
+		<databasecopysame>The database that the pages are being copied to is the same database that the pages are copied from.</databasecopysame>
+		<databasealreadyexists>A database with the filename given already exists.</databasealreadyexists>
+		<datadirectorymissing>The database directory is missing.</datadirectorymissing>
+		<datadirectoryinvalidpermissions>The database directory has invalid permission settings.</datadirectoryinvalidpermissions>
+		<databasedescriptiontoolong>The database description is too long.</databasedescriptiontoolong>
+		<databasefilenameinvalid>The database filename is invalid.</databasefilenameinvalid>
+		<databasefilenametoolong>The database filename is too long.</databasefilenametoolong>
+		<databaseerror>A database error has occurred.</databaseerror>
+		<databaseinvalidpermissions>The database has invalid permission settings.</databaseinvalidpermissions>
+		<databasenameinvalid>The database name contains invalid characters.</databasenameinvalid>
+		<databasenametoolong>The database name is too long.</databasenametoolong>
+		<databasenameblank>The database name is blank.</databasenameblank>
+		<databasemissingfile>The database file is missing.</databasemissingfile>
+		<databasemovemissingfile>The database that the pages are moving to is missing.</databasemovemissingfile>
+		<databasenorename>The database cannot be renamed due to invalid permissions set.</databasenorename>
+		<databasemovesame>The database that the pages are being moved to is the same database that the pages are moving from.</databasemovesame>
+		<dbmoduleblank>The database module name given is blank.</dbmoduleblank>
+		<dbmoduleinvalid>The database module name given is invalid.</dbmoduleinvalid>
+		<dbdirectoryblank>The database directory name given was blank.</dbdirectoryblank>
+		<dbdirectoryinvalid>The database directory name given was invalid.</dbdirectoryinvalid>
+		<dbmodulemissing>The database module with the filename given is missing.</dbmodulemissing>
+		<filtersdatabasenotcreated>The filter database was not created because of the invalid permissions set.</filtersdatabasenotcreated>
+		<filtersdbdatabaseerror>A database error has occurred while using the filter database.</filtersdbdatabaseerror>
+		<filtersdbpermissions>The filter database has invalid permission settings.</filtersdbpermissions>
+		<filtersdbmissing>The filter database is missing.</filtersdbmissing>
+		<filteridblank>The filter identification number given is blank.</filteridblank>
+		<filterdoesnotexist>The filter with the identification number given does not exist.</filterdoesnotexist>
+		<filteridinvalid>The filter identification number given is invalid.</filteridinvalid>
+		<filteridtoolong>The filter identification number given is too long.</filteridtoolong>
+		<findfiltertoolong>The find filter given is too long.</findfiltertoolong>
+		<filterpriorityinvalid>The filter priority number given is invalid.</filterpriorityinvalid>
+		<filterpriorityinvalidchars>The filter priority given contains invalid characters.</filterpriorityinvalidchars>
+		<filterprioritytoolong>The filter priority given is too long.</filterprioritytoolong>
+		<invalidcompiletype>The compile type given is invalid.</invalidcompiletype>
+		<invalidpagenumber>The page number specified is invalid.</invalidpagenumber>
+		<nopagesselected>No pages were selected.</nopagesselected>
+		<invaliddirectory>The directory name specified was invalid.</invaliddirectory>
+		<invaliddatetimeformat>The date and time format given is invalid.</invaliddatetimeformat>
+		<invalidlanguagefilename>An invalid language filename was given.</invalidlanguagefilename>
+		<languagefilenamemissing>The language filename given does not exist.</languagefilenamemissing>
+		<moduleblank>The module name given was blank.</moduleblank>
+		<moduleinvalid>The module name given was invalid.</moduleinvalid>
+		<newcopydatabasedatabaseerror>A database error has occurred in the database that the selected pages are being copied to.</newcopydatabasedatabaseerror>
+		<newcopydatabasedoesnotexist>The database that the selected pages are being copied to does not exist.</newcopydatabasedoesnotexist>
+		<newcopydatabasefileinvalidpermissions>The database that the selected pages are being copied to has invalid permissions set.</newcopydatabasefileinvalidpermissions>
+		<newmovedatabasedatabaseerror>A database error has occurred in the database that the selected pages are being moved to.</newmovedatabasedatabaseerror>
+		<newmovedatabasedoesnotexist>The database that the selected pages are moving to does not exist.</newmovedatabasedoesnotexist>
+		<newmovedatabasefileinvalidpermissions>The database that the selected pages are moving to has invalid permissions set.</newmovedatabasefileinvalidpermissions>
+		<nodatabasesavailable>No databases are available for compiling.</nodatabasesavailable>
+		<nodatabaseselected>No databases were selected for compiling.</nodatabaseselected>
+		<noeditvaluesselected>No values will be changed on the selected pages as no values for changing were selected.</noeditvaluesselected>
+		<oldcopydatabasedatabaseerror>A database error has occurred in the database that the selected pages are being copied from.</oldcopydatabasedatabaseerror>
+		<oldcopydatabasedoesnotexist>The database that the selected pages are being copied from does not exist.</oldcopydatabasedoesnotexist>
+		<oldcopydatabasefileinvalidpermissions>The database that the selected pages are being copied from has invalid permissions set.</oldcopydatabasefileinvalidpermissions>
+		<oldmovedatabasedatabaseerror>A database error has occurred in the database that the selected pages are being moved from.</oldmovedatabasedatabaseerror>
+		<oldmovedatabasedoesnotexist>The database that the selected pages are moving from does not exist.</oldmovedatabasedoesnotexist>
+		<oldmovedatabasefileinvalidpermissions>The database that the selected pages are moving from has invalid permissions set.</oldmovedatabasefileinvalidpermissions>
+		<outputdirectoryblank>The output directory name given was blank.</outputdirectoryblank>
+		<outputdirectoryinvalid>The output directory name given was invalid.</outputdirectoryinvalid>
+		<outputdirectorymissing>The output directory is missing</outputdirectorymissing>
+		<outputdirectoryinvalidpermissions>The output directory has invalid permissions set.</outputdirectoryinvalidpermissions>
+		<presmoduleblank>The presentation module name given is blank.</presmoduleblank>
+		<presmoduleinvalid>The presentation module name given is invalid.</presmoduleinvalid>
+		<presmodulemissing>The presentation module with the filename given is missing.</presmodulemissing>
+		<pagefilenamedoesnotexist>The page with the filename given does not exist.</pagefilenamedoesnotexist>
+		<pagefilenameexists>The page filename given already exists.</pagefilenameexists>
+		<pagefilenameinvalid>The page filename given is invalid.</pagefilenameinvalid>
+		<pagefilenametoolong>The page filename given is too long.</pagefilenametoolong>
+		<pagefilenameblank>The page filename given is blank.</pagefilenameblank>
+		<pagetitletoolong>The page title given is too long.</pagetitletoolong>
+		<pagedescriptiontoolong>The page description given is too long.</pagedescriptiontoolong>
+		<pagesectiontoolong>The page section given is too long.</pagesectiontoolong>
+		<pagedatabasefilenametoolong>The page database filename given is too long.</pagedatabasefilenametoolong>
+		<pagesettingstoolong>The page settings given is too long.</pagesettingstoolong>
+		<pagesettingsinvalid>The page settings given are invalid.</pagesettingsinvalid>
+		<pagetemplatefilenametoolong>The page template filename given was too long.</pagetemplatefilenametoolong>
+		<replacefiltertoolong>The replace filter given is too long</replacefiltertoolong>
+		<servernameinvalid>The database server name given is invalid.</servernameinvalid>
+		<servernametoolong>The database server name given is too long.</servernametoolong>
+		<serverdatabasenameinvalid>The server database name given is invalid.</serverdatabasenameinvalid>
+		<serverdatabasenametoolong>The server database name given is too long.</serverdatabasenametoolong>
+		<serverdatabaseusernameinvalid>The server database username given is invalid.</serverdatabaseusernameinvalid>
+		<serverdatabaseusernametoolong>The server database username given is too long.</serverdatabaseusernametoolong>
+		<serverdatabasepasswordtoolong>The server database password given is too long.</serverdatabasepasswordtoolong>
+		<serverdatabasetableprefixinvalid>The server database table prefix given is invalid.</serverdatabasetableprefixinvalid>
+		<serverdatabasetableprefixtoolong>The server database table prefix given is too long.</serverdatabasetableprefixtoolong>
+		<serverportnumberinvalid>The database port number given is invalid.</serverportnumberinvalid>
+		<serverportnumberinvalidcharacters>The database port number given contains characters other than numbers.</serverportnumberinvalidcharacters>
+		<serverportnumbertoolong>The database port number given is too long.</serverportnumbertoolong>
+		<serverprotocolnametoolong>The database server protocol name given is too long.</serverprotocolnametoolong>
+		<serverprotocolinvalid>An invalid database server protocol was specified.</serverprotocolinvalid>
+		<templatenameblank>The template name given is blank.</templatenameblank>
+		<templatefilenameexists>A template with the given filename already exists.</templatefilenameexists>
+		<templatefilenameinvalid>The template filename given is invalid.</templatefilenameinvalid>
+		<templatedatabaseerror>A database error has occurred while using the template database.</templatedatabaseerror>
+		<templatedatabaseinvalidpermissions>The template database has invalid permissions.</templatedatabaseinvalidpermissions>
+		<templatedatabaseinvalidformat>The template database is in a invalid format.</templatedatabaseinvalidformat>
+		<templatedirectoryblank>The template directory name given was blank.</templatedirectoryblank>
+		<templatedirectoryinvalid>The template directory name given was invalid.</templatedirectoryinvalid>
+		<templatedatabasenotcreated>The template database was not created because of the invalid permissions set.</templatedatabasenotcreated>
+		<templatefilenametoolong>The template filename given is too long</templatefilenametoolong>
+		<templatenametoolong>The template name given is too long</templatenametoolong>
+		<templatedescriptiontoolong>The template description given is too long</templatedescriptiontoolong>
+		<templatedatabasemissing>The template database is missing.</templatedatabasemissing>
+		<templatedoesnotexist>The template filename given does not exist in the template database.</templatedoesnotexist>
+		<templatefilenameblank>The template filename given was blank.</templatefilenameblank>
+		
+	</error>
+	<options>
+		<edit>Edit</edit>
+		<delete>Delete</delete>
+		<compile>Compile</compile>
+	</options>
+	<blank>
+		<noname>No Name</noname>
+		<nodescription>No Description</nodescription>
+		<blankdatabasename>Blank Database Name</blankdatabasename>
+	</blank>
+	<common>
+		<alter>Alter</alter>
+		<setting>Setting</setting>
+		<value>Value</value>
+		<restorecurrent>Restore current settings</restorecurrent>
+		<clearvalues>Clear values</clearvalues>
+		<selectnone>Select None</selectnone>
+		<options>Options</options>
+		
+		<tags>Kiriwrite Tags:</tags>
+		<pagecontent>&lt;kiriwrite:pagecontent&gt; - Specifies the page content.</pagecontent>
+		<pagetitle>&lt;kiriwrite:pagetitle&gt; - Specifies the page title (and page section depending on page settings).</pagetitle>
+		<pagename>&lt;kiriwrite:pagename&gt; - Specifies the page name.</pagename>
+		<pagedescription>&lt;kiriwrite:pagedescription&gt; - Specifies the page description.</pagedescription>
+		<pagesection>&lt;kiriwrite:pagesection&gt; - Specifies the page section.</pagesection>
+		<pageautosection>&lt;kiriwrite:autosection&gt; - Automatic page section name.</pageautosection>
+		<pageautotitle>&lt;kiriwrite:autotitle&gt; - Automatic page title (and page section depending on page settings).</pageautotitle>
+		
+	</common>
+	<menu>
+		<viewdatabases>View Databases</viewdatabases>
+		<viewpages>View Pages</viewpages>
+		<viewfilters>View Filters</viewfilters>
+		<viewtemplates>View Templates</viewtemplates>
+		<compilepages>Compile Pages</compilepages>
+		<viewsettings>View Settings</viewsettings>
+	</menu>
+</kiriwrite-language>

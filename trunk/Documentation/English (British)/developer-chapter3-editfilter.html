@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.38: editfilter</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.38 editfilter</span><br><br>
+
+Edits a filter in the filter database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->editfilter(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->connectfilter();<br>
+    $kiriwrite_dbmodule->editfilter({ FilterID => 1, NewFindFilter => “The new find filter setting.”, NewReplaceFilter => “The new replace filter setting.”, NewFilterPriority => 2, NewFilterNotes => “The new notes of the filter.” });
+</div>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">FilterID</td>
+        <td class="tabledata">Specifies the filter with the identification number to edit.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">NewFindFilter</td>
+        <td class="tabledata">Specifies the new find filter setting.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">NewReplaceFilter</td>
+        <td class="tabledata">Specifies the new replace filter setting.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">NewFilterPriority</td>
+        <td class="tabledata">Specifies the new filter priority setting.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">NewFilterNotes</td>
+        <td class="tabledata">Specifies the new filter notes.</td>
+    </tr>
+</table>
+
+<br>
+
+If the filter with the filter identification number given does not exist then the error returned should be 'FilterDoesNotExist' in the $error scalar.<br><br>
+
+If (when using the file-based database module) the filter database has invalid permissions set then the error returned should be 'FilterDatabaseInvalidPermissionsSet' in the $error scalar.<br><br>
+
+If a database error occurs while editing the filter in the filter database then the error returned should be 'FilterDatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.
+		</div>
+	</body>
+</html>

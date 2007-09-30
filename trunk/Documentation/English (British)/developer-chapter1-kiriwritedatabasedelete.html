@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.13: kiriwrite_database_delete</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.13 kiriwrite_database_delete</span><br><br>
+
+kiriwrite_database_delete deletes a database. If the confirm value is not given then it will write a form asking if the database should be deleted. If a database filename is not specified then an error is returned.<br><br>
+
+kiriwrite_database_delete will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_database_delete(database, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_database_delete(“database”);<br>
+    $pagedata = kiriwrite_database_delete(“database”, 1);
+</div>
+
+<br>
+
+database<br>
+Specifies the database to delete. This is required each time this subroutine is called.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to delete a database should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.16: kiriwrite_template_edit</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.16 kiriwrite_template_edit</span><br><br>
+
+kiriwrite_template_edit edits a template in the template database. If no confirm value is given then it will write a form for editing a template. If no template filename is given then an error is returned.<br><br>
+
+kiriwrite_template_edit will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_template_edit(filename, newfilename, newname, newdescription, templatelayout, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_template_edit(“template.html”);<br>
+    $pagedata = kiriwrite_template_edit(“template.html”, “newtemplate.html”, “New Template Name”, “New Template Description”, “New Template Layout”, 1);
+</div>
+
+<br>
+
+filename<br>
+Specifies the filename of the template to edit. This is required every time the subroutine is called.<br><br>
+
+<i>newfilename</i><br>
+Specifies the new filename of the template. If the filename is the same as the filename parameter then the template filename isn't changed. This is required when editing the template.<br><br>
+
+<i>newname</i><br>
+Specifies the new name of the template. This is required when editing the template.<br><br>
+
+<i>newdescription</i><br>
+Specifies the new description of the template. This is required when editing the template.<br><br>
+
+<i>templatelayout</i><br>
+Specifies the new template layout for the template. This is required when editing the template.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to edit a template should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>
