@@ -30,7 +30,7 @@ Gets information about the template. The information is returned as a hash.<br><
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => “template.html” });
+    $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => “template.html”, Reduced => 1 });
 </div>
 
 <br>
@@ -46,6 +46,10 @@ Specifies the following options as a hash in any order.<br><br>
     <tr>
         <td class="tabledata">TemplateFilename</td>
         <td class="tabledata">Specifies the template filename to get the information from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Reduced</td>
+        <td class="tabledata">Gets a reduced version of the template information (template filename, name, description and last modified date).</td>
     </tr>
 </table>
 

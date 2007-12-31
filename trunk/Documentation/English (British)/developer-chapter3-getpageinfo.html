@@ -31,7 +31,7 @@ Gets information about the page. The page information is returned as a hash.<br>
 
 <div class="code">
     $kiriwrite_dbmodule->selectdb(“database”);<br>
-    %pageinfo = $kiriwrite_dbmodule->getpageinfo({ PageFilename => “pagefilename.html” });
+    %pageinfo = $kiriwrite_dbmodule->getpageinfo({ PageFilename => “pagefilename.html”, Reduced => 1 });
 </div>
 
 <br>

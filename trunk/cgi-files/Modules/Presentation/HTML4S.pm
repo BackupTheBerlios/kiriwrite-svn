@@ -736,7 +736,7 @@ sub addcheckbox{
 	}
 
 	if ($linebreak eq 1){
-		addlinebreak();
+		$tagdata = $tagdata . "<br>";
 	}
 
 	$tagdata = $tagdata . "\r\n";

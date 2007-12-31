@@ -34,7 +34,7 @@ use DBI qw(:sql_types);
 
 # Set the following values.
 
-our $VERSION 	= "0.1.0";
+our $VERSION 	= "0.2.0";
 my ($options, %options);
 my $database_handle;
 my $statement_handle;
@@ -1144,16 +1144,40 @@ sub getpagelist{
 #										#
 # Usage:									#
 #										#
-# $dbmodule->getpagelist();							#
+# $dbmodule->getpagelist(options);						#
+#										#
+# options	Specifies the following options in any order.			#
+#										#
+# StartFrom	Start from the specified page in the database.			#
+# Limit		Get the amount of pages given.					#
 #################################################################################
 
 	$error = "";
 	$errorext = "";
 
-	my $class	= shift;
-	
-	$statement_handle	= $database_handle->prepare('SELECT filename FROM kiriwrite_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
-	$statement_handle->execute();
+	my $class		= shift;
+	my ($passedoptions)	= shift;
+
+	my $start_from	= $passedoptions->{"StartFrom"};
+	my $limit	= $passedoptions->{"Limit"};
+
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+		$statement_handle	= $database_handle->prepare('SELECT filename FROM kiriwrite_database_pages LIMIT ' . $start_from . ',' . $limit) or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	} else {
+
+		$statement_handle	= $database_handle->prepare('SELECT filename FROM kiriwrite_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	}
 
 	my @database_pagefilenames;
 	my @database_pagefilenames_final;
@@ -1170,6 +1194,29 @@ sub getpagelist{
 
 	undef $statement_handle;
 	return @database_pagefilenames_final;
+
+}
+
+sub getpagecount{
+#################################################################################
+# getpagecount: Get the count of pages that are in the database.		#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->getpagecount();							#
+#################################################################################
+
+	$error = "";
+	$errorext = "";
+
+	my $class	= shift;
+
+	$statement_handle	= $database_handle->prepare('SELECT COUNT(*) FROM kiriwrite_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return);
+	$statement_handle->execute();
+
+	my $count = $statement_handle->fetchrow_array();
+
+	return $count;
 
 }
 
@@ -1893,25 +1940,72 @@ sub disconnectfilter{
 
 }
 
+sub getfiltercount{
+#################################################################################
+# getfiltercount: Gets the count of filters in the filters database.		#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->getfiltercount();							#
+#################################################################################
+
+	$error = "";
+	$errorext = "";
+
+	my $class	= shift;
+
+	$filterdb_statement_handle	= $filterdb_database_handle->prepare('SELECT COUNT(*) FROM kiriwrite_filters') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return);
+	$filterdb_statement_handle->execute();
+
+	my $count = $filterdb_statement_handle->fetchrow_array();
+
+	return $count;	
+
+}
+
 sub getfilterlist{
 #################################################################################
 # getfilterlist: Gets the list of filters in the filter database.		#
 #										#
 # Usage:									#
 #										#
-# $dbmodule->getfilterlist();							#
+# $dbmodule->getfilterlist(options);						#
+#										#
+# StartFrom	Specifies where the list of filters should start from.		#
+# Limit		Specifies the amount of the filters to get.			#
 #################################################################################
 
 	$error = "";
 	$errorext = "";
 
+	my $class		= shift;
+	my ($passedoptions)	= shift;
+	
 	my @filter_list;
 	my @filter_data;
 
-	# Get the list of filters available.
+	my $start_from	= $passedoptions->{"StartFrom"};
+	my $limit	= $passedoptions->{"Limit"};
 
-	$filterdb_statement_handle	= $filterdb_database_handle->prepare('SELECT id FROM kiriwrite_filters ORDER BY priority ASC') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
-	$filterdb_statement_handle->execute();
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+		$filterdb_statement_handle	= $filterdb_database_handle->prepare('SELECT id FROM kiriwrite_filters ORDER BY priority ASC LIMIT ' . $start_from . ',' . $limit) or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle->execute();
+
+	} else {
+
+		$filterdb_statement_handle	= $filterdb_database_handle->prepare('SELECT id FROM kiriwrite_filters ORDER BY priority ASC') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle->execute();
+
+	}
+
+	# Get the list of filters available.
 
 	while (@filter_data = $filterdb_statement_handle->fetchrow_array()){
 
@@ -1937,6 +2031,8 @@ sub getfilterinfo{
 # options	Specifies the following options in any order.			#
 #										#
 # FilterID	Specifies the filter ID number to get information from.		#
+# Reduced	Specifies if the reduced version of the filter information	#
+#		should be retrieved.						#
 #################################################################################
 
 	$error = "";
@@ -1954,9 +2050,19 @@ sub getfilterinfo{
 	# Get the values that are in the hash.
 
 	my $filter_id		= $passedoptions->{"FilterID"};
+	my $reduced		= $passedoptions->{"Reduced"};
+	
+	if ($reduced && $reduced eq 1){
 
-	$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
-	$filterdb_statement_handle->execute();
+		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle->execute();
+
+	} else {
+
+		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle->execute();
+
+	}
 
 	# Get the filter information.
 
@@ -2417,20 +2523,69 @@ sub disconnecttemplate{
 
 }
 
+sub gettemplatecount{
+#################################################################################
+# gettemplatecount: Gets the count of templates in the template database.	#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->gettemplatecount();						#
+#################################################################################
+
+ 	$error = "";
+ 	$errorext = "";
+ 
+ 	my $class	= shift;
+ 
+ 	$template_statement_handle	= $template_database_handle->prepare('SELECT COUNT(*) FROM kiriwrite_templates') or ( $error = "FilterDatabaseError", $errorext = $template_database_handle->errstr, return);
+ 	$template_statement_handle->execute();
+ 
+ 	my $count = $template_statement_handle->fetchrow_array();
+ 
+ 	return $count;
+
+}
+
 sub gettemplatelist{
 #################################################################################
 # gettemplatelist: Gets the list of templates.					#
 #										#
 # Usage:									#
 #										#
-# $dbmodule->gettemplatelist();							#
+# $dbmodule->gettemplatelist(options);						#
+#										#
+# options	Specifies the following options as a hash (in any order).	#
+# 										#
+# StartFrom	Specifies where the list of templates will start from.		#
+# Limit		Specifies how many templates should be retrieved.		#
 #################################################################################
 
 	$error = "";
 	$errorext = "";
 
-	$template_statement_handle = $template_database_handle->prepare('SELECT filename FROM kiriwrite_templates ORDER BY filename ASC') or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
-	$template_statement_handle->execute();
+	my $class		= shift;
+	my ($passedoptions)	= @_;
+
+	my $start_from		= $passedoptions->{"StartFrom"};
+	my $limit		= $passedoptions->{"Limit"};
+
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+		$template_statement_handle = $template_database_handle->prepare('SELECT filename FROM kiriwrite_templates ORDER BY filename ASC LIMIT ' . $start_from . ',' .  $limit ) or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
+		$template_statement_handle->execute();		
+
+	} else {
+
+		$template_statement_handle = $template_database_handle->prepare('SELECT filename FROM kiriwrite_templates ORDER BY filename ASC') or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
+		$template_statement_handle->execute();
+
+	}
 
 	my @database_template;
 	my @templates_list;
@@ -2463,6 +2618,8 @@ sub gettemplateinfo{
 # options	Specifies the following options in any order.			#
 #										#
 # TemplateFilename	Specifies the template filename to use.			#
+# Reduced		Specifies a reduced version of template information to	#
+#			get.							#
 #################################################################################
 
 	$error = "";
@@ -2485,9 +2642,19 @@ sub gettemplateinfo{
 	my $template_found = 0;
 
 	my $filename	= $passedoptions->{"TemplateFilename"};
+	my $reduced	= $passedoptions->{"Reduced"};
 
-	$template_statement_handle = $template_database_handle->prepare('SELECT filename, templatename, templatedescription, templatelayout, datemodified FROM kiriwrite_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
-	$template_statement_handle->execute();
+	if ($reduced && $reduced eq 1){
+
+		$template_statement_handle = $template_database_handle->prepare('SELECT filename, templatename, templatedescription, datemodified FROM kiriwrite_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
+		$template_statement_handle->execute();
+
+	} else {
+
+		$template_statement_handle = $template_database_handle->prepare('SELECT filename, templatename, templatedescription, templatelayout, datemodified FROM kiriwrite_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $template_database_handle->errstr, return );
+		$template_statement_handle->execute();
+
+	}
 
 	while (@template_data = $template_statement_handle->fetchrow_array()){
 

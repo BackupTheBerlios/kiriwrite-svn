@@ -38,6 +38,9 @@ my $default_dbdirectory		= "db";
 my $default_outputdirectory	= "output";
 my $default_imagesuri		= "/images/kiriwrite";
 
+my $default_textarearows	= "10";
+my $default_textareacols	= "50";
+
 my $default_server		= "localhost";
 my $default_port		= "3306";
 my $default_protocol		= "tcp";
@@ -78,6 +81,14 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"outputdirectoryblank"}	= "The output directory name given is blank.";
 	$kiriwrite_lang{"en-GB"}{"outputdirectoryinvalid"}	= "The output directory name given is invalid.";
 
+	$kiriwrite_lang{"en-GB"}{"textarearowblank"}		= "The text area row value given is blank.";
+	$kiriwrite_lang{"en-GB"}{"textarearowtoolong"}		= "The text area row value given is too long.";
+	$kiriwrite_lang{"en-GB"}{"textarearowinvalid"}		= "The text area row value given is invalid.";
+
+	$kiriwrite_lang{"en-GB"}{"textareacolsblank"}		= "The text area columns value given is blank.";
+	$kiriwrite_lang{"en-GB"}{"textareacolstoolong"}		= "The text area columns value given is too long.";
+	$kiriwrite_lang{"en-GB"}{"textareacolsinvalid"}		= "The text area columns value given is invalid.";
+
 	$kiriwrite_lang{"en-GB"}{"presmoduleblank"}		= "The presentation module name given is blank.";
 	$kiriwrite_lang{"en-GB"}{"presmoduleinvalid"}		= "The presentation module name given is invalid.";
  
@@ -86,7 +97,7 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
  
 	$kiriwrite_lang{"en-GB"}{"presmodulemissing"}		= "The presentation module with the filename given is missing.";
 	$kiriwrite_lang{"en-GB"}{"dbmodulemissing"}		= "The database module with the filename given is missing.";
-	$kiriwrite_lang{"en-GB"}{"languagefilemissing"}		= "The language file with the filename given is missing.";
+	$kiriwrite_lang{"en-GB"}{"languagefilenamemissing"}	= "The language file with the filename given is missing.";
  
 	$kiriwrite_lang{"en-GB"}{"servernametoolong"}		= "The database server name given is too long.";
 	$kiriwrite_lang{"en-GB"}{"servernameinvalid"}		= "The database server name given is invalid.";
@@ -136,7 +147,7 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"dependencytitle"}	= "Dependency and file testing results";
 	$kiriwrite_lang{"en-GB"}{"requiredmodules"}	= "Required Modules";
 	$kiriwrite_lang{"en-GB"}{"perlmodules"}		= "These Perl modules are used internally by Kiriwrite.";
-	$kiriwrite_lang{"en-GB"}{"databasemodules"}	= "Database Modules";
+	$kiriwrite_lang{"en-GB"}{"databasemodules"}	= "Perl Database Modules";
 	$kiriwrite_lang{"en-GB"}{"databasemodulestext"}	= "These Perl modules are used by the database modules.";
 	$kiriwrite_lang{"en-GB"}{"filepermissions"}	= "File permissions";
 	$kiriwrite_lang{"en-GB"}{"filepermissionstext"}	= "The file permissions are for file and directories that are critical to Kiriwrite such as module and language directories.";
@@ -147,6 +158,9 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"databasedirectory"}	= "Database Directory";
 	$kiriwrite_lang{"en-GB"}{"outputdirectory"}	= "Output Directory";
 	$kiriwrite_lang{"en-GB"}{"imagesuripath"}	= "Images (URI path)";
+	$kiriwrite_lang{"en-GB"}{"display"}		= "Display";
+	$kiriwrite_lang{"en-GB"}{"textareacols"}	= "Text Area Columns";
+	$kiriwrite_lang{"en-GB"}{"textarearows"}	= "Text Area Rows";
 	$kiriwrite_lang{"en-GB"}{"date"}		= "Date";
 	$kiriwrite_lang{"en-GB"}{"dateformat"}		= "Date Format";
 	$kiriwrite_lang{"en-GB"}{"language"}		= "Language";
@@ -899,6 +913,14 @@ sub kiriwrite_error{
 		"dbdirectoryblank"		=> $kiriwrite_lang{$language_selected}{dbdirectoryblank},
 		"dbdirectoryinvalid"		=> $kiriwrite_lang{$language_selected}{dbdirectoryinvalid},
 
+		"textarearowblank"		=> $kiriwrite_lang{$language_selected}{textarearowblank},
+		"textarearowtoolong"		=> $kiriwrite_lang{$language_selected}{textarearowtoolong},
+		"textarearowinvalid"		=> $kiriwrite_lang{$language_selected}{textarearowinvalid},
+
+		"textareacolsblank"		=> $kiriwrite_lang{$language_selected}{textareacolsblank},
+		"textareacolstoolong"		=> $kiriwrite_lang{$language_selected}{textareacolstoolong},
+		"textareacolsinvalid"		=> $kiriwrite_lang{$language_selected}{textareacolsinvalid},
+
 		"outputdirectoryblank"		=> $kiriwrite_lang{$language_selected}{outputdirectoryblank},
 		"outputdirectoryinvalid"	=> $kiriwrite_lang{$language_selected}{outputdirectoryinvalid},
 
@@ -910,7 +932,7 @@ sub kiriwrite_error{
 
 		"presmodulemissing"		=> $kiriwrite_lang{$language_selected}{presmodulemissing},
 		"dbmodulemissing"		=> $kiriwrite_lang{$language_selected}{dbmodulemissing},
-		"languagefilemissing"		=> $kiriwrite_lang{$language_selected}{languagefilemissing},
+		"languagefilenamemissing"	=> $kiriwrite_lang{$language_selected}{languagefilenamemissing},
 
 		"servernametoolong"		=> $kiriwrite_lang{$language_selected}{servernametoolong},
 		"servernameinvalid"		=> $kiriwrite_lang{$language_selected}{servernameinvalid},
@@ -970,37 +992,28 @@ sub kiriwrite_writeconfig{
 
 	# Open the configuration file for writing.
 
-	open (my $configfile, "> " . "kiriwrite.xml");
+	open (my $configfile, "> " . "kiriwrite.cfg");
 
-	print $configfile "<?xml version=\"1.0\"?>
-
-<kiriwrite-config>
-<!-- This file was automatically generated by Kiriwrite, please feel free to edit to your own needs. -->
-	<settings>
-		<directories>
-			<database>" . $passedsettings->{DatabaseDirectory} . "</database>
-			<output>" . $passedsettings->{OutputDirectory} . "</output>
-			<images>" . $passedsettings->{ImagesURIPath} . "</images>
-		</directories>
-		<language>
-			<lang>" . $passedsettings->{Language} . "</lang>
-		</language>
-		<system>
-			<presentation>" . $passedsettings->{PresentationModule} . "</presentation>
-			<database>" . $passedsettings->{DatabaseModule} . "</database>
-			<datetime>" . $passedsettings->{DateFormat} . "</datetime>
-		</system>
-		<database>
-			<server>" . $passedsettings->{DatabaseServer} . "</server>
-			<port>" . $passedsettings->{DatabasePort} . "</port>
-			<protocol>" . $passedsettings->{DatabaseProtocol} . "</protocol>
-			<database>" . $passedsettings->{DatabaseName} . "</database>
-			<username>" . $passedsettings->{DatabaseUsername} . "</username>
-			<password>" . $passedsettings->{DatabasePassword} . "</password>
-			<prefix>" . $passedsettings->{DatabaseTablePrefix} . "</prefix>
-		</database>
-	</settings>
-</kiriwrite-config>
+	print $configfile "[config]
+		directory_data_db = $passedsettings->{DatabaseDirectory}
+		directory_data_output = $passedsettings->{OutputDirectory}
+		directory_noncgi_images = $passedsettings->{ImagesURIPath}
+		
+		system_language = $passedsettings->{Language}
+		system_presmodule = $passedsettings->{PresentationModule}
+		system_dbmodule = $passedsettings->{DatabaseModule}
+		system_datetime = $passedsettings->{DateFormat}
+		
+		display_textareacols = $passedsettings->{TextAreaCols}
+		display_textarearows = $passedsettings->{TextAreaRows}
+		
+		database_server = $passedsettings->{DatabaseServer}
+		database_port = $passedsettings->{DatabasePort}
+		database_protocol = $passedsettings->{DatabaseProtocol}
+		database_sqldatabase = $passedsettings->{DatabaseName}
+		database_username = $passedsettings->{DatabaseUsername}
+		database_password = $passedsettings->{DatabasePassword}
+		database_tableprefix = $passedsettings->{DatabaseTablePrefix}
 	";
 
 	close ($configfile);
@@ -1025,6 +1038,9 @@ if ($http_query_confirm eq 1){
 	my $http_query_outputdirectory		= $query->param('outputdirectory');
 	my $http_query_imagesuripath		= $query->param('imagesuripath');
 
+	my $http_query_textarearows		= $query->param('textarearows');
+	my $http_query_textareacols		= $query->param('textareacols');
+
 	my $http_query_dateformat		= $query->param('dateformat');
 	my $http_query_customdateformat		= $query->param('customdateformat');
 
@@ -1042,11 +1058,33 @@ if ($http_query_confirm eq 1){
  	my $http_query_databasetableprefix	= $query->param('databasetableprefix');
  	my $http_query_removeinstallscript	= $query->param('removeinstallscript');
 
+	# Check if the text area rows and column values are blank.
+
+	if (!$http_query_textarearows){
+
+		# The text area rows value is blank so return
+		# an error.
+
+		kiriwrite_error("textarearowblank");
+
+	}
+
+	if (!$http_query_textareacols){
+
+		# The text area columns value is blank so
+		# return an error.
+
+		kiriwrite_error("textareacolsblank");
+
+	}
+
 	# Check the length of the variables.
 
 	my $kiriwrite_dbdirectory_length_check 		= kiriwrite_variablecheck($http_query_dbdirectory, "maxlength", 64, 1);
 	my $kiriwrite_outputdirectory_length_check	= kiriwrite_variablecheck($http_query_outputdirectory, "maxlength", 64, 1);
 	my $kiriwrite_imagesuripath_length_check 	= kiriwrite_variablecheck($http_query_imagesuripath, "maxlength", 512, 1);
+	my $kiriwrite_textarearow_length_check		= kiriwrite_variablecheck($http_query_textarearows, "maxlength", 3, 1);
+	my $kiriwrite_textareacols_length_check		= kiriwrite_variablecheck($http_query_textareacols, "maxlength", 3, 1);
 	my $kiriwrite_dateformat_length_check 		= kiriwrite_variablecheck($http_query_dateformat, "maxlength", 32, 1);
 	my $kiriwrite_customdateformat_length_check	= kiriwrite_variablecheck($http_query_customdateformat, "maxlength", 32, 1);
 	my $kiriwrite_language_length_check		= kiriwrite_variablecheck($http_query_language, "maxlength", 16, 1);
@@ -1105,6 +1143,24 @@ if ($http_query_confirm eq 1){
 		# so return an error.
 
 		kiriwrite_error("languagefilenametoolong");
+
+	}
+
+	if ($kiriwrite_textarearow_length_check eq 1){
+
+		# The text area rows length is too long
+		# so return an error.
+
+		kiriwrite_error("textarearowtoolong");
+
+	}
+
+	if ($kiriwrite_textareacols_length_check eq 1){
+
+		# The text area columns length is too long
+		# so return an error.
+
+		kiriwrite_error("textareacolstoolong");
 
 	}
 
@@ -1231,6 +1287,30 @@ if ($http_query_confirm eq 1){
 
 	}
 
+	# Check to see if the text area rows and column values
+	# are valid.
+
+	my $kiriwrite_textarearow_number_check		= kiriwrite_variablecheck($http_query_textarearows, "numbers", 0, 1);
+	my $kiriwrite_textareacols_number_check		= kiriwrite_variablecheck($http_query_textareacols, "numbers", 0, 1);
+
+	if ($kiriwrite_textarearow_number_check eq 1){
+
+		# The text area row value is invalid so return
+		# an error.
+
+		kiriwrite_error("textarearowinvalid");
+
+	}
+
+	if ($kiriwrite_textareacols_number_check eq 1){
+
+		# The text area columns value is invalid so return
+		# an error.
+
+		kiriwrite_error("textareacolsinvalid");
+
+	}
+
 	# Check the module names to see if they're valid.
 
 	my $kiriwrite_presmodule_modulename_check 	= kiriwrite_variablecheck($http_query_presmodule, "module", 0, 1);
@@ -1293,7 +1373,7 @@ if ($http_query_confirm eq 1){
 
 	}
 
-	if (!-e "lang/" . $http_query_language . ".xml"){
+	if (!-e "lang/" . $http_query_language . ".lang"){
 
 		# The language file is missing so return an
 		# error.
@@ -1471,11 +1551,11 @@ if ($http_query_confirm eq 1){
 
 	# Check if the configuration file already exists.
 
-	if (-e 'kiriwrite.xml'){
+	if (-e 'kiriwrite.cfg'){
 
 		# Check if the configuration file has read permissions.
 
-		if (!-r 'kiriwrite.xml'){
+		if (!-r 'kiriwrite.cfg'){
 
 			# The configuration file has invalid read permissions
 			# set so return an error.
@@ -1486,7 +1566,7 @@ if ($http_query_confirm eq 1){
 
 		# Check if the configuration file has write permissions.
 
-		if (!-w 'kiriwrite.xml'){
+		if (!-w 'kiriwrite.cfg'){
 
 			# The configuration file has invalid write permissions
 			# set so return an error.
@@ -1499,7 +1579,7 @@ if ($http_query_confirm eq 1){
 
 	# Write the new configuration file.
 
-	kiriwrite_writeconfig({ DatabaseDirectory => $http_query_dbdirectory, OutputDirectory => $http_query_outputdirectory, ImagesURIPath => $http_query_imagesuripath, DateFormat => $finaldateformat, Language => $http_query_language, PresentationModule => $http_query_presmodule, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_databaseserver, DatabasePort => $http_query_databaseport, DatabaseProtocol => $http_query_databaseprotocol, DatabaseName => $http_query_databasename, DatabaseUsername => $http_query_databaseusername, DatabasePassword => $http_query_databasepassword, DatabaseTablePrefix => $http_query_databasetableprefix });
+	kiriwrite_writeconfig({ DatabaseDirectory => $http_query_dbdirectory, OutputDirectory => $http_query_outputdirectory, ImagesURIPath => $http_query_imagesuripath, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, DateFormat => $finaldateformat, Language => $http_query_language, PresentationModule => $http_query_presmodule, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_databaseserver, DatabasePort => $http_query_databaseport, DatabaseProtocol => $http_query_databaseprotocol, DatabaseName => $http_query_databasename, DatabaseUsername => $http_query_databaseusername, DatabasePassword => $http_query_databasepassword, DatabaseTablePrefix => $http_query_databasetableprefix });
 
 	my $installscriptmessage	= "";
 
@@ -1521,10 +1601,6 @@ if ($http_query_confirm eq 1){
 
 			$installscriptmessage = $kiriwrite_lang{$language_selected}{cannotremovescript};
 			$installscriptmessage =~ s/%s/$!/g;
-
-			# FINISH THIS! >O
-
-			#"Unable to remove the installer script: " . $! . " The installer script will have to be deleted manually.";
 
 		}
 
@@ -1591,21 +1667,21 @@ my $presentation_file_friendly;
 
 # Check to see if the needed Perl modules are installed.
 
+$test_list{CheckConfigAuto}{Name}	= "Config::Auto";
+$test_list{CheckConfigAuto}{Type}	= "dependency";
+$test_list{CheckConfigAuto}{Code}	= "Config::Auto";
+
 $test_list{CheckDBI}{Name} 		= "DBI";
 $test_list{CheckDBI}{Type} 		= "dependency";
 $test_list{CheckDBI}{Code} 		= "DBI";
 
-$test_list{CheckXMLSimple}{Name} 	= "XML::Simple";
-$test_list{CheckXMLSimple}{Type}	= "dependency";
-$test_list{CheckXMLSimple}{Code}	= "XML::Simple";
-
-$test_list{CheckXMLParser}{Name} 	= "XML::Parser";
-$test_list{CheckXMLParser}{Type}	= "dependency";
-$test_list{CheckXMLParser}{Code}	= "XML::Parser";
-
 $test_list{CheckTieHash}{Name}		= "Tie::IxHash";
 $test_list{CheckTieHash}{Type} 		= "dependency";
 $test_list{CheckTieHash}{Code} 		= "Tie::IxHash";
+
+$test_list{CheckCGILite}{Name}		= "CGI::Lite";
+$test_list{CheckCGILite}{Type}		= "dependency";
+$test_list{CheckCGILite}{Code}		= "CGI::Lite";
 
 $test_list{Encode}{Name}		= "Encode";
 $test_list{Encode}{Type}		= "dependency";
@@ -1630,6 +1706,11 @@ $test_list{LanguageDirectory}{Name}		= "Language Directory (lang)";
 $test_list{LanguageDirectory}{Type}		= "file";
 $test_list{LanguageDirectory}{Code}		= "lang";
 $test_list{LanguageDirectory}{Writeable}	= "0";
+
+$test_list{LibraryDirectory}{Name}		= "Library Directory (lib)";
+$test_list{LibraryDirectory}{Type}		= "file";
+$test_list{LibraryDirectory}{Code}		= "lib";
+$test_list{LibraryDirectory}{Writeable}		= "0";
 
 $test_list{ModulesDirectory}{Name}		= "Modules Directory (Modules)";
 $test_list{ModulesDirectory}{Type}		= "file";
@@ -1950,23 +2031,26 @@ my $database_modules_ref = \@database_modules;
 tie(%available_languages, 'Tie::IxHash');
 
 opendir(LANGUAGEDIR, "lang");
-my @language_directory = grep /m*\.xml$/, readdir(LANGUAGEDIR);
+my @language_directory = grep /m*\.lang$/, readdir(LANGUAGEDIR);
 closedir(LANGUAGEDIR);
 
-my $xsl = XML::Simple->new();
+my $language_data;
 
 foreach my $language_file (@language_directory){
 
-	# Load the XML data.
+	# Load the language file.
 
-	$language_xml_data = $xsl->XMLin("lang/" . $language_file);
+	$language_data = Config::Auto::parse("lang/" . $language_file, format => "ini");
+
+	# Load the XML data.
+	#$language_xml_data = $xsl->XMLin("lang/" . $language_file);
 
 	# Get the friendly name for the language file.
 
 	$language_file_friendly = $language_file;
-	$language_file_friendly =~ s/.xml$//g;
+	$language_file_friendly =~ s/.lang$//g;
 
-	$language_name = $language_xml_data->{about}->{name};
+	$language_name = $language_data->{about}->{name};
 
 	$available_languages{$language_file_friendly} = $language_name . " (" . $language_file_friendly . ")";
 
@@ -2057,6 +2141,32 @@ print $kiriwrite_lang{$language_selected}{imagesuripath};
 print end_td();
 print start_td({ -class => "tabledata" });
 print textfield({ -name => "imagesuripath", -size => 32, -maxlength => 64, -value => $default_imagesuri });
+print end_td();
+print end_Tr();
+
+print start_Tr();
+print start_td({ -class => "tablecellheader" });
+print $kiriwrite_lang{$language_selected}{display};
+print end_td();
+print start_td({ -class => "tablecellheader" });
+print end_td();
+print end_Tr();
+
+print start_Tr();
+print start_td({ -class => "tablename" });
+print $kiriwrite_lang{$language_selected}{textarearows};
+print end_td();
+print start_td({ -class => "tabledata" });
+print textfield({ -name => "textarearows", -size => 3, -maxlength => 3, -value => $default_textarearows });
+print end_td();
+print end_Tr();
+
+print start_Tr();
+print start_td({ -class => "tablename" });
+print $kiriwrite_lang{$language_selected}{textareacols};
+print end_td();
+print start_td({ -class => "tabledata" });
+print textfield({ -name => "textareacols", -size => 3, -maxlength => 3, -value => $default_textareacols });
 print end_td();
 print end_Tr();
 

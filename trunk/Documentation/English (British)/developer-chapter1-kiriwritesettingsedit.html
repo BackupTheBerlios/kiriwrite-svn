@@ -32,7 +32,7 @@ kiriwrite_settings_edit will return data that is intended for kiriwrite_output_p
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => “db”, OutputDirectory => “output”, ImagesURIPath => “/images/kiriwrite”, DateTimeFormat => “DD/MM/YY (hh:mm:ss)”, SystemLanguage => “en-GB”, PresentationModule => “HTML4S”, DatabaseModule => “SQLite”, DatabaseServer => “localhost”, DatabasePort => “3306”, DatabaseProtocol => “tcp”, DatabaseSQLDatabase => “database”, DatabaseUsername => “username”, DatabasePasswordKeep => 0, DatabasePassword => “password”, DatabaseTablePrefix = “kiridev” });
+    $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => “db”, OutputDirectory => “output”, ImagesURIPath => “/images/kiriwrite”, DateTimeFormat => “DD/MM/YY (hh:mm:ss)”, SystemLanguage => “en-GB”, PresentationModule => “HTML4S”, TextAreaCols => 50, TextAreaRows => 10, DatabaseModule => “SQLite”, DatabaseServer => “localhost”, DatabasePort => “3306”, DatabaseProtocol => “tcp”, DatabaseSQLDatabase => “database”, DatabaseUsername => “username”, DatabasePasswordKeep => 0, DatabasePassword => “password”, DatabaseTablePrefix = “kiridev” });
 </div>
 
 <br>
@@ -68,6 +68,14 @@ Specifies a hash listing the new settings. This is required when editing the set
     <tr>
         <td class="tabledata">PresentationModule</td>
         <td class="tabledata">Specifies the presentation module in Kiriwrite to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TextAreaCols</td>
+        <td class="tabledata">Specifies the width of the text area.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TextAreaRows</td>
+        <td class="tabledata">Specifies the height of the text area.</td>
     </tr>
     <tr>
         <td class="tabledata">DatabaseModule</td>

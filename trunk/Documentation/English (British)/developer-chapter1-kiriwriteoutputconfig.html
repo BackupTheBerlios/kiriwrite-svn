@@ -3,7 +3,7 @@
 	<head>
 		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-		<title>Kiriwrite Documentation - Developer Documentation - 1.40: kiriwrite_output_xml</title>
+		<title>Kiriwrite Documentation - Developer Documentation - 1.40: kiriwrite_output_config</title>
 	</head>
 	<body>
 		<div class="menubarback">
@@ -15,14 +15,14 @@ Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> |
 			</div>
 		</div>
 		<div class="pageinformation">
-			<span class="pagetitle">1.40 kiriwrite_output_xml</span><br><br>
+			<span class="pagetitle">1.40 kiriwrite_output_config</span><br><br>
 
-kiriwrite_output_xml outputs a file in the XML format and is mainly used for writing a configuration file. All parameters in the subroutine are required.<br><br>
+kiriwrite_output_config outputs a configuration file and is mainly used for writing an updated configuration file. All parameters in the subroutine are required.<br><br>
 
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    kiriwrite_output_xml(filename, type, options);
+    kiriwrite_output_config(options);
 </div>
 
 <br>
@@ -30,7 +30,7 @@ kiriwrite_output_xml outputs a file in the XML format and is mainly used for wri
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    kiriwrite_output_xml("kiriwrite.xml", "config", { DatabaseDirectory => “db”, OutputDirectory => “output”, ImagesURIPath => “/images/kiriwrite”, DateTimeFormat => “DD/MM/YY (hh:mm:ss)”, SystemLanguage => “en-GB”, PresentationModule => “HTML4S”, DatabaseModule => “SQLite”, DatabaseServer => “localhost”, DatabasePort => “3306”, DatabaseProtocol => “tcp”, DatabaseSQLDatabase => “database”, DatabaseUsername => “username”, DatabasePassword => “password”, DatabaseTablePrefix => “tableprefix” });
+    kiriwrite_output_config({ DatabaseDirectory => “db”, OutputDirectory => “output”, ImagesURIPath => “/images/kiriwrite”, DateTimeFormat => “DD/MM/YY (hh:mm:ss)”, SystemLanguage => “en-GB”, PresentationModule => “HTML4S”, TextAreaCols => 50, TextAreaRows => 10, DatabaseModule => “SQLite”, DatabaseServer => “localhost”, DatabasePort => “3306”, DatabaseProtocol => “tcp”, DatabaseSQLDatabase => “database”, DatabaseUsername => “username”, DatabasePassword => “password”, DatabaseTablePrefix => “tableprefix” });
 </div>
 
 <br>
@@ -72,6 +72,14 @@ Specifies the options to use as a hash.<br><br>
     <tr>
         <td class="tabledata">PresentationModule</td>
         <td class="tabledata">Specifies the presentation module in Kiriwrite to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TextAreaCols</td>
+        <td class="tabledata">Specifies the width of the text area.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TextAreaRows</td>
+        <td class="tabledata">Specifies the height of the text area.</td>
     </tr>
     <tr>
         <td class="tabledata">DatabaseModule</td>

@@ -24,6 +24,7 @@ Before Kiriwrite can be used, the files need to be copied to the correct place. 
 &nbsp;&nbsp;<b>Presentation</b> – Presentation modules are stored here.<br>
 &nbsp;<b>db</b> – Default database directory (for file based Database modules).<br>
 &nbsp;<b>lang</b> – The directory for language files in Kiriwrite.<br>
+&nbsp;<b>lib</b> - Library files that are used by Kiriwrite.<br>
 &nbsp;<b>output</b> – The output directory when pages are compiled.<br>
 <b>misc</b> – Miscellaneous files (mainly for developers).<br>
 <b>non-cgi-files</b> – Non CGI files that need to be placed outside of the cgi-bin folder.<br><br>
@@ -99,7 +100,19 @@ The following permissions should be set for the files that have been copied to t
         <td class="tabledata"><i>None</i></td>
     </tr>
     <tr>
-        <td class="tabledata">lang/*.xml</td>
+        <td class="tabledata">lang/*.lang</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>lib</b></td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">lib\*.lib</td>
         <td class="tabledata">R</td>
         <td class="tabledata">R</td>
         <td class="tabledata"><i>None</i></td>

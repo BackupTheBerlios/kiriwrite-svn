@@ -24,7 +24,7 @@ kiriwrite_page_list will return page data which is intended for kiriwrite_output
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    kiriwrite_page_list(database);
+    kiriwrite_page_list(<i>database</i>, <i>browsenumber</i>);
 </div>
 
 <br>
@@ -32,13 +32,15 @@ kiriwrite_page_list will return page data which is intended for kiriwrite_output
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $pagedata = kiriwrite_page_list(“database”);
+    $pagedata = kiriwrite_page_list(“database”, 1);
 </div>
 
 <br>
 
-database<br>
-Specifies the database to get the list of pages from.
+<i>database</i><br>
+Specifies the database to get the list of pages from.<br><br>
+<i>browsenumber</i><br>
+Specifies the number of which list of pages to view.
 		</div>
 	</body>
 </html>

@@ -1098,16 +1098,40 @@ sub gettemplatelist{
 #										#
 # Usage:									#
 #										#
-# $dbmodule->gettemplatelist();							#
+# $dbmodule->gettemplatelist(options);						#
+#										#
+# options	Specifies the following options as a hash (in any order).	#
+# 										#
+# StartFrom	Specifies where the list of templates will start from.		#
+# Limit		Specifies how many templates should be retrieved.		#
 #################################################################################
 
-	my $error = "";
-	my $errorext = "";
+	$error = "";
+	$errorext = "";
 
-	my $class = shift;
+	my $class		= shift;
+	my ($passedoptions)	= @_;
 
-	$statement_handle = $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_templates ORDER BY filename ASC') or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
-	$statement_handle->execute();
+	my $start_from		= $passedoptions->{"StartFrom"};
+	my $limit		= $passedoptions->{"Limit"};
+
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+		$statement_handle = $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_templates ORDER BY filename ASC LIMIT ' . $start_from . ',' .  $limit ) or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();		
+
+	} else {
+
+		$statement_handle = $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_templates ORDER BY filename ASC') or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	}
 
 	my @database_template;
 	my @templates_list;
@@ -1117,7 +1141,7 @@ sub gettemplatelist{
 
 		# Get certain values from the array.
 
-		$template_filename 	= decode_utf8($database_template[0]);
+		$template_filename 	= $database_template[0];
 
 		# Add the template to the list of templates.
 
@@ -1140,6 +1164,8 @@ sub gettemplateinfo{
 # options	Specifies the following options in any order.			#
 #										#
 # TemplateFilename	Specifies the template filename to use.			#
+# Reduced		Specifies if the reduced version of the template	#
+#			information should be retrieved.			#
 #################################################################################
 
 	$error = "";
@@ -1162,9 +1188,19 @@ sub gettemplateinfo{
 	my $template_found = 0;
 
 	my $filename	= $passedoptions->{"TemplateFilename"};
+	my $reduced	= $passedoptions->{"Reduced"};
 
-	$statement_handle = $database_handle->prepare('SELECT filename, templatename, templatedescription, templatelayout, datemodified FROM ' . $class->convert($options{"TablePrefix"}) . '_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
-	$statement_handle->execute();
+	if ($reduced && $reduced eq 1){
+
+		$statement_handle = $database_handle->prepare('SELECT filename, templatename, templatedescription, datemodified FROM ' . $class->convert($options{"TablePrefix"}) . '_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	} else {
+
+		$statement_handle = $database_handle->prepare('SELECT filename, templatename, templatedescription, templatelayout, datemodified FROM ' . $class->convert($options{"TablePrefix"}) . '_templates WHERE filename = \'' . $class->convert($filename) . '\'') or ( $error = "TemplateDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	}
 
 	while (@template_data = $statement_handle->fetchrow_array()){
 
@@ -1200,10 +1236,32 @@ sub gettemplateinfo{
 
 	}
 
-	return %page_info;	
+	return %page_info;
 
 }
 
+sub gettemplatecount{
+#################################################################################
+# gettemplatecount: Gets the count of templates in the template database.	#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->gettemplatecount();						#
+#################################################################################
+
+ 	$error = "";
+ 	$errorext = "";
+ 
+ 	my $class	= shift;
+ 
+ 	$statement_handle	= $database_handle->prepare('SELECT COUNT(*) FROM ' . $class->convert($options{"TablePrefix"}) . '_templates') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return);
+ 	$statement_handle->execute();
+ 
+ 	my $count = $statement_handle->fetchrow_array();
+ 
+ 	return $count;
+
+}
 
 sub addtemplate{
 #################################################################################
@@ -1453,22 +1511,69 @@ sub deletetemplate{
 # Page subroutines.								#
 #################################################################################
 
-sub getpagelist{
+sub getpagecount{
 #################################################################################
-# getpagelist: Gets the list of pages from the database.			#
+# getpagecount: Get the count of pages that are in the database.		#
 #										#
 # Usage:									#
 #										#
-# $dbmodule->getpagelist();							#
+# $dbmodule->getpagecount();							#
 #################################################################################
 
 	$error = "";
 	$errorext = "";
 
 	my $class	= shift;
-	
-	$statement_handle	= $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_' . $class->convert($database_filename) . '_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
+
+	$statement_handle	= $database_handle->prepare('SELECT COUNT(*) FROM ' . $class->convert($options{"TablePrefix"}) . '_' . $class->convert($database_filename) . '_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return);
 	$statement_handle->execute();
+
+	my $count = $statement_handle->fetchrow_array();
+
+	return $count;
+
+}
+
+sub getpagelist{
+#################################################################################
+# getpagelist: Gets the list of pages from the database.			#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->getpagelist(options);						#
+#										#
+# options	Specifies the following options as a hash (in any order).	#
+#										#
+# StartFrom	Start from the specified page in the database.			#
+# Limit		Get the amount of pages given.					#
+#################################################################################
+
+	$error = "";
+	$errorext = "";
+
+	my $class	= shift;
+	my ($passedoptions)	= shift;
+
+	my $start_from	= $passedoptions->{"StartFrom"};
+	my $limit	= $passedoptions->{"Limit"};
+	
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+		$statement_handle	= $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_' . $class->convert($database_filename) . '_database_pages LIMIT ' . $start_from . ',' . $limit) or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	} else {
+
+		$statement_handle	= $database_handle->prepare('SELECT filename FROM ' . $class->convert($options{"TablePrefix"}) . '_' . $class->convert($database_filename) . '_database_pages') or ( $error = "DatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	}
 
 	my @database_pagefilenames;
 	my @database_pagefilenames_final;
@@ -2178,21 +2283,43 @@ sub getfilterlist{
 #										#
 # Usage:									#
 #										#
-# $dbmodule->getfilterlist();							#
+# $dbmodule->getfilterlist(options);						#
+#										#
+# options	Specifies the following options as a hash (in any order).	#
+#										#
+# StartFrom	Specifies where the list of filters should start from.		#
+# Limit		Specifies the amount of the filters to get.			#
 #################################################################################
 
 	$error = "";
 	$errorext = "";
 
 	my $class = shift;
+	my ($passedoptions)	= shift;
 
 	my @filter_list;
 	my @filter_data;
 
-	# Get the list of filters available.
+	my $start_from	= $passedoptions->{"StartFrom"};
+	my $limit	= $passedoptions->{"Limit"};
 
-	$statement_handle	= $database_handle->prepare('SELECT id, priority FROM ' . $class->convert($options{"TablePrefix"}) . '_filters ORDER BY priority ASC') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
-	$statement_handle->execute();
+	if (defined($start_from)){
+
+		if (!$limit){
+			
+			$limit = 0;
+
+		}
+
+  		$statement_handle	= $database_handle->prepare('SELECT id, priority FROM ' . $class->convert($options{"TablePrefix"}) . '_filters ORDER BY priority ASC LIMIT ' . $start_from . ',' . $limit) or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+ 		$statement_handle->execute();
+
+	} else {
+ 
+  		$statement_handle	= $database_handle->prepare('SELECT id, priority FROM ' . $class->convert($options{"TablePrefix"}) . '_filters ORDER BY priority ASC') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+  		$statement_handle->execute();
+
+	}
 
 	while (@filter_data = $statement_handle->fetchrow_array()){
 
@@ -2203,6 +2330,29 @@ sub getfilterlist{
 	}
 
 	return @filter_list;
+
+}
+
+sub getfiltercount{
+#################################################################################
+# getfiltercount: Gets the count of filters in the filters database.		#
+#										#
+# Usage:									#
+#										#
+# $dbmodule->getfiltercount();							#
+#################################################################################
+
+	$error = "";
+	$errorext = "";
+
+	my $class	= shift;
+
+	$statement_handle	= $database_handle->prepare('SELECT COUNT(*) FROM ' . $class->convert($options{"TablePrefix"}) . '_filters') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return);
+	$statement_handle->execute();
+
+	my $count = $statement_handle->fetchrow_array();
+
+	return $count;
 
 }
 
@@ -2217,6 +2367,7 @@ sub getfilterinfo{
 # options	Specifies the following options in any order.			#
 #										#
 # FilterID	Specifies the filter ID number to get information from.		#
+# Reduced	Specifies to get the reduced version of the filter information.	#
 #################################################################################
 
 	$error = "";
@@ -2234,9 +2385,19 @@ sub getfilterinfo{
 	# Get the values that are in the hash.
 
 	my $filter_id		= $passedoptions->{"FilterID"};
+	my $reduced		= $passedoptions->{"Reduced"};
 
-	$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
-	$statement_handle->execute();
+	if ($reduced && $reduced eq 1){
+
+		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	} else {
+
+		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle->execute();
+
+	}
 
 	# Get the filter information.
 

@@ -22,7 +22,7 @@ Gets the list of available filters. Returns the list of filters as an array.<br>
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    $kiriwrite_dbmodule->getfilterlist();
+    $kiriwrite_dbmodule->getfilterlist(<i>options</i>);
 </div>
 
 <br>
@@ -31,8 +31,25 @@ Gets the list of available filters. Returns the list of filters as an array.<br>
 
 <div class="code">
     $kiriwrite_dbmodule->connectfilter();<br>
-    @filterlist = $kiriwrite_dbmodule->getfilterlist();
+    @filterlist = $kiriwrite_dbmodule->getfilterlist({ StartFrom => 0, Limit => 50 });
 </div>
+
+<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">StartFrom</td>
+        <td class="tabledata">Specifies which filter entry to start from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Limit</td>
+        <td class="tabledata">Specifies how many filters should be retrieved.</td>
+    </tr>
+</table>
 
 <br>
 

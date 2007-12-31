@@ -24,7 +24,7 @@ kiriwrite_compile_makepages will return data that is intended for kiriwrite_outp
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    kiriwrite_compile_makepages(type, confirm, selectedlist);
+    kiriwrite_compile_makepages(type, confirm, override, overridetemplate, selectedlist);
 </div>
 
 <br>
@@ -32,10 +32,10 @@ kiriwrite_compile_makepages will return data that is intended for kiriwrite_outp
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $pagedata = kiriwrite_compile_makepages(“single”, 0, ['database1']);<br>
-    $pagedata = kiriwrite_compile_makepages(“single”, 1, ['database1']);<br>
-    $pagedata = kiriwrite_compile_makepages(“multiple”, 0, ['database1','database2','database3','database4']);<br>
-    $pagedata = kiriwrite_compile_makepages(“multiple”, 1, ['database1','database2','database3','database4']);
+    $pagedata = kiriwrite_compile_makepages(“single”, 0, 0, "", ['database1']);<br>
+    $pagedata = kiriwrite_compile_makepages(“single”, 1, 0, "", ['database1']);<br>
+    $pagedata = kiriwrite_compile_makepages(“multiple”, 0, 1, "template.html", ['database1','database2','database3','database4']);<br>
+    $pagedata = kiriwrite_compile_makepages(“multiple”, 1, 0, "", ['database1','database2','database3','database4']);
 </div>
 
 <br>
@@ -62,6 +62,12 @@ Specifies the type meaning if a single or multiple databases should be compiled.
 
 confirm<br>
 Specifies if the action to compile the selected database should be confirmed by passing a '1'. This is required every time the subroutine is called.<br><br>
+
+override<br>
+Override the template being used with the overridetemplate value.<br><br>
+
+overridetemplate<br>
+Override the template using the filename given.<br><br>
 
 selectedlist<br>
 Specifies the list of databases to compile as an array. This is required every time the subroutine is called.

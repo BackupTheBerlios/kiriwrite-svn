@@ -22,7 +22,7 @@ Gets the list of templates. The information is returned as an array.<br><br>
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    $kiriwrite_dbmodule->gettemplatelist();
+    $kiriwrite_dbmodule->gettemplatelist(<i>options</i>);
 </div>
 
 <br>
@@ -30,8 +30,28 @@ Gets the list of templates. The information is returned as an array.<br><br>
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $kiriwrite_dbmodule->gettemplatelist();
+    $kiriwrite_dbmodule->gettemplatelist({ StartFrom => 0, Limit => 50 });
 </div>
+
+<br>
+
+<i>options</i><br>
+Specifies the following options as a hash (in any order).<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">StartFrom</td>
+        <td class="tabledata">Specifies which template entry to start from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Limit</td>
+        <td class="tabledata">Specifies how many templates should be retrieved.</td>
+    </tr>
+</table>
 
 <br>
 

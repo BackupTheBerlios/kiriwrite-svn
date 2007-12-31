@@ -31,7 +31,7 @@ Gets information about the filter. Returns the information about the filter as a
 
 <div class="code">
     $kiriwrite_dbmodule->connectfilter();
-    $kiriwrite_dbmodule->getfilterinfo({ FilterID => 1 });
+    $kiriwrite_dbmodule->getfilterinfo({ FilterID => 1, Reduced => 1 });
 </div>
 
 <br>
@@ -47,6 +47,10 @@ Specifies the following options as a hash in any order.<br><br>
     <tr>
         <td class="tabledata">FilterID</td>
         <td class="tabledata">Specifies the filter identification number to get the filter information from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Reduced</td>
+        <td class="tabledata">Gets a reduced version of the filter information (filter identification number, priority, filter find setting and filter replace setting).</td>
     </tr>
 </table>
 

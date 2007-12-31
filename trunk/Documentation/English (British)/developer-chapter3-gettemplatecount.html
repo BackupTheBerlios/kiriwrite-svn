@@ -3,7 +3,7 @@
 	<head>
 		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-		<title>Kiriwrite Documentation - Developer Documentation - 1.14: kiriwrite_template_list</title>
+		<title>Kiriwrite Documentation - Developer Documentation - 3.41: gettemplatecount</title>
 	</head>
 	<body>
 		<div class="menubarback">
@@ -15,16 +15,14 @@ Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> |
 			</div>
 		</div>
 		<div class="pageinformation">
-			<span class="pagetitle">1.14 kiriwrite_template_list</span><br><br>
+			<div class="pagetitle">3.41: gettemplatecount</div><br><br>
 
-kiriwrite_template_list lists the available templates.<br><br>
-
-kiriwrite_template_list will return data that is intended for kiriwrite_output_page.<br><br>
+Get the count of how many templates are in the template database.<br><br>
 
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    kiriwrite_template_list(<i>browsenumber</i>);
+    $kiriwrite_dbmodule->gettemplatecount();
 </div>
 
 <br>
@@ -32,13 +30,9 @@ kiriwrite_template_list will return data that is intended for kiriwrite_output_p
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $pagedata = kiriwrite_template_list(1);
+    $kiriwrite_dbmodule->connecttemplate();<br><br>
+    $template_count = $kiriwrite_dbmodule->gettemplatecount();
 </div>
-
-<br>
-
-<i>browsenumber</i><br>
-Specifies the number of which list of templates to view.
 		</div>
 	</body>
 </html>
