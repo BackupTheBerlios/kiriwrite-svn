@@ -34,9 +34,11 @@ if ($form_data->{'action'}){
 			my $http_query_findwords 	= $form_data->{'findword'};
 			my $http_query_replacewords 	= $form_data->{'replaceword'};
 			my $http_query_priority		= $form_data->{'priority'};
+			my $http_query_enabled		= $form_data->{'enabled'};
 			my $http_query_notes		= $form_data->{'notes'};
 		
-			my $pagedata = kiriwrite_filter_add($http_query_findwords, $http_query_replacewords, $http_query_priority, $http_query_notes, $http_query_confirm);
+			my $pagedata = kiriwrite_filter_add({ FindFilter => $http_query_findwords, ReplaceFilter => $http_query_replacewords, Priority => $http_query_priority, Enabled => $http_query_enabled, Notes => $http_query_notes, Confirm => $http_query_confirm });
+			#my $pagedata = kiriwrite_filter_add($http_query_findwords, $http_query_replacewords, $http_query_priority, $http_query_notes, $http_query_confirm);
 
 			kiriwrite_output_header;	# Output the header to browser/console/stdout.
 			kiriwrite_output_page($kiriwrite_lang->{filter}->{addfilter}, $pagedata, "filter"); # Output the page to browser/console/stdout.
@@ -68,8 +70,9 @@ if ($form_data->{'action'}){
 			my $http_query_replacewords 	= $form_data->{'filterreplace'};
 			my $http_query_priority		= $form_data->{'priority'};
 			my $http_query_notes		= $form_data->{'notes'};
+			my $http_query_enabled		= $form_data->{'enabled'};
 
-			my $pagedata = kiriwrite_filter_edit($http_query_number, $http_query_findwords, $http_query_replacewords, $http_query_priority, $http_query_notes, $http_query_confirm);
+			my $pagedata = kiriwrite_filter_edit({ FilterID => $http_query_number, NewFindFilter => $http_query_findwords, NewReplaceFilter => $http_query_replacewords, NewPriority => $http_query_priority, NewEnabled => $http_query_enabled, NewFilterNotes => $http_query_notes, Confirm => $http_query_confirm });
 
 			kiriwrite_output_header;	# Output the header to browser/console/stdout.
 			kiriwrite_output_page($kiriwrite_lang->{filter}->{editfilter}, $pagedata, "filter");	# Output the page to browser/console/stdout.
@@ -77,7 +80,7 @@ if ($form_data->{'action'}){
 
 		}
 
-		my $pagedata = kiriwrite_filter_edit($http_query_number);
+		my $pagedata = kiriwrite_filter_edit({ FilterID => $http_query_number });
 
 		kiriwrite_output_header;		# Output the header to browser/console/stdout.
 		kiriwrite_output_page($kiriwrite_lang->{filter}->{editfilter}, $pagedata, "filter");	# Output the page to browser/console/stdout.
@@ -212,7 +215,7 @@ sub kiriwrite_filter_list{
 	my $blankfindfilter = 0;
 	my $filterswarning = "";
 	my $filter;
-	my $filter_split = 50;
+	my $filter_split = $kiriwrite_config{"display_filtercount"};
 	my $filter_list = 0;
 	my $filter_count = 0;
 	my $filter_style = 0;
@@ -279,11 +282,11 @@ sub kiriwrite_filter_list{
 
 			if ($filter_total_count eq $filter_split){
 
-				$filter_list = substr(($filter_total_count / $filter_split), 0, 1);				
+				$filter_list = int(($filter_total_count / $filter_split));
 
 			} else {
 
-				$filter_list = substr(($filter_total_count / $filter_split), 0, 1) + 1;			
+				$filter_list = int(($filter_total_count / $filter_split) + 1);
 
 			}
 
@@ -345,6 +348,7 @@ sub kiriwrite_filter_list{
 			$filter_list{$filter_count}{Priority}	= $filter_info{"FilterPriority"};
 			$filter_list{$filter_count}{Find}	= $filter_info{"FilterFind"};
 			$filter_list{$filter_count}{Replace}	= $filter_info{"FilterReplace"};
+			$filter_list{$filter_count}{Enabled}	= $filter_info{"FilterEnabled"};
 			$filter_list{$filter_count}{Notes}	= $filter_info{"FilterNotes"};
 
 			$filter_count++;
@@ -495,6 +499,14 @@ sub kiriwrite_filter_list{
 
 			}
 
+			# Check if the filter is disabled.
+
+			if (!$filter_list{$filter}{Enabled}){
+
+				$filter_style_name = "tablecelldisabled";
+
+			}
+
 			$kiriwrite_presmodule->startrow();
 			$kiriwrite_presmodule->addcell($filter_style_name);
 			$kiriwrite_presmodule->addtext($filter_list{$filter}{Priority});
@@ -550,7 +562,13 @@ sub kiriwrite_filter_list{
 
 	}
 
-	if (!@database_filters && $filter_browsenumber > 1){
+	if (!$filter_total_count){
+
+		$filter_total_count = "";
+
+	}
+
+	if ($filter_browsenumber > 1 && !@database_filters){
 
 		# There were no values given for the page browse
 		# number given so write a message saying that
@@ -558,7 +576,7 @@ sub kiriwrite_filter_list{
 		# given.
 
 		$kiriwrite_presmodule->clear();
-		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{filter}->{viewfilters}, $db_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{filter}->{viewfilters}, { Style => "pageheader" });
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("errorbox");
@@ -573,7 +591,7 @@ sub kiriwrite_filter_list{
 		# There are no filters in the filter database.
 
 		$kiriwrite_presmodule->clear();
-		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{filter}->{viewfilters}, $db_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{filter}->{viewfilters}), { Style => "pageheader" });
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("errorbox");
@@ -600,19 +618,23 @@ sub kiriwrite_filter_add{
 #										#
 # Usage:									#
 #										#
-# kiriwrite_filter_add(filterfind, filterreplace, filterpriority, 		#
-#			filternotes, [confirm]);				#
+# kiriwrite_filter_add(options);						#
 #										#
-# filterfind		Specifies the new word(s) to find.			#
-# filterreplace		Specifies the new word(s) to replace.			#
-# filterpriority	Specifies the new priority to use.			#
-# filternotes		Specifies the new notes to use.				#
-# confirm		Confirms the action to add a filter.			#
+# options	Specifies the following options as a hash (in any order).	#
+#										#
+# FindFilter	Specifies the find filter setting.				#
+# ReplaceFilter	Specifies the replace filter setting.				#
+# Priority	Specifies the priority of the filter.				#
+# Enabled	Specifies if the filter should be enabled.			#
+# Notes		Specifies some notes about the filter.				#
+# Confirm	Specifies if the filter should be added.			#
 #################################################################################
 
 	# Get the values that have been passed to the subroutine.
 
-	my ($filter_new_find, $filter_new_replace, $filter_new_priority, $filter_new_notes, $confirm) = @_;
+	my ($options) = @_;
+
+	$confirm	= $options->{"Confirm"};
 
 	# Check the confirm value to make sure it is no more than
 	# one character long.
@@ -632,6 +654,14 @@ sub kiriwrite_filter_add{
 
 		# The confirm integer is '1', so add the word
 		# to the filter list.
+
+		# Get the values from the hashref.
+
+		my $filter_new_find	= $options->{"FindFilter"};
+		my $filter_new_replace	= $options->{"ReplaceFilter"};
+		my $filter_new_priority	= $options->{"Priority"};
+		my $filter_new_enabled	= $options->{"Enabled"};
+		my $filter_new_notes	= $options->{"Notes"};
 
 		# First, check the variables recieved are UTF8
 		# copliant.
@@ -667,6 +697,36 @@ sub kiriwrite_filter_add{
 			# to 1.
 
 			$filter_new_priority = 1;
+
+		}
+
+		# Check if the enabled value is either "on" or
+		# blank and return an error if it is something
+		# else.
+
+		if (!$filter_new_enabled || $filter_new_enabled ne "off"){
+
+		} else {
+
+			# FINISH THIS.
+
+		}
+
+		# Check if the new filter should be enabled.
+
+		my $filter_enable = 0;
+
+		if (!$filter_new_enabled){
+
+			$filter_new_enabled = "off";
+
+		}
+
+		if ($filter_new_enabled eq "on"){
+			
+			# The filter is enabled.
+
+			$filter_enable = 1;
 
 		}
 
@@ -771,7 +831,7 @@ sub kiriwrite_filter_add{
 
 		# Add the filter to the filter database.
 
-		$kiriwrite_dbmodule->addfilter({ FindFilter => $filter_new_find, ReplaceFilter => $filter_new_replace, Priority => $filter_new_priority, Notes => $filter_new_notes});
+		$kiriwrite_dbmodule->addfilter({ FindFilter => $filter_new_find, ReplaceFilter => $filter_new_replace, Priority => $filter_new_priority, Enabled => $filter_enable, Notes => $filter_new_notes});
 
 		# Check if any errors have occured while adding the filter.
 
@@ -880,7 +940,15 @@ sub kiriwrite_filter_add{
 	$kiriwrite_presmodule->addtext($kiriwrite_lang->{filter}->{notes});
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtextbox("notes", { Columns => 50, Rows => 10 });
+	$kiriwrite_presmodule->addtextbox("notes", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"} });
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addcheckbox("enabled", { OptionDescription => $kiriwrite_lang->{filter}->{enabled}, Checked => 1 });
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->endrow();
 
@@ -906,21 +974,26 @@ sub kiriwrite_filter_edit{
 #										#
 # Usage:									#
 #										#
-# kiriwrite_filter_edit(filternumber, newfilterfind, newfilterreplace,		#
-#			newfilterpriority, newfilternotes, confirm);		#
+# kiriwrite_filter_edit(options);						#
 #										#
-# filterid		Specifies the filter number (line number) in the	#
-#			filter database.					#
-# newfilterfind		Specifies the new word to find.				#
-# newfilterreplace	Specifies the new word to replace.			#
-# newfilterpriority	Specifies the new filter priority.			#
-# newfilternotes	Specifies the new filter notes.				#
-# confirm		Confirms the action to edit a filter.			#
+# options		Specifies the following options as hash (in any order).	#
+#										#
+# FilterID		Specifies the filter number in the filter database.	#
+# NewFindFilter		Specifies the new find filter.				#
+# NewReplaceFilter	Specifies the new replace filter.			#
+# NewPriority		Specifies the new priority.				#
+# NewEnabled		Specifies the new enable setting.			#
+# NewFilterNotes	Specifies the new filter notes.				#
+# Confirm		Confirms the action to edit a filter.			#
 #################################################################################
 
 	# Get the values that have been passed to the subroutine.
 
-	my ($filter_id, $filter_new_find, $filter_new_replace, $filter_new_priority, $filter_new_notes, $confirm) = @_;
+	my ($options) = @_;
+	#my ($filter_id, $filter_new_find, $filter_new_replace, $filter_new_priority, $filter_new_notes, $confirm) = @_;
+
+	my $filter_id		= $options->{"FilterID"};
+	my $confirm = $options->{"Confirm"};
 
 	# Check the confirm value to make sure it is no more than
 	# one character long.
@@ -988,6 +1061,14 @@ sub kiriwrite_filter_edit{
 
 		# The action to edit a filter has been confirmed so
 		# edit the selected filter.
+
+		# Get the values from the hashref.
+
+		my $filter_new_find	= $options->{"NewFindFilter"};
+		my $filter_new_replace	= $options->{"NewReplaceFilter"};
+		my $filter_new_priority	= $options->{"NewPriority"};
+		my $filter_new_notes	= $options->{"NewFilterNotes"};
+		my $filter_new_enabled	= $options->{"NewEnabled"};
 
 		# First, check the variables recieved are UTF8
 		# copliant.
@@ -1088,6 +1169,24 @@ sub kiriwrite_filter_edit{
 
 		}
 
+		# Check to see if the filter should be enabled.
+
+		my $filter_enable = 0;
+
+		if (!$filter_new_enabled){
+
+			$filter_new_enabled = "off";
+
+		}
+
+		if ($filter_new_enabled eq "on"){
+			
+			# The filter is enabled.
+
+			$filter_enable = 1;
+
+		}
+
 		# Connect to the database server.
 
 		$kiriwrite_dbmodule->connect();
@@ -1133,7 +1232,7 @@ sub kiriwrite_filter_edit{
 
 		# Edit the selected filter in the filter database.
 
-		$kiriwrite_dbmodule->editfilter({ FilterID => $filter_id, NewFindFilter => $filter_new_find, NewReplaceFilter => $filter_new_replace, NewFilterPriority => $filter_new_priority, NewFilterNotes => $filter_new_notes });
+		$kiriwrite_dbmodule->editfilter({ FilterID => $filter_id, NewFindFilter => $filter_new_find, NewReplaceFilter => $filter_new_replace, NewFilterPriority => $filter_new_priority, NewEnabled => $filter_enable, NewFilterNotes => $filter_new_notes });
 
 		# Check if any errors occured while editing the filter.
 
@@ -1268,6 +1367,7 @@ sub kiriwrite_filter_edit{
 		$filter_priority	= $filter_info{"FilterPriority"};
 		$filter_find		= $filter_info{"FilterFind"};
 		$filter_replace		= $filter_info{"FilterReplace"};
+		$filter_enabled		= $filter_info{"FilterEnabled"};
 		$filter_notes		= $filter_info{"FilterNotes"};
 
 		# Disconnect from the filter database.
@@ -1331,7 +1431,24 @@ sub kiriwrite_filter_edit{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{filter}->{notes});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("notes", { Columns => 50, Rows => 10});
+		$kiriwrite_presmodule->addtextbox("notes", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"}, Value => $filter_notes});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+
+		if ($filter_enabled eq 1){
+
+			$kiriwrite_presmodule->addcheckbox("enabled", { OptionDescription => $kiriwrite_lang->{filter}->{enabled}, Checked => 1 });
+
+		} else {
+
+			$kiriwrite_presmodule->addcheckbox("enabled", { OptionDescription => $kiriwrite_lang->{filter}->{enabled} });
+
+		}
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->endrow();
 

@@ -2389,12 +2389,12 @@ sub getfilterinfo{
 
 	if ($reduced && $reduced eq 1){
 
-		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting, enabled FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
 		$statement_handle->execute();
 
 	} else {
 
-		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
+		$statement_handle = $database_handle->prepare('SELECT id, priority, findsetting, replacesetting, enabled, notes FROM ' . $class->convert($options{"TablePrefix"}) . '_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
 		$statement_handle->execute();
 
 	}
@@ -2407,7 +2407,8 @@ sub getfilterinfo{
 		$filter_info{"FilterPriority"}	= decode_utf8($filter_data[1]);
 		$filter_info{"FilterFind"}	= decode_utf8($filter_data[2]);
 		$filter_info{"FilterReplace"}	= decode_utf8($filter_data[3]);
-		$filter_info{"FilterNotes"}	= decode_utf8($filter_data[4]);
+		$filter_info{"FilterEnabled"}	= decode_utf8($filter_data[4]);
+		$filter_info{"FilterNotes"}	= decode_utf8($filter_data[5]);
 
 		$filter_exists = 1;
 
@@ -2444,6 +2445,7 @@ sub addfilter{
 # FindFilter	Specifies the find filter to add.				#
 # ReplaceFilter	Specifies the replace filter to add.				#
 # Priority	Specifies the filter priority to use.				#
+# Enabled	Specifies if the filter should be enabled.			#
 # Notes		Specifies the notes to use.					#
 #################################################################################
 
@@ -2473,6 +2475,7 @@ sub addfilter{
 	my $filter_find		= $passedoptions->{"FindFilter"};
 	my $filter_replace	= $passedoptions->{"ReplaceFilter"};
 	my $filter_priority	= $passedoptions->{"Priority"};
+	my $filter_enabled	= $passedoptions->{"Enabled"};
 	my $filter_notes	= $passedoptions->{"Notes"};
 
 	# Check if the template database exists.
@@ -2510,6 +2513,12 @@ sub addfilter{
 	if (!$filter_notes){
 
 		$filter_notes = "";
+
+	}
+
+	if (!$filter_enabled){
+
+		$filter_enabled = "";
 
 	}
 
@@ -2623,6 +2632,7 @@ sub editfilter{
 # NewFindFilter		Specifies the new find filter setting.			#
 # NewReplaceFilter	Specifies the new replace filter setting.		#
 # NewFilterPriority	Specifies the new filter priority setting.		#
+# NewEnabled		Specifies if the filter is enabled.			#
 # NewFilterNotes	Specifies the new notes for the filter.			#
 #################################################################################
 
@@ -2644,6 +2654,7 @@ sub editfilter{
 	my $filter_newfind	= $passedoptions->{"NewFindFilter"};
 	my $filter_newreplace	= $passedoptions->{"NewReplaceFilter"};
 	my $filter_newpriority	= $passedoptions->{"NewFilterPriority"};
+	my $filter_enabled	= $passedoptions->{"NewEnabled"};
 	my $filter_newnotes	= $passedoptions->{"NewFilterNotes"};
 
 	# Check if the filter exists before editing it.
@@ -2677,6 +2688,7 @@ sub editfilter{
 		findsetting = \'' . $class->convert($filter_newfind) . '\',
 		replacesetting = \'' . $class->convert($filter_newreplace) . '\',
 		priority = \'' . $class->convert($filter_newpriority) . '\',
+		enabled = \'' . $class->convert($filter_enabled) . '\',
 		notes = \'' . $class->convert($filter_newnotes) . '\'
 	WHERE id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );	
 	$statement_handle->execute();

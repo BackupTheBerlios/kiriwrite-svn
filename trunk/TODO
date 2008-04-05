@@ -1,7 +1,13 @@
 TODO
 ====
 
+Changes implemented in 0.3.0
+============================
+
 - Add the ability to switch off and on a filter.
+- Removed CGI.pm from the installer script.
+- Added ability to change the amount of pages, templates and filters that
+  can be viewed.
 
 Changes implemented in 0.2.0
 ============================

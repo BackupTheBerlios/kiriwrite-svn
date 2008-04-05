@@ -212,8 +212,14 @@ sub kiriwrite_compile_makepages{
 	# is "on" or blank and if it is something else then
 	# return an error.
 
+	if (!$override){
+
+		$override = "off";
+
+	}
+
 	if ($override eq "on"){
-	} elsif (!$override){
+	} elsif (!$override || $override eq "off"){
 	} else {
 
 		# The override value is invalid so return an error.
@@ -461,6 +467,17 @@ sub kiriwrite_compile_makepages{
 					# Get the filter information.
 
 					%filter_info = $kiriwrite_dbmodule->getfilterinfo({ FilterID => $filter, Reduced => 1 });
+
+					# Check if the filter is enabled and if it isn't then process
+					# the next filter.
+
+					if (!$filter_info{"FilterEnabled"}){
+
+						# The filter is not enabled so process the next filter.
+
+						next;
+
+					}
 
 					# Check if any errors occured while getting the filter information.
 

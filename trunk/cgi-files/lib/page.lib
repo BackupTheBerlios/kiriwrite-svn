@@ -487,7 +487,7 @@ sub kiriwrite_page_list{
 		my $tablestyletype	= 0;
 		my $page_count		= 0;
 		my $db_file_notblank	= 0;
-		my $page_split		= 50;
+		my $page_split		= $kiriwrite_config{"display_pagecount"};
 		my $page_list		= 0;
 		my $page_list_count	= 0;
 
@@ -609,11 +609,11 @@ sub kiriwrite_page_list{
 
 			if ($page_total_count eq $page_split){
 
-				$page_list = substr(($page_total_count / $page_split), 0, 1);
+				$page_list = int(($page_total_count / $page_split));
 
 			} else {
 
-				$page_list = substr(($page_total_count / $page_split), 0, 1) + 1;
+				$page_list = int(($page_total_count / $page_split) + 1);
 
 			}
 
@@ -1502,7 +1502,7 @@ sub kiriwrite_page_add{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagecontent});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => 50, Rows => 10 });
+		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"} });
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("datalist");
@@ -2577,7 +2577,7 @@ sub kiriwrite_page_edit{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagecontent});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => 50, Rows => 10, Value => $data_content });
+		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"},  Value => $data_content });
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("datalist");

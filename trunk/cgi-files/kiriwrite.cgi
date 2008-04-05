@@ -28,6 +28,8 @@ use utf8;
 use CGI::Lite;
 use Tie::IxHash;
 
+binmode STDOUT, ':utf8';
+
 # This is commented out because it uses a fair bit of CPU usage.
 
 #use CGI::Carp('fatalsToBrowser'); 	# Output errors to the browser.
@@ -240,6 +242,9 @@ sub kiriwrite_settings_load{
 
 		"display_textarearows"		=> $config->{config}{display_textarearows},
 		"display_textareacols"		=> $config->{config}{display_textareacols},
+		"display_pagecount"		=> $config->{config}{display_pagecount},
+		"display_templatecount"		=> $config->{config}{display_templatecount},
+		"display_filtercount"		=> $config->{config}{display_filtercount},
 
 		"database_server"		=> $config->{config}{database_server},
 		"database_port"			=> $config->{config}{database_port},
@@ -266,6 +271,12 @@ sub kiriwrite_settings_load{
 	my $kiriwrite_config_textarearows_number = kiriwrite_variablecheck($kiriwrite_config{"display_textareacols"}, "numbers", 0, 1);
 	my $kiriwrite_config_textareacols_maxlength = kiriwrite_variablecheck($kiriwrite_config{"display_textareacols"}, "maxlength", 3, 1);
 	my $kiriwrite_config_textareacols_number = kiriwrite_variablecheck($kiriwrite_config{"display_textareacols"}, "numbers", 0, 1);
+	my $kiriwrite_config_pagecount_maxlength = kiriwrite_variablecheck($kiriwrite_config{"display_pagecount"}, "maxlength", 4, 1);
+	my $kiriwrite_config_pagecount_number = kiriwrite_variablecheck($kiriwrite_config{"display_pagecount"}, "numbers", 0, 1);
+	my $kiriwrite_config_templatecount_maxlength = kiriwrite_variablecheck($kiriwrite_config{"display_templatecount"}, "maxlength", 4, 1);
+	my $kiriwrite_config_templatecount_number = kiriwrite_variablecheck($kiriwrite_config{"display_templatecount"}, "numbers", 0, 1);
+	my $kiriwrite_config_filtercount_maxlength = kiriwrite_variablecheck($kiriwrite_config{"display_filtercount"}, "maxlength", 4, 1);
+	my $kiriwrite_config_filtercount_number = kiriwrite_variablecheck($kiriwrite_config{"display_filtercount"}, "numbers", 0, 1);
 
 	# Check if the language filename is valid and return an critical error if
 	# they aren't.
@@ -380,6 +391,93 @@ sub kiriwrite_settings_load{
 		# an critical error.
 
 		kiriwrite_critical("textareacolinvalid");
+
+	}
+
+	# Check if the amount of items per view settings are blank and return a critical
+	# error if they are.
+
+	if (!$kiriwrite_config{"display_pagecount"}){
+
+		# The display page count is blank so return a
+		# critical error.
+
+		kiriwrite_critical("pagecountblank");
+
+	}
+
+	if (!$kiriwrite_config{"display_templatecount"}){
+
+		# The display template count is blank so return
+		# a critical error.
+
+		kiriwrite_critical("templatecountblank");
+
+	}
+
+	if (!$kiriwrite_config{"display_filtercount"}){
+
+		# The display filter count is blank so return a
+		# critical error.
+
+		kiriwrite_critical("filtercountblank");
+
+	}
+
+	# Check if the amount of items per view settings are valid and return a critical
+	# error message if they aren't.
+
+	if ($kiriwrite_config_pagecount_maxlength eq 1){
+
+		# The length of the page count value is too long
+		# so return a critical error.
+
+		kiriwrite_critical("pagecounttoolong");
+
+	}
+
+	if ($kiriwrite_config_pagecount_number eq 1){
+
+		# The page count value is invalid so return
+		# a critical error.
+
+		kiriwrite_critical("pagecountinvalid");
+
+	}
+
+	if ($kiriwrite_config_templatecount_maxlength eq 1){
+
+		# The length of the template count value is too
+		# long so return a critical error.
+
+		kiriwrite_critical("filtercounttoolong");
+
+	}
+
+	if ($kiriwrite_config_templatecount_number eq 1){
+
+		# The template count value is invalid so return
+		# a critical error.
+
+		kiriwrite_critical("filtercountinvalid");
+
+	}
+
+	if ($kiriwrite_config_filtercount_maxlength eq 1){
+
+		# The length of the filter count value is too
+		# long so return a critical error.
+
+		kiriwrite_critical("templatecounttoolong");
+
+	}
+
+	if ($kiriwrite_config_filtercount_number eq 1){
+
+		# The filter count value is invalid so return
+		# a critical error.
+
+		kiriwrite_critical("templatecountinvalid");
 
 	}
 
@@ -1824,7 +1922,7 @@ sub kiriwrite_error{
 		"blankfilename", "blankvariable", "fileexists",	"internalerror", "invalidoption", "invalidaction", "invalidfilename", "invalidmode", "invalidutf8", "invalidvariable", "variabletoolong",
 
 		# Specific error messages.
-		"blankcompiletype", "blankdatabasepageadd", "blankdirectory", "blankfindfilter", "blankdatetimeformat", "browsenumbertoolong", "browsenumberinvalid",  "databaseconnectionerror", "databasecategoriestoolong", "databasecopysame", "databasealreadyexists", "datadirectorymissing", "datadirectoryinvalidpermissions", "databasedescriptiontoolong", "databasefilenameinvalid", "databasefilenametoolong", "databaseerror", "databaseinvalidpermissions", "databasenameinvalid", "databasenametoolong", "databasenameblank", "databasemissingfile", "databasemovemissingfile", "databasenorename", "databasemovesame", "dbmoduleblank", "dbmoduleinvalid", "dbdirectoryblank", "dbdirectoryinvalid", "dbmodulemissing", "filtersdatabasenotcreated", "filtersdbdatabaseerror", "filtersdbpermissions", "filtersdbmissing", "filteridblank", "filterdoesnotexist", "filteridinvalid", "filteridtoolong", "findfiltertoolong", "filterpriorityinvalid", "filterpriorityinvalidchars", "filterprioritytoolong", "invalidcompiletype", "invalidpagenumber", "nopagesselected",	"invaliddirectory", "invaliddatetimeformat", "invalidlanguagefilename", "languagefilenamemissing", "moduleblank", "moduleinvalid",	"newcopydatabasedatabaseerror", "newcopydatabasedoesnotexist", "newcopydatabasefileinvalidpermissions", "newmovedatabasedatabaseerror",	"newmovedatabasedoesnotexist", "newmovedatabasefileinvalidpermissions", "nodatabasesavailable", "nodatabaseselected", "noeditvaluesselected", "oldcopydatabasedatabaseerror", "oldcopydatabasedoesnotexist", "oldcopydatabasefileinvalidpermissions", "oldmovedatabasedatabaseerror",	"oldmovedatabasedoesnotexist", "oldmovedatabasefileinvalidpermissions", "outputdirectoryblank", "outputdirectoryinvalid", "outputdirectorymissing", "outputdirectoryinvalidpermissions", "overridetemplatevalueinvalid", "overridetemplatetoolong", "overridetemplateinvalid",  "presmoduleblank", "presmoduleinvalid", "presmodulemissing", "pagefilenamedoesnotexist", "pagefilenameexists", "pagefilenameinvalid", "pagefilenametoolong", "pagefilenameblank", "pagetitletoolong", "pagedescriptiontoolong", "pagesectiontoolong", "pagedatabasefilenametoolong", "pagesettingstoolong", "pagesettingsinvalid", "pagetemplatefilenametoolong", "replacefiltertoolong", "servernameinvalid", "servernametoolong", "serverdatabasenameinvalid", "serverdatabasenametoolong", "serverdatabaseusernameinvalid", "serverdatabaseusernametoolong", "serverdatabasepasswordtoolong", "serverdatabasetableprefixinvalid", "serverdatabasetableprefixtoolong", "serverportnumberinvalid", "serverportnumberinvalidcharacters", "serverportnumbertoolong", "serverprotocolnametoolong", "serverprotocolinvalid", "templatenameblank", "templatefilenameexists", "templatefilenameinvalid", "templatedatabaseerror", "templatedatabaseinvalidpermissions", "templatedatabaseinvalidformat", "templatedirectoryblank", "templatedirectoryinvalid", "templatedatabasenotcreated", "templatefilenametoolong", "templatenametoolong", "templatedescriptiontoolong", "templatedatabasemissing", "templatedoesnotexist", "templatefilenameblank", "textarearowblank", "textarearowtoolong", "textarearowinvalid", "textareacolblank", "textareacoltoolong", "textareacolinvalid"
+		"blankcompiletype", "blankdatabasepageadd", "blankdirectory", "blankfindfilter", "blankdatetimeformat", "browsenumbertoolong", "browsenumberinvalid",  "databaseconnectionerror", "databasecategoriestoolong", "databasecopysame", "databasealreadyexists", "datadirectorymissing", "datadirectoryinvalidpermissions", "databasedescriptiontoolong", "databasefilenameinvalid", "databasefilenametoolong", "databaseerror", "databaseinvalidpermissions", "databasenameinvalid", "databasenametoolong", "databasenameblank", "databasemissingfile", "databasemovemissingfile", "databasenorename", "databasemovesame", "dbmoduleblank", "dbmoduleinvalid", "dbdirectoryblank", "dbdirectoryinvalid", "dbmodulemissing", "filtercountinvalid", "filtercounttoolong", "filtersdatabasenotcreated", "filtersdbdatabaseerror", "filtersdbpermissions", "filtersdbmissing", "filteridblank", "filterdoesnotexist", "filteridinvalid", "filteridtoolong", "findfiltertoolong", "filterpriorityinvalid", "filterpriorityinvalidchars", "filterprioritytoolong", "invalidcompiletype", "invalidpagenumber", "nopagesselected",	"invaliddirectory", "invaliddatetimeformat", "invalidlanguagefilename", "languagefilenamemissing", "moduleblank", "moduleinvalid",	"newcopydatabasedatabaseerror", "newcopydatabasedoesnotexist", "newcopydatabasefileinvalidpermissions", "newmovedatabasedatabaseerror",	"newmovedatabasedoesnotexist", "newmovedatabasefileinvalidpermissions", "nodatabasesavailable", "nodatabaseselected", "noeditvaluesselected", "oldcopydatabasedatabaseerror", "oldcopydatabasedoesnotexist", "oldcopydatabasefileinvalidpermissions", "oldmovedatabasedatabaseerror",	"oldmovedatabasedoesnotexist", "oldmovedatabasefileinvalidpermissions", "outputdirectoryblank", "outputdirectoryinvalid", "outputdirectorymissing", "outputdirectoryinvalidpermissions", "overridetemplatevalueinvalid", "overridetemplatetoolong", "overridetemplateinvalid",  "presmoduleblank", "presmoduleinvalid", "presmodulemissing", "pagecountinvalid", "pagecounttoolong",  "pagefilenamedoesnotexist", "pagefilenameexists", "pagefilenameinvalid", "pagefilenametoolong", "pagefilenameblank", "pagetitletoolong", "pagedescriptiontoolong", "pagesectiontoolong", "pagedatabasefilenametoolong", "pagesettingstoolong", "pagesettingsinvalid", "pagetemplatefilenametoolong", "replacefiltertoolong", "servernameinvalid", "servernametoolong", "serverdatabasenameinvalid", "serverdatabasenametoolong", "serverdatabaseusernameinvalid", "serverdatabaseusernametoolong", "serverdatabasepasswordtoolong", "serverdatabasetableprefixinvalid", "serverdatabasetableprefixtoolong", "serverportnumberinvalid", "serverportnumberinvalidcharacters", "serverportnumbertoolong", "serverprotocolnametoolong", "serverprotocolinvalid", "templatecountinvalid", "templatecounttoolong", "templatenameblank", "templatefilenameexists", "templatefilenameinvalid", "templatedatabaseerror", "templatedatabaseinvalidpermissions", "templatedatabaseinvalidformat", "templatedirectoryblank", "templatedirectoryinvalid", "templatedatabasenotcreated", "templatefilenametoolong", "templatenametoolong", "templatedescriptiontoolong", "templatedatabasemissing", "templatedoesnotexist", "templatefilenameblank", "textarearowblank", "textarearowtoolong", "textarearowinvalid", "textareacolblank", "textareacoltoolong", "textareacolinvalid"
 
 	);
 
@@ -2043,6 +2141,7 @@ sub kiriwrite_utf8convert{
 	my $finalutf8 = Encode::decode_utf8( $utfstring );
 
 	return $finalutf8;
+	#return $utfstring;
 
 }
 
@@ -2085,12 +2184,21 @@ sub kiriwrite_critical{
 		"presmodulemissing"		=> "The presentation module is missing! Running the installer script for Kiriwrite is recommended.",
 		"presmoduleinvalidpermissions"	=> "The presentation module cannot be used as it has invalid permission settings set! Please set the valid permission settings for the presentation module.",
 		"presmoduleinvalid"		=> "The presentation module name given is invalid. Running the installer script for Kiriwrite is recommended.",
-		"textarearowblank"		=> "The text area row value given is blank.",
+		"textarearowblank"		=> "The text area row value given is blank. Running the installer script for Kiriwrite is recommended.",
 		"textarearowtoolong"		=> "The text area row value is too long. Running the installer script for Kiriwrite is recommended.",
 		"textarearowinvalid"		=> "The text area row value is invalid. Running the installer script for Kiriwrite is recommended.",
-		"textareacolblank"		=> "The text area row value given is blank.",
+		"textareacolblank"		=> "The text area row value given is blank. Running the installer script for Kiriwrite is recommended.",
 		"textareacoltoolong"		=> "The text area column value is too long. Running the installer script for Kiriwrite is recommended.",
 		"textareacolinvalid"		=> "The text area column value is invalid. Running the installer script for Kiriwrite is recommended.",
+		"pagecountblank"		=> "The page count value is blank. Running the installer script for Kiriwrite is recommended.",
+		"templatecountblank"		=> "The template count value is blank. Running the installer script for Kiriwrite is recommended.",
+		"filtercountblank"		=> "The filter count value is blank. Running the installer script for Kiriwrite is recommended.",
+		"pagecounttoolong"		=> "The page count value is too long. Running the installer script for Kiriwrite is recommended.",
+		"templatecounttoolong"		=> "The template count value is too long. Running the installer script for Kiriwrite is recommended.",
+		"filtercounttoolong"		=> "The filter count value is too long. Running the installer script for Kiriwrite is recommended.",
+		"pagecountinvalid"		=> "The page count value is invalid. Running the installer script for Kiriwrite is recommended.",
+		"templatecountinvalid"		=> "The template count value is invalid. Running the installer script for Kiriwrite is recommended.",
+		"filtercountinvalid"		=> "The filter count is invalid. Running the installer script for Kiriwrite is recommended."
 
 	);
 
@@ -2247,8 +2355,6 @@ sub kiriwrite_output_page{
 		$pageoutput = $pageoutput . $scriptpageline;
 
 	}
-
-	binmode STDOUT, ':utf8';
 
 	print $pageoutput;
 

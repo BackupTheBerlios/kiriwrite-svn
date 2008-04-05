@@ -29,7 +29,7 @@ Adds a filter to the filter database.<br><br>
 
 <div class="code">
     $kiriwrite_dbmodule->connectfilter(1);
-    $kiriwrite_dbmodule->addfilter({ FindFilter => “This is the find filter.”, ReplaceFilter => “This is the replace filter.”, Priority => 1, Notes => “Some notes about the filter.” });
+    $kiriwrite_dbmodule->addfilter({ FindFilter => “This is the find filter.”, ReplaceFilter => “This is the replace filter.”, Priority => 1, Enabled => 1, Notes => “Some notes about the filter.” });
 </div>
 
 <br>
@@ -53,6 +53,10 @@ Specifies the following options as a hash in any order.<br><br>
     <tr>
         <td class="tabledata">Priority</td>
         <td class="tabledata">Specifies the priority setting of the new filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Enabled</td>
+        <td class="tabledata">Specifies if the filter should be used when compiling.</td>
     </tr>
     <tr>
         <td class="tabledata">Notes</td>

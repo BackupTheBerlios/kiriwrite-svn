@@ -1,3 +1,12 @@
+Changes since version 0.2.0
+===========================
+
+- Fixed problem where changing the width and height of the large text
+  boxes in the settings where they wouldn't take effect.
+- Removed CGI.pm from installer and replaced it with CGI::Lite.
+- Added ability to change the amount of pages, templates and filters
+  that can be shown.
+
 Changes since version 0.1.0
 ===========================
 

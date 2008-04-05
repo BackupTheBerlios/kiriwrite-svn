@@ -388,7 +388,7 @@ sub kiriwrite_database_add{
 	$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databasenotes});
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtextbox("databasenotes", { Columns => 50, Rows => 10, WordWrap => 0 });
+	$kiriwrite_presmodule->addtextbox("databasenotes", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"}, WordWrap => 0 });
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->endrow();
 
@@ -740,7 +740,7 @@ sub kiriwrite_database_edit{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databasenotes});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("databasenotes", { Columns => 50, Rows => 10, Value => $database_notes } );
+		$kiriwrite_presmodule->addtextbox("databasenotes", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"}, Value => $database_notes } );
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->endrow();
 

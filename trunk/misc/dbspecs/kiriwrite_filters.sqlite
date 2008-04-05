@@ -1,6 +1,6 @@
 /*
 Kiriwrite Filters Database Format
-Version 1.0
+Version 1.1
 */
 
 create table kiriwrite_filters(
@@ -8,5 +8,6 @@ create table kiriwrite_filters(
         priority int(5),
         findsetting varchar(1024),
         replacesetting varchar(1024),
+	enabled boolean,
         notes text
 );

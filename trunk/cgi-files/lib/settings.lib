@@ -42,6 +42,9 @@ if ($form_data->{'action'}){
 			my $http_query_dbmodule		= $form_data->{'dbmodule'};
 			my $http_query_textareacols	= $form_data->{'textareacols'};
 			my $http_query_textarearows	= $form_data->{'textarearows'};
+			my $http_query_pagecount	= $form_data->{'pagecount'};
+			my $http_query_filtercount	= $form_data->{'filtercount'};
+			my $http_query_templatecount	= $form_data->{'templatecount'};
 
 			my $http_query_database_server		= $form_data->{'database_server'};
 			my $http_query_database_port		= $form_data->{'database_port'};
@@ -52,7 +55,7 @@ if ($form_data->{'action'}){
 			my $http_query_database_password	= $form_data->{'database_password'};
 			my $http_query_database_tableprefix	= $form_data->{'database_tableprefix'};
 
-			my $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => $http_query_database, OutputDirectory => $http_query_output, ImagesURIPath => $http_query_imagesuri, DateTimeFormat => $http_query_datetimeformat, SystemLanguage => $http_query_systemlanguage, PresentationModule => $http_query_presmodule, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_database_server, DatabasePort => $http_query_database_port, DatabaseProtocol => $http_query_database_protocol, DatabaseSQLDatabase => $http_query_database_sqldatabase, DatabaseUsername => $http_query_database_username, DatabasePasswordKeep => $http_query_database_passwordkeep, DatabasePassword => $http_query_database_password, DatabaseTablePrefix => $http_query_database_tableprefix, Confirm => 1 });
+			my $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => $http_query_database, OutputDirectory => $http_query_output, ImagesURIPath => $http_query_imagesuri, DateTimeFormat => $http_query_datetimeformat, SystemLanguage => $http_query_systemlanguage, PresentationModule => $http_query_presmodule, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, PageCount => $http_query_pagecount, FilterCount => $http_query_filtercount, TemplateCount => $http_query_templatecount, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_database_server, DatabasePort => $http_query_database_port, DatabaseProtocol => $http_query_database_protocol, DatabaseSQLDatabase => $http_query_database_sqldatabase, DatabaseUsername => $http_query_database_username, DatabasePasswordKeep => $http_query_database_passwordkeep, DatabasePassword => $http_query_database_password, DatabaseTablePrefix => $http_query_database_tableprefix, Confirm => 1 });
 
 			kiriwrite_output_header;	# Output the header to browser/console/stdout.
 			kiriwrite_output_page($kiriwrite_lang->{setting}->{editsettings}, $pagedata, "settings");	# Output the page to browser/console/stdout.
@@ -107,6 +110,9 @@ sub kiriwrite_settings_view{
 	my $settings_noncgi_images		= $kiriwrite_config{"directory_noncgi_images"};
 	my $settings_display_textareacols	= $kiriwrite_config{"display_textareacols"};
 	my $settings_display_textarearows	= $kiriwrite_config{"display_textarearows"};
+	my $settings_display_pagecount		= $kiriwrite_config{"display_pagecount"};
+	my $settings_display_templatecount	= $kiriwrite_config{"display_templatecount"};
+	my $settings_display_filtercount	= $kiriwrite_config{"display_filtercount"};
 	my $settings_system_datetime		= $kiriwrite_config{"system_datetime"};
 	my $settings_system_language		= $kiriwrite_config{"system_language"};
 	my $settings_system_presentation	= $kiriwrite_config{"system_presmodule"};
@@ -183,6 +189,33 @@ sub kiriwrite_settings_view{
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->addcell("tablecell2");
 	$kiriwrite_presmodule->addtext($settings_display_textarearows);
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{pagecount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addtext($settings_display_pagecount);
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{templatecount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addtext($settings_display_templatecount);
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{filtercount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addtext($settings_display_filtercount);
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->endrow();
 
@@ -275,6 +308,9 @@ sub kiriwrite_settings_edit{
 # DatabaseModule	Specifies the new database module to use for Kiriwrite.	#
 # TextAreaCols		Specifies the width of the text area.			#
 # TextAreaRows		Specifies the height of the text area.			#
+# PageCount		Specifies the amount of pages that should be viewed.	#
+# FilterCount		Specifies the amount of filters that should be viewed.	#
+# TemplateCount		Specifies the amount of templates that should be viewed.#
 #										#
 # Options for server-based database modules.					#
 #										#
@@ -303,6 +339,9 @@ sub kiriwrite_settings_edit{
 	my $settings_dbmodule			= $passedoptions->{"DatabaseModule"};
 	my $settings_textareacols		= $passedoptions->{"TextAreaCols"};
 	my $settings_textarearows		= $passedoptions->{"TextAreaRows"};
+	my $settings_pagecount			= $passedoptions->{"PageCount"};
+	my $settings_filtercount		= $passedoptions->{"FilterCount"};
+	my $settings_templatecount		= $passedoptions->{"TemplateCount"};
 
 	my $settings_database_server		= $passedoptions->{"DatabaseServer"};
 	my $settings_database_port		= $passedoptions->{"DatabasePort"};
@@ -396,6 +435,13 @@ sub kiriwrite_settings_edit{
 		my $kiriwrite_textareacols_maxlength		= kiriwrite_variablecheck($settings_textareacols, "maxlength", 3, 1);
 		my $kiriwrite_textareacols_number 		= kiriwrite_variablecheck($settings_textareacols, "numbers", 0, 1);
 
+		my $kiriwrite_pagecount_maxlength		= kiriwrite_variablecheck($settings_pagecount, "maxlength", 4, 1);
+		my $kiriwrite_pagecount_number	 		= kiriwrite_variablecheck($settings_pagecount, "numbers", 0, 1);
+		my $kiriwrite_filtercount_maxlength		= kiriwrite_variablecheck($settings_filtercount, "maxlength", 4, 1);
+		my $kiriwrite_filtercount_number		= kiriwrite_variablecheck($settings_filtercount, "numbers", 0, 1);
+		my $kiriwrite_templatecount_maxlength		= kiriwrite_variablecheck($settings_templatecount, "maxlength", 4, 1);
+		my $kiriwrite_templatecount_number		= kiriwrite_variablecheck($settings_templatecount, "numbers", 0, 1);
+
 		if ($kiriwrite_dbdirectory_check eq 1){
 
 			# The database directory name is blank, so return
@@ -479,6 +525,60 @@ sub kiriwrite_settings_edit{
 			# an error.
 
 			kiriwrite_error("textareacolinvalid");
+
+		}
+
+		if ($kiriwrite_pagecount_maxlength eq 1){
+
+			# The page count value is too long, so return
+			# an error.
+
+			kiriwrite_error("pagecounttoolong");
+
+		}
+
+		if ($kiriwrite_pagecount_number eq 1){
+
+			# The page count value is invalid, so return
+			# an error.
+
+			kiriwrite_error("pagecountinvalid");
+
+		}
+
+		if ($kiriwrite_filtercount_maxlength eq 1){
+
+			# The filter count value is too long, so return
+			# an error.
+
+			kiriwrite_error("filtercounttoolong");
+
+		}
+
+		if ($kiriwrite_filtercount_number eq 1){
+
+			# The filter count value is invalid, so return
+			# an error.
+
+			kiriwrite_error("filtercountinvalid");
+
+		}
+
+		if ($kiriwrite_templatecount_maxlength eq 1){
+
+			# The template count value is too long, so return
+			# an error.
+
+			kiriwrite_error("templatecounttoolong");
+
+		}
+
+		if ($kiriwrite_templatecount_number eq 1){
+
+			# The template count value is invalid, so return
+			# an error.
+
+			kiriwrite_error("templatecountinvalid");
 
 		}
 
@@ -673,7 +773,7 @@ sub kiriwrite_settings_edit{
 
 		# Write the new settings to the configuration file.
 
-		kiriwrite_output_config({ DatabaseDirectory => $settings_dbdirectory, OutputDirectory => $settings_outputdirectory, ImagesURIPath => $settings_imagesuri, DateTimeFormat => $settings_datetimeformat, SystemLanguage => $settings_languagesystem, PresentationModule => $settings_presmodule, TextAreaCols => $settings_textareacols, TextAreaRows => $settings_textarearows, DatabaseModule => $settings_dbmodule, DatabaseServer => $settings_database_server, DatabasePort => $settings_database_port, DatabaseProtocol => $settings_database_protocol, DatabaseSQLDatabase => $settings_database_sqldatabase, DatabaseUsername => $settings_database_username, DatabasePassword => $settings_database_password, DatabaseTablePrefix => $settings_database_tableprefix });
+		kiriwrite_output_config({ DatabaseDirectory => $settings_dbdirectory, OutputDirectory => $settings_outputdirectory, ImagesURIPath => $settings_imagesuri, DateTimeFormat => $settings_datetimeformat, SystemLanguage => $settings_languagesystem, PresentationModule => $settings_presmodule, TextAreaCols => $settings_textareacols, TextAreaRows => $settings_textarearows, PageCount => $settings_pagecount, FilterCount => $settings_filtercount, TemplateCount => $settings_templatecount, DatabaseModule => $settings_dbmodule, DatabaseServer => $settings_database_server, DatabasePort => $settings_database_port, DatabaseProtocol => $settings_database_protocol, DatabaseSQLDatabase => $settings_database_sqldatabase, DatabaseUsername => $settings_database_username, DatabasePassword => $settings_database_password, DatabaseTablePrefix => $settings_database_tableprefix });
 
 		# Write a confirmation message.
 
@@ -1010,6 +1110,9 @@ sub kiriwrite_settings_edit{
 
 	my $display_textareacols		= $kiriwrite_config{"display_textareacols"};
 	my $display_textarearows		= $kiriwrite_config{"display_textarearows"};
+	my $display_pagecount			= $kiriwrite_config{"display_pagecount"};
+	my $display_templatecount		= $kiriwrite_config{"display_templatecount"};
+	my $display_filtercount			= $kiriwrite_config{"display_filtercount"};
 
 	my $database_server			= $kiriwrite_config{"database_server"};
 	my $database_port			= $kiriwrite_config{"database_port"};
@@ -1100,6 +1203,30 @@ sub kiriwrite_settings_edit{
 	$kiriwrite_presmodule->endcell();
 	$kiriwrite_presmodule->addcell("tablecell2");
 	$kiriwrite_presmodule->addinputbox("textarearows", { Size => 3, MaxLength => 3, Value => $display_textarearows });
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{pagecount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addinputbox("pagecount", { Size => 4, MaxLength => 4, Value => $display_pagecount });
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{filtercount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addinputbox("filtercount", { Size => 4, MaxLength => 4, Value => $display_filtercount });
+	$kiriwrite_presmodule->endrow();
+
+	$kiriwrite_presmodule->startrow();
+	$kiriwrite_presmodule->addcell("tablecell1");
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{templatecount});
+	$kiriwrite_presmodule->endcell();
+	$kiriwrite_presmodule->addcell("tablecell2");
+	$kiriwrite_presmodule->addinputbox("templatecount", { Size => 4, MaxLength => 4, Value => $display_templatecount });
 	$kiriwrite_presmodule->endrow();
 
 	$kiriwrite_presmodule->startrow();
@@ -1398,6 +1525,9 @@ sub kiriwrite_output_config{
 #			Kiriwrite.						#
 # TextAreaCols		Specifies the width of the text area.			#
 # TextAreaRows		Specifies the height of the text area.			#
+# PageCount		Specifies the amount of pages to view.			#
+# FilterCount		Specifies the amount of filters to view.		#
+# TemplateCount		Specifies the amount of templates to view.		#
 # DatabaseModule	Specifies the new database module to use for Kiriwrite.	#
 # DatabaseServer	Specifies the database server to use.			#
 # DaravasePort		Specifies the port the database server is running on.	#
@@ -1424,6 +1554,9 @@ sub kiriwrite_output_config{
 
 	my $settings_textareacols		= $passedsettings->{"TextAreaCols"};
 	my $settings_textarearows		= $passedsettings->{"TextAreaRows"};
+	my $settings_pagecount			= $passedsettings->{"PageCount"};
+	my $settings_filtercount		= $passedsettings->{"FilterCount"};
+	my $settings_templatecount		= $passedsettings->{"TemplateCount"};
 
 	my $settings_database_server		= $passedsettings->{"DatabaseServer"};
 	my $settings_database_port		= $passedsettings->{"DatabasePort"};
@@ -1476,7 +1609,10 @@ sub kiriwrite_output_config{
 	$configdata = $configdata . "system_datetime = "  . $settings_datetime . "\r\n\r\n";
 
 	$configdata = $configdata . "display_textareacols = "  . $settings_textareacols . "\r\n";
-	$configdata = $configdata . "display_textarearows = "  . $settings_textarearows . "\r\n\r\n";
+	$configdata = $configdata . "display_textarearows = "  . $settings_textarearows . "\r\n";
+	$configdata = $configdata . "display_pagecount = " . $settings_pagecount . "\r\n";
+	$configdata = $configdata . "display_filtercount = " . $settings_filtercount . "\r\n";
+	$configdata = $configdata . "display_templatecount = " . $settings_templatecount . "\r\n\r\n";
 
 	$configdata = $configdata . "database_server = "  . $settings_database_server . "\r\n";
 	$configdata = $configdata . "database_port = "  . $settings_database_port . "\r\n";

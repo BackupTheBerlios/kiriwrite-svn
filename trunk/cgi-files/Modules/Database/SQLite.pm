@@ -2054,12 +2054,12 @@ sub getfilterinfo{
 	
 	if ($reduced && $reduced eq 1){
 
-		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting, enabled FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
 		$filterdb_statement_handle->execute();
 
 	} else {
 
-		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting, notes FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
+		$filterdb_statement_handle = $filterdb_database_handle->prepare('SELECT id, priority, findsetting, replacesetting, enabled, notes FROM kiriwrite_filters where id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
 		$filterdb_statement_handle->execute();
 
 	}
@@ -2072,7 +2072,8 @@ sub getfilterinfo{
 		$filter_info{"FilterPriority"}	= $filter_data[1];
 		$filter_info{"FilterFind"}	= $filter_data[2];
 		$filter_info{"FilterReplace"}	= $filter_data[3];
-		$filter_info{"FilterNotes"}	= $filter_data[4];
+		$filter_info{"FilterEnabled"}	= $filter_data[4];
+		$filter_info{"FilterNotes"}	= $filter_data[5];
 
 		$filter_exists = 1;
 
@@ -2137,6 +2138,7 @@ sub addfilter{
 	my $filter_find		= $passedoptions->{"FindFilter"};
 	my $filter_replace	= $passedoptions->{"ReplaceFilter"};
 	my $filter_priority	= $passedoptions->{"Priority"};
+	my $filter_enabled	= $passedoptions->{"Enabled"};
 	my $filter_notes	= $passedoptions->{"Notes"};
 
 	# Check if the filter database permissions are valid.
@@ -2180,6 +2182,12 @@ sub addfilter{
 
 	}
 
+	if (!$filter_enabled){
+
+		$filter_enabled = "";
+
+	}
+
 	my $directory_permissions = main::kiriwrite_filepermissions(".", 1, 1, 0);
 
 	if ($directory_permissions eq 1 && $filterdb_exists){
@@ -2207,6 +2215,7 @@ sub addfilter{
         		priority int(5),
         		findsetting varchar(1024),
         		replacesetting varchar(1024),
+			enabled boolean,
         		notes text
 		)') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
 		$filterdb_statement_handle->execute();
@@ -2280,11 +2289,12 @@ sub addfilter{
 
 	# Add the filter to the filter database.
 
-	$filterdb_statement_handle = $filterdb_database_handle->prepare('INSERT INTO kiriwrite_filters (id, priority, findsetting, replacesetting, notes) VALUES (
+	$filterdb_statement_handle = $filterdb_database_handle->prepare('INSERT INTO kiriwrite_filters (id, priority, findsetting, replacesetting, enabled, notes) VALUES (
 		\'' . $class->convert($new_id) . '\',
 		\'' . $class->convert($filter_priority) . '\',
 		\'' . $class->convert($filter_find) . '\',
 		\'' . $class->convert($filter_replace) .'\',
+		\'' . $class->convert($filter_enabled) . '\',
 		\'' . $class->convert($filter_notes) . '\'
 	)') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );
 	$filterdb_statement_handle->execute();
@@ -2305,6 +2315,7 @@ sub editfilter{
 # NewFindFilter		Specifies the new find filter setting.			#
 # NewReplaceFilter	Specifies the new replace filter setting.		#
 # NewFilterPriority	Specifies the new filter priority setting.		#
+# NewEnabled		Specifies if the filter should be enabled.		#
 # NewFilterNotes	Specifies the new notes for the filter.			#
 #################################################################################
 
@@ -2326,6 +2337,7 @@ sub editfilter{
 	my $filter_newfind	= $passedoptions->{"NewFindFilter"};
 	my $filter_newreplace	= $passedoptions->{"NewReplaceFilter"};
 	my $filter_newpriority	= $passedoptions->{"NewFilterPriority"};
+	my $filter_enabled	= $passedoptions->{"NewEnabled"};
 	my $filter_newnotes	= $passedoptions->{"NewFilterNotes"};
 
 	# Check if the filter database permissions are valid.
@@ -2373,6 +2385,7 @@ sub editfilter{
 		findsetting = \'' . $class->convert($filter_newfind) . '\',
 		replacesetting = \'' . $class->convert($filter_newreplace) . '\',
 		priority = \'' . $class->convert($filter_newpriority) . '\',
+		enabled = \'' . $class->convert($filter_enabled) . '\',
 		notes = \'' . $class->convert($filter_newnotes) . '\'
 	WHERE id = \'' . $class->convert($filter_id) . '\'') or ( $error = "FilterDatabaseError", $errorext = $filterdb_database_handle->errstr, return );	
 	$filterdb_statement_handle->execute();

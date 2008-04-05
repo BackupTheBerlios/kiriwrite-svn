@@ -357,7 +357,7 @@ sub kiriwrite_template_add{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatelayout});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("templatelayout", { Columns => 50, Rows => 10 });
+		$kiriwrite_presmodule->addtextbox("templatelayout", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"} });
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("datalist");
@@ -657,7 +657,7 @@ sub kiriwrite_template_edit{
 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatelayout});
 		$kiriwrite_presmodule->endcell();
 		$kiriwrite_presmodule->addcell("tablecell2");
-		$kiriwrite_presmodule->addtextbox("newlayout", { Rows => 10, Columns => 50, Value => $template_layout});
+		$kiriwrite_presmodule->addtextbox("newlayout", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"}, Value => $template_layout});
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->addlinebreak();
 		$kiriwrite_presmodule->startbox("datalist");
@@ -964,7 +964,7 @@ sub kiriwrite_template_list{
 	my $template_description 	= "";
 	my $template_data		= "";
 
-	my $template_split	= 50;
+	my $template_split	= $kiriwrite_config{"display_templatecount"};
 	my $template_list	= 0;
 
 	my $template_count = 0;
@@ -1071,11 +1071,11 @@ sub kiriwrite_template_list{
 
 			if ($template_total_count eq $template_split){
 
-				$template_list = substr(($template_total_count / $template_split), 0, 1);
+				$template_list = int(($template_total_count / $template_split));
 
 			} else {
 
-				$template_list = substr(($template_total_count / $template_split), 0, 1) + 1;
+				$template_list = int(($template_total_count / $template_split) + 1);
 
 			}
 
@@ -1103,25 +1103,30 @@ sub kiriwrite_template_list{
 	# then write a message saying that there are no templates in the
 	# database.
 
-	if (!@database_pages && $template_browsenumber > 1){
+	if (!@templates_list && $template_browsenumber > 1){
 
-			# There were no values given for the page browse
-			# number given so write a message saying that
-			# there were no pages for the page browse number
-			# given.
+		# There were no values given for the page browse
+		# number given so write a message saying that
+		# there were no pages for the page browse number
+		# given.
 
-			$kiriwrite_presmodule->clear();
-			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{viewtemplates}, $db_name), { Style => "pageheader" });
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->startbox("errorbox");
-			$kiriwrite_presmodule->enterdata($kiriwrite_lang->{template}->{notemplatesinpagebrowse});
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template" . $database_file, { Text => $kiriwrite_lang->{template}->{returntofirstpagebrowse} });
-			$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->clear();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{viewtemplates}, $db_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("errorbox");
+		$kiriwrite_presmodule->enterdata($kiriwrite_lang->{template}->{notemplatesinpagebrowse});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntofirstpagebrowse} });
+		$kiriwrite_presmodule->endbox();
 
-			return $kiriwrite_presmodule->grab();
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		return $kiriwrite_presmodule->grab();
 
 	} elsif (!@templates_list && !$templatewarning){
 		$templatewarning = $kiriwrite_lang->{template}->{notemplatesavailable};

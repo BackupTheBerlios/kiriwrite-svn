@@ -25,7 +25,8 @@ use strict;				# Throw errors if there's something wrong.
 use warnings;				# Write warnings to the HTTP Server Log file.
 
 use utf8;
-use CGI qw(:standard *table *Tr *td);
+#use CGI qw(:standard *table *Tr *td);
+use CGI::Lite;
 #use CGI::Carp('fatalsToBrowser'); 	# Output errors to the browser.
 
 # Setup strings in specific languages. Style should be no spacing for
@@ -187,11 +188,12 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"usekiriwritetext"}	= "To use Kiriwrite click or select the link below (will not work if the Kiriwrite script is not called kiriwrite.cgi):";
 	$kiriwrite_lang{"en-GB"}{"usekiriwritelink"}	= "Start using Kiriwrite.";
 
-my $query = new CGI;
+my $query_lite = new CGI::Lite;
+my $form_data = $query_lite->parse_form_data;
 
 my $language_selected = "";
-my $http_query_confirm = $query->param('confirm');
-my $http_query_installlanguage = $query->param('installlanguage');
+my $http_query_confirm = $form_data->{'confirm'};
+my $http_query_installlanguage = $form_data->{'installlanguage'};
 
 if (!$http_query_installlanguage){
 
@@ -963,17 +965,18 @@ sub kiriwrite_error{
 		$error_type = "generic";
 	}
 
-	print header();
+	print "Content-type: text/html;\r\n\r\n";
 
-	print start_html({ -title => $kiriwrite_lang{$language_selected}{error}, -style => { -code => $cssstyle }});
+	print "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	print "<head>\n<title>$kiriwrite_lang{$language_selected}{installertitle}</title>\n<style type=\"text/css\" media=\"screen\">$cssstyle</style>\n</head>\n<body>\n";
 
-	print h2($kiriwrite_lang{$language_selected}{error});
+	print "<h2>$kiriwrite_lang{$language_selected}{error}</h2>";
 
 	print $kiriwrite_error{$error_type};
-	print br();
+	print "<br />\n";
 	print $kiriwrite_lang{$language_selected}{errormessagetext};
 
-	print end_html();
+	print "</body>\n</html>";
 
 	exit;
 
@@ -1006,6 +1009,9 @@ sub kiriwrite_writeconfig{
 		
 		display_textareacols = $passedsettings->{TextAreaCols}
 		display_textarearows = $passedsettings->{TextAreaRows}
+		display_pagecount = 50
+		display_filtercount = 50
+		display_templatecount = 50
 		
 		database_server = $passedsettings->{DatabaseServer}
 		database_port = $passedsettings->{DatabasePort}
@@ -1017,6 +1023,35 @@ sub kiriwrite_writeconfig{
 	";
 
 	close ($configfile);
+
+}
+
+sub kiriwrite_addtablerow{
+#################################################################################
+# kiriwrite_addtablerow: Adds a table row.					#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_addtablerow(name, data);						#
+#										#
+# name		Specifies the name of the table row.				#
+# namestyle	Specifies the style for the name of the table row.		#
+# data		Specifies the data to be used in the table row.			#
+# datastyle	Specifies the style for the data of the table row.		#
+#################################################################################
+
+	my ($name, $namestyle, $data, $datastyle) = @_;
+
+	if (!$data){
+
+		$data = "";
+
+	}
+
+	print "<tr>\n";
+	print "<td class=\"$namestyle\">$name</td>\n";
+	print "<td class=\"$datastyle\">$data</td>\n";
+	print "</tr>\n";
 
 }
 
@@ -1034,29 +1069,29 @@ if ($http_query_confirm eq 1){
 
 	# The confirm value has been given so get the data from the query.
 
-	my $http_query_dbdirectory		= $query->param('dbdirectory');
-	my $http_query_outputdirectory		= $query->param('outputdirectory');
-	my $http_query_imagesuripath		= $query->param('imagesuripath');
+	my $http_query_dbdirectory		= $form_data->{'dbdirectory'};
+	my $http_query_outputdirectory		= $form_data->{'outputdirectory'};
+	my $http_query_imagesuripath		= $form_data->{'imagesuripath'};
 
-	my $http_query_textarearows		= $query->param('textarearows');
-	my $http_query_textareacols		= $query->param('textareacols');
+	my $http_query_textarearows		= $form_data->{'textarearows'};
+	my $http_query_textareacols		= $form_data->{'textareacols'};
 
-	my $http_query_dateformat		= $query->param('dateformat');
-	my $http_query_customdateformat		= $query->param('customdateformat');
+	my $http_query_dateformat		= $form_data->{'dateformat'};
+	my $http_query_customdateformat		= $form_data->{'customdateformat'};
 
-	my $http_query_language			= $query->param('language');
+	my $http_query_language			= $form_data->{'language'};
 
-	my $http_query_presmodule		= $query->param('presmodule');
-	my $http_query_dbmodule			= $query->param('dbmodule');
+	my $http_query_presmodule		= $form_data->{'presmodule'};
+	my $http_query_dbmodule			= $form_data->{'dbmodule'};
 
-	my $http_query_databaseserver		= $query->param('databaseserver');
-	my $http_query_databaseport		= $query->param('databaseport');
-	my $http_query_databaseprotocol		= $query->param('databaseprotocol');
- 	my $http_query_databasename		= $query->param('databasename');
- 	my $http_query_databaseusername		= $query->param('databaseusername');
- 	my $http_query_databasepassword		= $query->param('databasepassword');
- 	my $http_query_databasetableprefix	= $query->param('databasetableprefix');
- 	my $http_query_removeinstallscript	= $query->param('removeinstallscript');
+	my $http_query_databaseserver		= $form_data->{'databaseserver'};
+	my $http_query_databaseport		= $form_data->{'databaseport'};
+	my $http_query_databaseprotocol		= $form_data->{'databaseprotocol'};
+ 	my $http_query_databasename		= $form_data->{'databasename'};
+ 	my $http_query_databaseusername		= $form_data->{'databaseusername'};
+ 	my $http_query_databasepassword		= $form_data->{'databasepassword'};
+ 	my $http_query_databasetableprefix	= $form_data->{'databasetableprefix'};
+ 	my $http_query_removeinstallscript	= $form_data->{'removeinstallscript'};
 
 	# Check if the text area rows and column values are blank.
 
@@ -1606,26 +1641,26 @@ if ($http_query_confirm eq 1){
 
 	}
 
-	print header();
+	print "Content-type: text/html\r\n\r\n";
 
-	print start_html({ -title => $kiriwrite_lang{$language_selected}{installertitle}, -style => { -code => $cssstyle }});
-	print h2($kiriwrite_lang{$language_selected}{installertitle});
+	#print start_html({ -title => $kiriwrite_lang{$language_selected}{installertitle}, -style => { -code => $cssstyle }});
+	print "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	print "<head>\n<title>$kiriwrite_lang{$language_selected}{installertitle}</title>\n<style type=\"text/css\" media=\"screen\">$cssstyle</style>\n</head>\n<body>\n";
+	print "<h2>$kiriwrite_lang{$language_selected}{installertitle}</h2>";
 	print $kiriwrite_lang{$language_selected}{installedmessage};
 
 	if ($installscriptmessage){
 
-		print br();
-		print br();
+		print "<br /><br />\n";
 		print $installscriptmessage;
 
 	}
 
-	print br();
-	print br();
+	print "<br /><br />\n";
 	print $kiriwrite_lang{$language_selected}{usekiriwritetext};
-	print br();
-	print br();
-	print a({-href=>'kiriwrite.cgi'}, $kiriwrite_lang{$language_selected}{usekiriwritelink});
+	print "<br /><br />\n";
+	print "<a href=\"kiriwrite.cgi\">$kiriwrite_lang{$language_selected}{usekiriwritelink}</a>";
+	print "</body>\n</html>";
 
 	exit;
 
@@ -1633,7 +1668,7 @@ if ($http_query_confirm eq 1){
 
 # Create a list of common date and time formats.
 
-my @datetime_formats = [ 
+my @datetime_formats = ( 
 	'DD/MM/YY (hh:mm:ss)', 'DD/MM/YY hh:mm:ss', 'D/M/Y (hh:mm:ss)',
 	'D/M/Y hh:mm:ss', 'D/M/YY (hh:mm:ss)', 'D/M/YY hh:mm:ss',
 	'DD/MM (hh:mm:ss)', 'D/M (hh:mm:ss)', 'DD/MM hh:mm:ss', 
@@ -1643,7 +1678,7 @@ my @datetime_formats = [
 	'YY-MM-DD (hh:mm:ss)', 'YY-MM-DD hh:mm:ss', 'Y-M-D (hh:mm:ss)',
 	'Y-M-D hh:mm:ss', 'M-D (hh:mm:ss)', 'M-D hh:mm:ss',
 	'YY-MM-DD', 'MM-DD' 
-];
+);
 
 # Create the list of tests to do.
 
@@ -1829,191 +1864,133 @@ foreach $test (keys %test_list){
 
 # Print the header.
 
-print header();
+print "Content-Type: text/html;\r\n\r\n";
 
 # Print the page for installing Kiriwrite.
 
-print start_html( -title=> $kiriwrite_lang{$language_selected}{installertitle}, -style => { -code => $cssstyle });
+print "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+print "<head>\n<title>$kiriwrite_lang{$language_selected}{installertitle}</title>\n";
+print "<style type=\"text/css\" media=\"screen\">$cssstyle</style>\n</head>\n<body>";
 
-print start_table( { -width=> "100%" } );
-print start_Tr();
-print start_td({ -class => "languagebar" });
-print $kiriwrite_lang{$language_selected}{installertitle};
-print end_td();
-print start_td({ -class => "languagebarselect" });
-print start_form("POST", "install.cgi");
-
-# This is a bodge for the language list.
-
+print "<table width=\"100%\">";
 my $language_name_short;
 my $language_list_seek = 0;
+my $installlanguage_out = "";
 
-print "<select name=\"installlanguage\">";
+$installlanguage_out = "<select name=\"installlanguage\">\n";
 
 foreach $language_name_short (@language_list_short){
 
-	print "<option value=\"" . $language_name_short . "\">" . $language_list_long[$language_list_seek] . "</option>";
+	$installlanguage_out = $installlanguage_out . "<option value=\"" . $language_name_short . "\">" . $language_list_long[$language_list_seek] . "</option>\n";
 	$language_list_seek++;
 
 }
 
-print "</select> ";
-print submit($kiriwrite_lang{$language_selected}{switch});
+$installlanguage_out = $installlanguage_out . "</select>\n";
 
-print end_form;
-print end_td();
-print end_Tr();
-print end_table();
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{installertitle}, "languagebar", "<form action=\"install.cgi\" method=\"POST\">\n$installlanguage_out\n<input type=\"submit\" value=\"$kiriwrite_lang{$language_selected}{switch}\">\n</form>\n", "languagebarselect");
+print "</table>";
 
-print h2($kiriwrite_lang{$language_selected}{installertitle});
-
+print "<h2>$kiriwrite_lang{$language_selected}{installertitle}</h2>\n";
 print $kiriwrite_lang{$language_selected}{installertext};
-
-print h3($kiriwrite_lang{$language_selected}{dependencytitle});
-print h4($kiriwrite_lang{$language_selected}{requiredmodules});
+print "<h3>$kiriwrite_lang{$language_selected}{dependencytitle}</h3>\n";
+print "<h4>$kiriwrite_lang{$language_selected}{requiredmodules}</h4>\n";
 print $kiriwrite_lang{$language_selected}{perlmodules};
-print br();;
-print br();;
+print "<br /><br />\n";
 
 if ($dependency_error eq 1){
 
 	print $kiriwrite_lang{$language_selected}{errormessage};
 	print $kiriwrite_lang{$language_selected}{dependencyperlmodulesmissing};
-	print br();
-	print br();
+	print "<br /><br />\n";
 
 }
 
-print start_table();
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{module};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{result};
-print end_td();
-print end_Tr();
+print "<table>\n";
+
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{module}, "tablecellheader", $kiriwrite_lang{$language_selected}{result}, "tablecellheader");
 
 foreach $test (keys %dependency_results) {
 
-	print start_Tr();
-	print start_td({ -class => "tablename" });
-		print $test;
-	print end_td();
-	print start_td({ -class => "tabledata" });
-		print $dependency_results{$test}{result};
-	print end_td();
-	print end_Tr();
+	kiriwrite_addtablerow($test, "tablename", $dependency_results{$test}{result}, "tabledata");
 
 }
 
-print end_table();
+print "</table>";
 
-print h4($kiriwrite_lang{$language_selected}{databasemodules});
+print "<h4>$kiriwrite_lang{$language_selected}{databasemodules}</h4>\n";
 print $kiriwrite_lang{$language_selected}{databasemodulestext};
-print br();
-print br();
+print "<br /><br />\n";
 
 if ($database_error eq 1){
 
 	print $kiriwrite_lang{$language_selected}{warningmessage};
 	print $kiriwrite_lang{$language_selected}{databaseperlmodulesmissing};
-	print br();
-	print br();
+	print "<br /><br />\n";
 
 }
 
-print start_table();
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{module};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{result};
-print end_td();
-print end_Tr();
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{module}, "tablecellheader", $kiriwrite_lang{$language_selected}{result}, "tablecellheader");
 
 foreach $test (keys %database_results) {
 
-	print start_Tr();
-	print start_td({ -class => "tablename" });
-		print $test;
-	print end_td();
-	print start_td({ -class => "tabledata" });
-		print $database_results{$test}{result};
-	print end_td();
-	print end_Tr();
+	kiriwrite_addtablerow($test, "tablename", $database_results{$test}{result}, "tabledata");
 
 }
 
-print end_table();
+print "</table>";
 
-print h4($kiriwrite_lang{$language_selected}{filepermissions});
+print "<h4>$kiriwrite_lang{$language_selected}{filepermissions}</h4>\n";
 
 print $kiriwrite_lang{$language_selected}{filepermissionstext};
-print br();
-print br();
+print "<br /><br />\n";
 
 if ($file_error eq 1){
 
 	print $kiriwrite_lang{$language_selected}{errormessage};
 	print $kiriwrite_lang{$language_selected}{filepermissionsinvalid};
-	print br();
-	print br();
+	print "<br /><br />\n";
 
 }
 
-print start_table();
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print "Filename";
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print "Result";
-print end_td();
-print end_Tr();
+print "<table>";
+
+kiriwrite_addtablerow("Filename", "tablecellheader", "Result", "tablecellheader");
 
 foreach $test (keys %file_results) {
 
-	print start_Tr();
-	print start_td({ -class => "tablename" });
-		print $test;
-	print end_td();
-	print start_td({ -class => "tabledata" });
-		print $file_results{$test}{result};
-	print end_td();
-	print end_Tr();
+	kiriwrite_addtablerow($test, "tablename", $file_results{$test}{result}, "tabledata");
 
 }
 
-print end_table();
+print "</table>";
 
 if ($dependency_error eq 1){
 
-	print hr();
-	print h4($kiriwrite_lang{$language_selected}{criticalerror});
-	print $kiriwrite_lang{$language_selected}{dependencymodulesnotinstalled};
-	print end_html;
+	print "<hr />\n";
+	print "<h4>$kiriwrite_lang{$language_selected}{criticalerror}</h4>\n";
+	print $kiriwrite_lang{$language_selected}{dependencymodulesnotinstalled} . "\n";
+	print "</body>\n</html>";
 	exit;
 
 }
 
 if ($database_onemodule eq 0){
 
-	print hr();
-	print h4($kiriwrite_lang{$language_selected}{criticalerror});
-	print $kiriwrite_lang{$language_selected}{databasemodulesnotinstalled};
-	print end_html;
+	print "<hr />\n";
+	print "<h4>$kiriwrite_lang{$language_selected}{criticalerror}</h4>\n";
+	print $kiriwrite_lang{$language_selected}{databasemodulesnotinstalled} . "\n";
+	print "</body>\n</html>";
 	exit;
 
 }
 
 if ($file_error eq 1){
 
-	print hr();
-	print h4($kiriwrite_lang{$language_selected}{criticalerror});
-	print $kiriwrite_lang{$language_selected}{filepermissionerrors};
-	print end_html;
+	print "<hr />\n";
+	print "<h4>$kiriwrite_lang{$language_selected}{criticalerror}</h4>\n";
+	print $kiriwrite_lang{$language_selected}{filepermissionerrors} . "\n";
+	print "</body>\n</html>";
 	exit;
 
 }
@@ -2022,9 +1999,11 @@ my @language_short;
 my (%available_languages, $available_languages);
 my @presentation_modules;
 my @database_modules;
-
-my $presentation_modules_ref = \@presentation_modules;
-my $database_modules_ref = \@database_modules;
+my $select_data = "";
+my $language_data;
+my $language_out = "";
+my ($presmodule_name, $presmodule_out) = "";
+my ($dbmodule_name, $dbmodule_out) = "";
 
 # Get the list of available languages.
 
@@ -2033,8 +2012,6 @@ tie(%available_languages, 'Tie::IxHash');
 opendir(LANGUAGEDIR, "lang");
 my @language_directory = grep /m*\.lang$/, readdir(LANGUAGEDIR);
 closedir(LANGUAGEDIR);
-
-my $language_data;
 
 foreach my $language_file (@language_directory){
 
@@ -2067,7 +2044,6 @@ foreach my $presmodule_file (@presmodule_directory){
 	# Get the friendly name for the database module.
 
 	$presmodule_file =~ s/.pm$//g;
-
 	push(@presentation_modules, $presmodule_file);
 
 }
@@ -2083,270 +2059,69 @@ foreach my $dbmodule_file (@dbmodule_directory){
 	# Get the friendly name for the database module.
 
 	$dbmodule_file =~ s/.pm$//g;
-
 	push(@database_modules, $dbmodule_file);
 
 }
 
-print h3($kiriwrite_lang{$language_selected}{settingstitle});
-
+print "<h3>$kiriwrite_lang{$language_selected}{settingstitle}</h3>";
 print $kiriwrite_lang{$language_selected}{settingstext};
-print br();
-print br();
+print "<br /><br />\n";
 
-print start_form("POST", "install.cgi");
-print hidden( -name => 'confirm', -default => '1');
-print hidden( -name => 'installlanguage', -default => $language_selected);
+print "<form action=\"install.cgi\" method=\"POST\">";
+print "<input type=\"hidden\" name=\"confirm\" value=\"1\">\n<input type=\"hidden\" name=\"installlanguage\" value=\"$language_selected\">\n";
 
-print start_table({ -width => "100%" });
+print "<table width=\"100%\">";
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{setting}, "tablecellheader", $kiriwrite_lang{$language_selected}{value}, "tablecellheader");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{directories}, "tablecellheader", "", "tablecellheader");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasedirectory}, "tablname", "<input type=\"text\" name=\"dbdirectory\" size=\"32\" maxlength=\"64\" value=\"$default_dbdirectory\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{outputdirectory}, "tablename", "<input type=\"text\" name=\"outputdirectory\" size=\"32\" maxlength=\"64\" value=\"$default_outputdirectory\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{imagesuripath}, "tablename", "<input type=\"text\" name=\"imagesuripath\" size=\"32\" maxlength=\"64\" value=\"$default_imagesuri\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{display}, "tablecellheader", "", "tablecellheader");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{textarearows}, "tablename", "<input type=\"text\" name=\"textarearows\" size=\"3\" maxlength=\"3\" value=\"$default_textarearows\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{textareacols}, "tablename", "<input type=\"text\" name=\"textareacols\" size=\"3\" maxlength=\"3\" value=\"$default_textareacols\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{date}, "tablecellheader", "", "tablecellheader");
 
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{setting};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{value};
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{directories};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databasedirectory};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "dbdirectory", -size => 32, -maxlength => 64, -value => $default_dbdirectory });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{outputdirectory};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "outputdirectory", -size => 32, -maxlength => 64, -value => $default_outputdirectory });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{imagesuripath};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "imagesuripath", -size => 32, -maxlength => 64, -value => $default_imagesuri });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{display};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{textarearows};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "textarearows", -size => 3, -maxlength => 3, -value => $default_textarearows });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{textareacols};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "textareacols", -size => 3, -maxlength => 3, -value => $default_textareacols });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{date};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print "";
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{dateformat};
-print end_td();
-print start_td({ -class => "tabledata" });
-
-print popup_menu( -name => "dateformat", -values => @datetime_formats );
-print textfield({ -name => "customdateformat", -size => 32, -maxlength => 64, });
-
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{language};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{systemlanguage};
-print end_td();
-print start_td({ -class => "tabledata" });
-
-# Note: This the following code is bodge. If anyone can fix it so that it all works
-# with popup_menu properly it will be appriciated.
-
-print "<select name=\"language\">";
-
-foreach my $language (keys %available_languages){
-
-	if ($language eq $language_selected){
-
-		print "<option value=\"" . $language . "\" selected=selected>" . $available_languages{$language} . "</option>";
-
-	} else {
-
-		print "<option value=\"" . $language . "\">" . $available_languages{$language} . "</option>";
-
-	}
-
+foreach my $select_name (@datetime_formats){
+ 	$select_data = $select_data . "<option value=\"$select_name\">" . $select_name . "</option>\n";
 }
 
-print "</select>";
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{dateformat}, "tablename", "<select>$select_data</select>\n<input type=\"text\" size=\"32\" maxlength=\"64\" name=\"customdateformat\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{language}, "tablecellheader", "", "tablecellheader");
 
-print end_td();
-print end_Tr();
+foreach my $language (keys %available_languages){
+	if ($language eq $language_selected){
+		$language_out = $language_out . "<option value=\"" . $language . "\" selected=selected>" . $available_languages{$language} . "</option>\n";
+	} else {
+		$language_out = $language_out . "<option value=\"" . $language . "\">" . $available_languages{$language} . "</option>\n";
+	}
+}
 
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{modules};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print "";
-print end_td();
-print end_Tr();
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{systemlanguage}, "tablename", $language_out, "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{modules}, "tablecellheader", "", "tablecellheader");
+foreach $presmodule_name (@presentation_modules){
+	$presmodule_out = $presmodule_out . "<option value=\"$presmodule_name\">$presmodule_name</option>";
+}
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{presentationmodule}, "tablename", "<select name=\"presmodule\">$presmodule_out</select>", "tabledata");
+foreach $dbmodule_name (@database_modules){
+	$dbmodule_out = $dbmodule_out . "<option value=\"$dbmodule_name\">$dbmodule_name</option>";
+}
 
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{presentationmodule};
-print end_td();
-print start_td({ -class => "tabledata" });
-print popup_menu({ -name => 'presmodule', -values => $presentation_modules_ref, -default => "HTML4S" });
-print end_td();
-print end_Tr();
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasemodule}, "tablename", "<select name=\"dbmodule\">$dbmodule_out</select>", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseserver}, "tablename", "<input type=\"text\" name=\"databaseserver\" size=\"32\" maxlength=\"128\" value=\"$default_server\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseport}, "tablename", "<input type=\"text\" name=\"databaseport\" maxlength=\"5\" size=\"5\" value=\"$default_port\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseprotocol}, "tablename", "<select name=\"databaseprotocol\">\n<option value=\"tcp\">tcp</option>\n<option value=\"udp\">udp</option>\n</select>\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasename}, "tablename", "<input type=\"text\" name=\"databasename\" size=\"32\" maxlength=\"32\" value=\"$default_name\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseusername}, "tablename", "<input type=\"text\" name=\"databaseusername\" size=\"16\" maxlength=\"16\" value=\"$default_username\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasepassword}, "tablename", "<input type=\"password\" name=\"databasepassword\" size=\"32\" maxlength=\"64\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasetableprefix}, "tablename", "<input type=\"text\" name=\"databasetableprefix\" size=\"32\" maxlength=\"32\" value=\"$default_prefix\">\n", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{installationoptions}, "tablecellheader", "", "tablecellheader");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{installoptions}, "tablename", "<input type=\"checkbox\" name=\"removeinstallscript\" checked=checked value=\"on\"> $kiriwrite_lang{$language_selected}{removeinstallscript}\n", "tabledata");
 
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databasemodule};
-print end_td();
-print start_td({ -class => "tabledata" });
-print popup_menu({ -name => 'dbmodule', -values => $database_modules_ref, -default => "SQLite" });
-print end_td();
-print end_Tr();
+print "</table>\n";
 
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databaseserver};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "databaseserver", -size => 32, -maxlength => 128, -value => $default_server });
-print end_td();
-print end_Tr();
+print "<br />\n<input type=\"submit\" value=\"$kiriwrite_lang{$language_selected}{savesettingsbutton}\"> | <input type=\"reset\" value=\"$kiriwrite_lang{$language_selected}{resetsettingsbutton}\">\n";
 
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databaseport};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "databaseport", -maxlength => 5, -size => 5, -value => $default_port });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databaseprotocol};
-print end_td();
-print start_td({ -class => "tabledata" });
-print popup_menu( -name => "databaseprotocol", -values => [ 'tcp', 'udp' ], -default => $default_protocol);
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databasename};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "databasename", -size => 32, -maxlength => 32, -default => $default_name });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databaseusername};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "databaseusername", -size => 16, -maxlength => 16, -default => $default_username });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databasepassword};
-print end_td();
-print start_td({ -class => "tabledata" });
-print password_field({ -name => "databasepassword", -size => 32, -maxlength => 64 });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{databasetableprefix};
-print end_td();
-print start_td({ -class => "tabledata" });
-print textfield({ -name => "databasetableprefix", -size => 32, -maxlength => 32, -default => $default_prefix });
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablecellheader" });
-print $kiriwrite_lang{$language_selected}{installationoptions};
-print end_td();
-print start_td({ -class => "tablecellheader" });
-print "";
-print end_td();
-print end_Tr();
-
-print start_Tr();
-print start_td({ -class => "tablename" });
-print $kiriwrite_lang{$language_selected}{installoptions};
-print end_td();
-print start_td({ -class => "tabledata" });
-print checkbox( -name => 'removeinstallscript', -checked => 1, -label => " " . $kiriwrite_lang{$language_selected}{removeinstallscript});
-print end_td();
-print end_Tr();
-
-print end_table();
-
-print br();
-print submit($kiriwrite_lang{$language_selected}{savesettingsbutton});
-print " | ";
-print reset($kiriwrite_lang{$language_selected}{resetsettingsbutton});
-
-print end_form();
-
-print end_html;
+print "</form>\n</body>\n</html>";
 exit;
 
 __END__
