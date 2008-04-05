@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.20: kiriwrite_filter_edit</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.20 kiriwrite_filter_edit</span><br><br>
+
+kiriwrite_filter_edit will edit a filter that is in the filter database. If no confirm value is given then a form will appear for editing a filter. If no filter identification number is given then an error is returned.<br><br>
+
+kiriwrite_filter_edit will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_filter_edit(filterid, newfilterfind, newfilterreplace, newfilterpriority, newfilternotes, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_filter_edit(1);
+    $pagedata = kiriwrite_filter_edit(1, “New filter find setting”, “New filter replace setting”, 1, “New filter notes”, 1);
+</div>
+
+<br>
+
+filterid<br>
+Specifies the filter identification number to edit. This is required every time the subroutine is called.<br><br>
+
+<i>newfilterfind</i><br>
+Specifies the new find filter setting. This is required when editing the filter.<br><br>
+
+<i>newfilterreplace</i><br>
+Specifies the new replace filter setting. This is required when editing the filter.<br><br>
+
+<i>newfilterpriority</i><br>
+Specifies the new filter priority. This is required when editing the filter.<br><br>
+
+<i>newfilternotes</i><br>
+Specifies the new filter notes. This is required when editing the filter.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to edit a filter should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

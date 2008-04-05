@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.17: editdatabase</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.17 editdatabase</span><br><br>
+
+Edits a database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->editdatabase(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectdb(“database”);<br>
+    $kiriwrite_dbmodule->editdatabase({ DatabaseNewFilename => “newdatabase”, DatabaseName => “New Database Name”, DatabaseDescription => “New Database Description”, DatabaseNotes => “New Database Notes”, DatabaseCategories => “new, database, categories” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseNewFilename</td>
+        <td class="tabledata">Specifies the new filename of the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseName</td>
+        <td class="tabledata">Specifies the new database name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseDescription</td>
+        <td class="tabledata">Specifies the new database description.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseNotes</td>
+        <td class="tabledata">Specifies the new notes.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatebaseCategories</td>
+        <td class="tabledata">Specifies the new categories.</td>
+    </tr>
+</table>
+
+<br>
+
+If a database is edited but the filename already exists (after checking if it does exist using the dbexists subroutine) then the error returned should be 'DatabaseExists' in the $error scalar.<br><br>
+
+If a database error occurs while editing the database, the error returned should be 'DatabaseError' in the $error scalar and the information about the error placed in the $errorext scalar.<br><br>
+
+If (when using a file-based database module) the database module can't be edited because of invalid permissions set then the error returned should be 'InvalidPermissionsSet' in the $error scalar.
+		</div>
+	</body>
+</html>

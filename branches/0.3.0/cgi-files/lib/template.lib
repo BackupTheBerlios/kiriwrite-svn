@@ -1,0 +1,1354 @@
+#################################################################################
+# template.lib: Kiriwrite Template Library					#
+#										#
+# This library is under the same license as the main Kiriwrite script.		#
+#################################################################################
+
+# This section of the file is for when the library is called from the main
+# Kiriwrite script.
+
+if ($form_data->{'action'}){
+
+	# An action has been specified in the HTTP query.
+
+	my $http_query_action = $form_data->{'action'};
+
+	if ($http_query_action eq "delete"){
+		# Get the required parameters from the HTTP query.
+
+		my $http_query_template	= $form_data->{'template'};
+		my $http_query_confirm	= $form_data->{'confirm'};
+
+		# Check if a value for confirm has been specified (it shouldn't)
+		# be blank.
+
+		if (!$http_query_confirm){
+			# The confirm parameter of the HTTP query is blank, so
+			# write out a form asking the user to confirm the deletion
+			# of the selected template.
+
+			my $pagedata = kiriwrite_template_delete($http_query_template);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{deletetemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		} else {
+
+			my $pagedata = kiriwrite_template_delete($http_query_template, $http_query_confirm);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{deletetemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+	} elsif ($http_query_action eq "add") {
+
+		# Get the variables from the HTTP query in preperation for processing.
+
+		my $http_query_confirm		= $form_data->{'confirm'};
+		my $http_query_templatelayout	= $form_data->{'templatelayout'};
+		my $http_query_templatename	= $form_data->{'templatename'};
+		my $http_query_templatedescription = $form_data->{'templatedescription'};
+		my $http_query_templatefilename	= $form_data->{'templatefilename'};
+
+		# Check if there is a confirmed value in the http_query_confirm variable.
+
+		if (!$http_query_confirm){
+
+			# Since there is no confirm value, print out a form for creating a new
+			# template.
+
+			my $pagedata = kiriwrite_template_add();
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{addtemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		} else {
+
+			# A value in the http_query_confirm value is specified, so pass the
+			# variables onto the kiriwrite_template_add subroutine.
+
+			my $pagedata = kiriwrite_template_add($http_query_templatefilename, $http_query_templatename, $http_query_templatedescription, $http_query_templatelayout, $http_query_confirm);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{addtemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+	} elsif ($http_query_action eq "edit") {
+
+		# Get the required parameters from the HTTP query.
+
+		my $http_query_templatefile 	= $form_data->{'template'};
+		my $http_query_confirm 		= $form_data->{'confirm'};
+
+		# Check to see if http_query_confirm has a value of '1' in it and
+		# if it does, edit the template using the settings providied.
+
+		if (!$http_query_confirm){
+
+			# Since there is no confirm value, open the template configuration
+			# file and the template file itself then print out the data on to
+			# the form.
+
+			my $pagedata = kiriwrite_template_edit($http_query_templatefile);
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{edittemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		} elsif ($http_query_confirm eq 1) {
+
+			# Since there is a confirm value of 1, the user has confirm the
+			# action of editing of a template so get the other variables 
+			# that were also sent and pass the variables to the subroutine.
+
+			my $http_query_newfilename 	= $form_data->{'newfilename'};
+			my $http_query_newname		= $form_data->{'newname'};
+			my $http_query_newdescription	= $form_data->{'newdescription'};
+			my $http_query_newlayout	= $form_data->{'newlayout'};
+
+			my $pagedata = kiriwrite_template_edit($http_query_templatefile, $http_query_newfilename, $http_query_newname, $http_query_newdescription, $http_query_newlayout, $http_query_confirm);
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{template}->{edittemplate}, $pagedata, "template");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		} else {
+
+			# Another confirm value is there instead of '0' or '1'. Return
+			# an error saying it is invalid.
+
+			kiriwrite_error("invalidvariable");
+
+		}
+
+	} elsif ($http_query_action eq "view"){
+
+		# Get the required parameters from the HTTP query.
+
+		my $http_query_browsenumber	= $form_data->{'browsenumber'};
+
+		my $pagedata = kiriwrite_template_list($http_query_browsenumber);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{template}->{viewtemplates}, $pagedata, "template");	# Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} else {
+
+		# Another action was specified and was not one of the ones above, so
+		# return an error.
+
+		kiriwrite_error("invalidaction");
+
+	}
+
+} else {
+
+	# If the action option is left blank, then print out a form where the list
+	# of templates are available.
+
+	my $pagedata = kiriwrite_template_list();
+
+	kiriwrite_output_header;	# Output the header to browser/console/stdout.
+	kiriwrite_output_page($kiriwrite_lang->{template}->{viewtemplates}, $pagedata, "template");	# Output the page to browser/console/stdout.
+	exit;				# End the script.
+
+}
+
+#################################################################################
+# Begin list of relevant subroutines.						#
+#################################################################################
+
+sub kiriwrite_template_add{
+#################################################################################
+# kiriwrite_template_add: Add a template to the template folder			#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_template_add(filename, name, description, layout, confirm);		#
+#										#
+# filename	The filename of the new template.				#
+# name		The name of the template.					#
+# description	The description of the template.				#
+# layout	The layout of the new template.					#
+# confirm	Confirm the action of creating a new template.			#
+#################################################################################
+
+	# Get the variables that were passed to the subroutine.
+
+	my ($templatefilename, $templatename, $templatedescription, $templatelayout, $confirm) = @_;
+
+	# Check if the confirm value is blank and if it is then set confirm to 0.
+
+	if (!$confirm){
+
+		# The confirm value is blank, so set the value of confirm to 0.
+
+		$confirm = 0;
+
+	}
+
+	if ($confirm eq 1){
+
+		# Check (validate) each of the values.
+
+		kiriwrite_variablecheck($templatename, "utf8", 0, 0);
+		kiriwrite_variablecheck($templatedescription, "utf8", 0, 0);
+		kiriwrite_variablecheck($templatelayout, "utf8", 0, 0);
+
+		# Convert the values into proper UTF8 strings that can be used.
+
+		$templatename 		= kiriwrite_utf8convert($templatename);
+		$templatedescription 	= kiriwrite_utf8convert($templatedescription);
+		$templatelayout		= kiriwrite_utf8convert($templatelayout);
+
+		# Check the length of the converted UTF8 strings.
+
+		my $templatefilename_length_check 	= kiriwrite_variablecheck($templatefilename, "maxlength", 64, 1);
+		my $templatename_length_check	  	= kiriwrite_variablecheck($templatename, "maxlength", 512, 1);
+		my $templatedescription_length_check 	= kiriwrite_variablecheck($templatedescription, "maxlength", 512, 1);
+		kiriwrite_variablecheck($confirm, "maxlength", 1, 0);
+
+		if ($templatefilename_length_check eq 1){
+
+			# The template filename length is too long, so return an error.
+
+			kiriwrite_error("templatefilenametoolong");
+
+		}
+
+		if ($templatename_length_check eq 1){
+
+			# The template name length is too long, so return an error.
+
+			kiriwrite_error("templatenametoolong");
+
+		}
+
+
+		if ($templatedescription_length_check eq 1){
+
+			# The template description length is too long, so return an error.
+
+			kiriwrite_error("templatedescriptiontoolong");
+
+		}
+
+ 		# Check if the filename specified is a valid filename.
+
+		kiriwrite_variablecheck($templatefilename, "filename", "", 0);
+
+		# Connect to the template server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate(1);
+
+		# Check if any errors had occured.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		}
+
+		$kiriwrite_dbmodule->addtemplate({ TemplateFilename => $templatefilename, TemplateName => $templatename, TemplateDescription => $templatedescription, TemplateLayout => $templatelayout });
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured so return an error along
+			# with the extended error information.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so return
+			# an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplatePageExists"){
+
+			# The template page already exists so return an error.
+
+			kiriwrite_error("templatefilenameexists");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseUncreateable"){
+
+			# The template databases is uncreatable so return an error.
+
+			kiriwrite_error("templatedatabasenotcreated");
+
+		}
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Disconnect from the template server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Print out the confirmation message.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{addedtemplate}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{addedtemplatemessage}, $templatename));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntemplatelist} });
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+		# No confirmation was made, so print out a form for adding a template.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{addtemplate}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "template");
+		$kiriwrite_presmodule->addhiddendata("action", "add");
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->starttable("", { CellSpacing => 0, CellPadding => 5 });
+
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->endheader();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("templatename", { Size => 64, MaxLength => 512 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatedescription});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("templatedescription", { Size => 64, MaxLength => 512 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatefilename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("templatefilename", { Size => 32, MaxLength => 64 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatelayout});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtextbox("templatelayout", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"} });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+		$kiriwrite_presmodule->addboldtext($kiriwrite_lang->{common}->{tags});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagecontent});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagetitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagename});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagedescription});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagesection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautosection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautotitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+		$kiriwrite_presmodule->endtable();
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{template}->{addtemplatebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{clearvalues});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template" , { Text => $kiriwrite_lang->{template}->{returntemplatelist} });
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	}
+
+
+}
+
+sub kiriwrite_template_edit{
+#################################################################################
+# kiriwrite_template_edit: Edit a template from the template folder.		#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_template_edit(filename, [newfilename], [newname], [newdescription], #
+#				[templatelayout], [confirm]);			#
+#										#
+# filename		The current filename of the template to edit.		#
+# newfilename		The new filename of the template to edit.		#
+# newname		The new name of the template being edited.		#
+# newdescription	The new description of the template being edited.	#
+# templatelayout	The modified/altered template layout.			#
+# confirm		Confirms the action to edit a template and its		#
+#			settings.						#
+#################################################################################
+
+	# Get all the variables that have been passed to the subroutine.
+
+	my ($templatefilename, $templatenewfilename, $templatenewname, $templatenewdescription, $templatelayout, $confirm) = @_;
+
+	# Check if the confirm variable is blank, if it is then
+	# set confirm to '0'
+
+	if (!$confirm){
+
+		# confirm is uninitalised/blank, so set the value of confirm
+		# to '0'
+
+		$confirm = 0;
+
+	}
+
+	# Check if the template filename is blank and if it is, then return
+	# an error.
+
+	if (!$templatefilename){
+
+		kiriwrite_error("templatefilenameblank");
+
+	}
+
+	# Connect to the database server.
+
+	$kiriwrite_dbmodule->connect();
+
+	# Check if any errors occured while connecting to the database server.
+
+	if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+		# A database connection error has occured so return
+		# an error.
+
+		kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+	}
+
+	if ($confirm eq 1){
+
+		# Check certain strings to see if they UTF8 compiliant.
+
+		kiriwrite_variablecheck($templatenewname, "utf8", 0, 0);
+		kiriwrite_variablecheck($templatenewdescription, "utf8", 0, 0);
+		kiriwrite_variablecheck($templatelayout, "utf8", 0, 0);
+
+		# Convert the values into proper UTF8 strings.
+
+		$templatenewname 	= kiriwrite_utf8convert($templatenewname);
+		$templatenewdescription	= kiriwrite_utf8convert($templatenewdescription);
+ 		$templatelayout		= kiriwrite_utf8convert($templatelayout);
+
+		# Check if the filenames recieved are valid filenames.
+
+		kiriwrite_variablecheck($templatenewfilename, "maxlength", 64, 0);
+		kiriwrite_variablecheck($templatenewdescription, "maxlength", 512, 0);
+		kiriwrite_variablecheck($templatenewname, "maxlength", 512, 0);
+		kiriwrite_variablecheck($templatefilename, "maxlength", 64, 0);
+		kiriwrite_variablecheck($confirm, "maxlength", 1, 0);
+
+		kiriwrite_variablecheck($templatefilename, "filename", "", 0);
+		kiriwrite_variablecheck($templatenewfilename, "filename", "", 0);
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		# Check if any errors had occured.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		}
+
+		# Edit the template.
+
+		$kiriwrite_dbmodule->edittemplate({ TemplateFilename => $templatefilename, NewTemplateFilename => $templatenewfilename, NewTemplateName => $templatenewname, NewTemplateDescription => $templatenewdescription, NewTemplateLayout => $templatelayout });
+
+		# Check if any error occured while editing the template.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured, so return an error.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so return
+			# an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+			# The template does not exist, so process the next template.
+
+			kiriwrite_error("templatedoesnotexist");
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Disconnect from the template database.
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Append a link so that the user can return to the templates list.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{editedtemplate}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{editedtemplatemessage}, $templatenewname));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntemplatelist} });
+
+	} else {
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		# Check if any errors had occured.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		}
+
+		# Get the template information.
+
+		my %template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $templatefilename });
+
+		# Check if any error occured while getting the template information.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured, so return an error.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+			# The template does not exist, so return an error.
+
+			kiriwrite_error("templatedoesnotexist");
+
+		}
+
+		# Disconnect from the template database.
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Get the values from the query results.
+
+		my $template_filename		= $template_info{"TemplateFilename"};
+		my $template_name		= $template_info{"TemplateName"};
+		my $template_description	= $template_info{"TemplateDescription"};
+		my $template_layout		= $template_info{"TemplateLayout"};
+		my $template_modified		= $template_info{"TemplateLastModified"};
+
+		# Check if the values are undefined and set them blank
+		# if they are.
+
+		if (!$template_name){
+			$template_name = "";
+		}
+
+		if (!$template_description){
+			$template_description = "";
+		}
+
+		if (!$template_layout){
+			$template_layout = "";
+		}
+
+		# Write out the form for editing an template with the current template 
+		# settings put into the correct place.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{edittemplate}, { Style => "pageheader" });
+ 		$kiriwrite_presmodule->addlinebreak();
+ 		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "template");
+		$kiriwrite_presmodule->addhiddendata("action", "edit");
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+		$kiriwrite_presmodule->addhiddendata("template", $template_filename);
+		$kiriwrite_presmodule->starttable("", { CellSpacing => 0, CellPadding => 5});
+
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->endheader();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("newname", { Size => 64, MaxLength => 512, Value => $template_name });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatedescription});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("newdescription", { Size => 64, MaxLength => 512, Value => $template_description });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatefilename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("newfilename", { Size => 32, MaxLength => 64, Value => $template_filename });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{templatelayout});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtextbox("newlayout", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"}, Value => $template_layout});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+		$kiriwrite_presmodule->addboldtext($kiriwrite_lang->{common}->{tags});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagecontent});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagetitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagename});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagedescription});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagesection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautosection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautotitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->endtable();
+
+		$kiriwrite_presmodule->addlinebreak();
+
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{template}->{edittemplatebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{restorecurrent});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntemplatelist} });
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+	}
+
+	# Disconnect from the database server.
+
+	$kiriwrite_dbmodule->disconnect();
+
+	return $kiriwrite_presmodule->grab();
+
+}
+
+sub kiriwrite_template_delete{
+#################################################################################
+# kiriwrite_template_delete: Delete a template from the template folder.	#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_template_delete(filename, confirm);					#
+#										#
+# filename	Specifies the filename of the database to delete.		#
+# confirm	Confirms the action to delete a template.			#
+#################################################################################
+
+	# Get the parameters that were passed to the subroutine.
+
+	my ($template_filename, $template_confirm) = @_;
+
+	if (!$template_confirm){
+		$template_confirm = 0;
+	}
+
+	# Check the length of the variables.
+	kiriwrite_variablecheck($template_filename, "maxlength", 64, 0);
+	kiriwrite_variablecheck($template_confirm, "maxlength", 1, 0);
+
+	# Check if the template_name string is blank and if it is then
+	# return an error (as the template_name string should not be
+	# blank.
+
+	if (!$template_filename){
+
+		# The template_filename string really is blank, 
+		# so return an error saying that an empty
+		# filename was passed (to the subroutine).
+
+		kiriwrite_error("templatefilenameblank");
+
+	}
+
+	# Check if the template_confirm string is blank and if it is, write
+	# out a form asking the user to confirm the deletion.
+
+	if ($template_confirm eq 1){
+
+		# The action to delete the template from the template database has
+		# been confirmed so delete the template.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Check if the template database exists and the file permissions
+		# are valid and return an error if they aren't.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+			# The template database does not exist so write a warning
+			# message.
+
+			kiriwrite_error("templatedatabasemissing");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		}
+
+		my %template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_filename });
+
+		# Check if any error occured while getting the template information.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured, so return an error.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+			# The template does not exist, so return an error.
+
+			kiriwrite_error("templatedoesnotexist");
+
+		}
+
+		# Delete the selected template.
+
+		$kiriwrite_dbmodule->deletetemplate({ TemplateFilename => $template_filename });
+
+		# Check if any error occured while deleting the template.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+ 			# A database error has occured, so return an error.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+			# The template does not exist, so process the next template.
+
+			kiriwrite_error("templatedoesnotexist");
+
+		}
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Get the deleted database name.
+
+		my $database_template_name = $template_info{"TemplateName"};
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{deletedtemplate}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{deletedtemplatemessage}, $database_template_name) );
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntemplatelist} });
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($template_confirm eq 0) {
+
+		# The template confirm value is 0 (previously blank and then set to 0), so
+		# write out a form asking the user to confirm the deletion of the template.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+			# The template database does not exist so write a warning
+			# message.
+
+			kiriwrite_error("templatedatabasemissing");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			kiriwrite_error("templatedatabaseinvalidpermissions");
+
+		}
+
+		my %template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_filename });
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured, so return an error.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+			# The template does not exist, so return an error.
+
+			kiriwrite_error("templatedoesnotexist");
+
+		}
+
+		my $template_data_filename	= $template_info{"TemplateFilename"};
+		my $template_data_name		= $template_info{"TemplateName"};
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out the confirmation form.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{deletetemplate}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "template");
+		$kiriwrite_presmodule->addhiddendata("template", $template_filename);
+		$kiriwrite_presmodule->addhiddendata("action", "delete");
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{deletetemplatemessage}, $template_data_name, $template_data_filename));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{template}->{deletetemplatebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{deletetemplatereturntolist} });
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+			kiriwrite_error("invalidvariable");
+
+	}
+
+}
+
+sub kiriwrite_template_list{
+#################################################################################
+# kiriwrite_template_list: List the templates in the template folder.		#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_template_list([browsenumber]);					#
+#										#
+# browsenumber	Specifies the page browse number to use.			#
+#################################################################################
+
+	# Define certain values for later.
+
+	my $template_browsenumber	= shift;
+
+	my %template_info;
+
+	my @templates_list;
+
+	my $template;
+	my $template_filename 		= "";
+	my $template_filename_list	= "";
+	my $template_name		= "";
+	my $template_description 	= "";
+	my $template_data		= "";
+
+	my $template_split	= $kiriwrite_config{"display_templatecount"};
+	my $template_list	= 0;
+
+	my $template_count = 0;
+
+	my $template_style = 0;
+	my $template_stylename = "";
+
+	my $templatewarning = "";
+
+	# Connect to the database server.
+
+	$kiriwrite_dbmodule->connect();
+
+	# Check if any errors occured while connecting to the database server.
+
+	if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+		# A database connection error has occured so return
+		# an error.
+
+		kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+	}
+
+	# Connect to the template database.
+
+	$kiriwrite_dbmodule->connecttemplate();
+
+	# Check if any errors had occured.
+
+	if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+		# The template database does not exist so write a warning
+		# message.
+
+		$templatewarning = $kiriwrite_lang->{template}->{templatedatabasedoesnotexist};
+
+	} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+		# The template database has invalid permissions set so
+		# return an error.
+
+		kiriwrite_error("templatedatabaseinvalidpermissions");
+
+	} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+		# A database error occured while getting the list of
+		# templates so return an error with the extended
+		# error information.
+
+		kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+	}
+
+	# Get the list of template databases.
+
+	if (!$templatewarning){
+
+		# Get the total count of filters in the filter database.
+
+		my $template_total_count	= $kiriwrite_dbmodule->gettemplatecount;
+
+		# Check if any errors occured while getting the count of filters.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+			# A database error has occured with the filter database.
+
+			kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		if (!$template_browsenumber || $template_browsenumber eq 0){
+
+			$template_browsenumber = 1;
+
+		}
+
+		# Check if the template browse number is valid and if it isn't
+		# then return an error.
+
+		my $kiriwrite_browsenumber_length_check		= kiriwrite_variablecheck($template_browsenumber, "maxlength", 7, 1);
+		my $kiriwrite_browsenumber_number_check		= kiriwrite_variablecheck($template_browsenumber, "numbers", 0, 1);
+
+		if ($kiriwrite_browsenumber_length_check eq 1){
+
+			# The browse number was too long so return
+			# an error.
+
+			kiriwrite_error("browsenumbertoolong");
+
+		}
+
+		if ($kiriwrite_browsenumber_number_check eq 1){
+
+			# The browse number wasn't a number so
+			# return an error.
+
+			kiriwrite_error("browsenumberinvalid");
+
+		}
+
+		if ($template_total_count ne 0){
+
+			if ($template_total_count eq $template_split){
+
+				$template_list = int(($template_total_count / $template_split));
+
+			} else {
+
+				$template_list = int(($template_total_count / $template_split) + 1);
+
+			}
+
+		}
+
+		my $start_from = ($template_browsenumber - 1) * $template_split;
+
+		@templates_list = $kiriwrite_dbmodule->gettemplatelist({ StartFrom => $start_from, Limit => $template_split });
+
+	}
+
+	# Check if any errors had occured.
+
+	if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+		# A database error occured while getting the list
+		# of templates so return an error with the 
+		# extended error information.
+
+		kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+	}
+
+	# Check if any templates are in the database and if there isn't
+	# then write a message saying that there are no templates in the
+	# database.
+
+	if (!@templates_list && $template_browsenumber > 1){
+
+		# There were no values given for the page browse
+		# number given so write a message saying that
+		# there were no pages for the page browse number
+		# given.
+
+		$kiriwrite_presmodule->clear();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{template}->{viewtemplates}, $db_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("errorbox");
+		$kiriwrite_presmodule->enterdata($kiriwrite_lang->{template}->{notemplatesinpagebrowse});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template", { Text => $kiriwrite_lang->{template}->{returntofirstpagebrowse} });
+		$kiriwrite_presmodule->endbox();
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif (!@templates_list && !$templatewarning){
+		$templatewarning = $kiriwrite_lang->{template}->{notemplatesavailable};
+	}
+
+	# Process the templates into a template list.
+
+	$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{viewtemplates}, { Style => "pageheader" });
+	$kiriwrite_presmodule->addlinebreak();
+	$kiriwrite_presmodule->addlinebreak();
+
+	if ($templatewarning){
+
+		$kiriwrite_presmodule->startbox("errorbox");
+		$kiriwrite_presmodule->addtext($templatewarning);
+		$kiriwrite_presmodule->endbox();
+
+	} else {
+
+		if (!$template_browsenumber || $template_browsenumber eq 0){
+
+			$template_browsenumber = 1;
+
+		}
+
+		# Check if the template browse number is valid and if it isn't
+		# then return an error.
+
+		my $kiriwrite_browsenumber_length_check		= kiriwrite_variablecheck($template_browsenumber, "maxlength", 7, 1);
+		my $kiriwrite_browsenumber_number_check		= kiriwrite_variablecheck($template_browsenumber, "numbers", 0, 1);
+
+		if ($kiriwrite_browsenumber_length_check eq 1){
+
+			# The browse number was too long so return
+			# an error.
+
+			kiriwrite_error("browsenumbertoolong");
+
+		}
+
+		if ($kiriwrite_browsenumber_number_check eq 1){
+
+			# The browse number wasn't a number so
+			# return an error.
+
+			kiriwrite_error("browsenumberinvalid");
+
+		}
+
+		# Start a form for using the template browsing list with.
+
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "GET");
+		$kiriwrite_presmodule->addhiddendata("mode", "template");
+
+		# Write out the template browsing list.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{template}->{showlistpage});
+		$kiriwrite_presmodule->addselectbox("browsenumber");
+
+		# Write out the list of available pages to browse.
+		
+		if (!$template_list_count){
+
+			$template_list_count = 0;
+
+		}
+
+		while ($template_list_count ne $template_list){
+
+			$template_list_count++;
+
+			if ($template_list_count eq 1 && !$template_browsenumber){
+
+				$kiriwrite_presmodule->addoption($template_list_count, { Value => $template_list_count, Selected => 1 });
+
+			} else {
+
+				if ($template_browsenumber eq $template_list_count){
+
+					$kiriwrite_presmodule->addoption($template_list_count, { Value => $template_list_count, Selected => 1 });
+
+				} else {
+
+					$kiriwrite_presmodule->addoption($template_list_count, { Value => $template_list_count });
+
+				}
+
+			}
+
+		}
+
+		$kiriwrite_presmodule->endselectbox();
+		$kiriwrite_presmodule->addbutton("action", { Value => "view", Description => $kiriwrite_lang->{template}->{show} });		
+
+		if ($template_list ne $template_browsenumber){
+
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template&action=view&browsenumber=" . ($template_browsenumber + 1), { Text => $kiriwrite_lang->{template}->{nextpage} });
+
+		}
+
+		# Check if the filter browse number is not blank and
+		# not set as 0 and hide the Previous page link if
+		# it is.
+
+		if ($template_browsenumber > 1){
+
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template&action=view&browsenumber=" . ($template_browsenumber - 1), { Text => $kiriwrite_lang->{template}->{previouspage} });
+
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{template}->{templatefilename}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{template}->{templatename}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{template}->{templatedescription}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{options}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->endheader();
+
+		foreach $template (@templates_list){
+
+			# Get the template data.
+
+			%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template, Reduced => 1 });
+
+			# Check if any errors occured while trying to get the template
+			# data.
+
+			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+				# A database error has occured, so return an error.
+
+				kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+				# The template does not exist, so process the next template.
+
+				next;
+
+			}
+
+			$template_filename	= $template_info{"TemplateFileName"};
+			$template_name		= $template_info{"TemplateName"};
+			$template_description	= $template_info{"TemplateDescription"};
+
+ 			# Check what style the row of table cells should be.
+ 
+ 			if ($template_style eq 0){
+ 
+ 				$template_stylename = "tablecell1";
+ 				$template_style = 1;
+ 
+ 			} else {
+ 
+ 				$template_stylename = "tablecell2";
+ 				$template_style = 0;
+ 
+ 			}
+
+			$kiriwrite_presmodule->startrow();
+			$kiriwrite_presmodule->addcell($template_stylename);
+			$kiriwrite_presmodule->addtext($template_info{"TemplateFilename"});
+
+# 			# Check if the blank template value was set.
+# 
+# 			if (!$template_info{"TemplateLayout"}){
+# 				$kiriwrite_presmodule->additalictext(" " . "[Blank Template]");
+# 			}
+
+			$kiriwrite_presmodule->endcell();
+			$kiriwrite_presmodule->addcell($template_stylename);
+
+			# Check if the template name is blank and if it is
+			# write a message to say there's no name for the
+			# template.
+
+			if (!$template_info{"TemplateName"}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+			} else {
+				$kiriwrite_presmodule->addtext($template_info{"TemplateName"});
+			}
+
+			$kiriwrite_presmodule->endcell();
+			$kiriwrite_presmodule->addcell($template_stylename);
+
+			# Check if the template description is blank and if
+			# it is then write a message to say there's no
+			# description for the template.
+
+			if (!$template_info{"TemplateDescription"}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{nodescription});
+			} else {
+				$kiriwrite_presmodule->addtext($template_info{"TemplateDescription"});
+			}
+
+			$kiriwrite_presmodule->endcell();
+			$kiriwrite_presmodule->addcell($template_stylename);
+			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template&action=edit&template=" . $template_info{"TemplateFilename"}, { Text => $kiriwrite_lang->{options}->{edit} });
+			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=template&action=delete&template=" . $template_info{"TemplateFilename"}, { Text => $kiriwrite_lang->{options}->{delete} });
+			$kiriwrite_presmodule->endcell();
+			$kiriwrite_presmodule->endrow();
+
+		}
+
+		$kiriwrite_presmodule->endtable();
+		$kiriwrite_presmodule->endform();
+
+	}
+
+	# Disconnect from the database server.
+
+	$kiriwrite_dbmodule->disconnect();
+
+	$kiriwrite_dbmodule->disconnecttemplate();
+	return $kiriwrite_presmodule->grab();
+
+
+}
+
+1; 

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.37: addfilter</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.37 addfilter</span><br><br>
+
+Adds a filter to the filter database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->addfilter(options);
+</div>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->connectfilter(1);
+    $kiriwrite_dbmodule->addfilter({ FindFilter => “This is the find filter.”, ReplaceFilter => “This is the replace filter.”, Priority => 1, Enabled => 1, Notes => “Some notes about the filter.” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">FindFilter</td>
+        <td class="tabledata">Specifies the find filter setting of the new filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">ReplaceFilter</td>
+        <td class="tabledata">Specifies the replace filter setting of the new filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Priority</td>
+        <td class="tabledata">Specifies the priority setting of the new filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Enabled</td>
+        <td class="tabledata">Specifies if the filter should be used when compiling.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Notes</td>
+        <td class="tabledata">Specifies the notes for the new filter.</td>
+    </tr>
+</table>
+
+<br>
+
+If the filter database cannot be created when adding a filter and the filter database doesn't already exist then the error returned should be 'FilterDatabaseFileUncreatable' in the $error scalar.<br><br>
+
+If (when using the file-based database module) the filter database has invalid permissions set then the error returned should be 'FilterDatabaseInvalidPermissionsSet' in the $error scalar.
+		</div>
+	</body>
+</html>

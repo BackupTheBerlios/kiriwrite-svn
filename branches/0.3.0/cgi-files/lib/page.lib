@@ -1,0 +1,5285 @@
+#################################################################################
+# page.lib: Kiriwrite Page Library						#
+#										#
+# This library is under the same license as the main Kiriwrite script.		#
+#################################################################################
+
+# This section of the file is for when the library is called from the main
+# Kiriwrite script.
+
+if ($form_data->{'action'}){
+	my $http_query_action = $form_data->{'action'};
+
+	# Check if the action requested matches with one of the options below. If it does,
+	# go to that section, otherwise return an error.
+
+	if ($http_query_action eq "view"){
+
+		# The action selected was to view pages from a database, 
+
+		my $http_query_database		= $form_data->{'database'};
+		my $http_query_browsenumber	= $form_data->{'browsenumber'};
+		my $pagedata 		= kiriwrite_page_list($http_query_database, $http_query_browsenumber);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{viewingdatabase}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+		exit;			# End the script.
+
+	} elsif ($http_query_action eq "add"){
+
+		# The action selected was to add a page to the selected database.
+
+		my $http_query_confirm	= $form_data->{'confirm'};
+
+		if (!$http_query_confirm){
+
+			$http_query_confirm = 0;
+
+		}
+
+		if ($http_query_confirm eq 1){
+
+			my $http_query_database		= $form_data->{'database'};
+			my $http_query_filename 	= $form_data->{'pagefilename'};
+			my $http_query_name 		= $form_data->{'pagename'};
+			my $http_query_description 	= $form_data->{'pagedescription'};
+			my $http_query_section		= $form_data->{'pagesection'};
+			my $http_query_template		= $form_data->{'pagetemplate'};
+			my $http_query_settings		= $form_data->{'pagesettings'};
+			my $http_query_content		= $form_data->{'pagecontent'};
+	
+			my $pagedata			= kiriwrite_page_add($http_query_database, $http_query_filename, $http_query_name, $http_query_description, $http_query_section, $http_query_template, $http_query_settings, $http_query_content, $http_query_confirm);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{addpage}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		my $http_query_database	= $form_data->{'database'};
+		my $pagedata		= kiriwrite_page_add($http_query_database);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{addpage}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} elsif ($http_query_action eq "edit"){
+		
+		# The action selected was to edit a page from a database.
+
+		my $http_query_confirm = $form_data->{'confirm'};
+
+		if (!$http_query_confirm){
+
+			$http_query_confirm = 0;
+
+		}
+
+		if ($http_query_confirm eq 1){
+
+			# Get the needed values from the HTTP query.
+
+			my $http_query_database 	= $form_data->{'database'};
+			my $http_query_filename		= $form_data->{'page'};
+			my $http_query_newfilename	= $form_data->{'pagefilename'};
+			my $http_query_name		= $form_data->{'pagename'};
+			my $http_query_description	= $form_data->{'pagedescription'};
+			my $http_query_section		= $form_data->{'pagesection'};
+			my $http_query_template		= $form_data->{'pagetemplate'};
+			my $http_query_settings		= $form_data->{'pagesettings'};
+			my $http_query_content		= $form_data->{'pagecontent'};
+
+			# Pass the values to the editing pages subroutine.
+
+			my $pagedata = kiriwrite_page_edit($http_query_database, $http_query_filename, $http_query_newfilename, $http_query_name, $http_query_description, $http_query_section, $http_query_template, $http_query_settings, $http_query_content, $http_query_confirm);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{editpagetitle}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		# Get the needed values from the HTTP query.
+
+		my $http_query_database = $form_data->{'database'};
+		my $http_query_filename	= $form_data->{'page'};
+
+		# Pass the values to the editing pages subroutine.
+
+		my $pagedata = kiriwrite_page_edit($http_query_database, $http_query_filename);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{editpagetitle}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+
+	} elsif ($http_query_action eq "delete"){
+
+		# The action selected was to delete a page from a database.
+
+		my $http_query_database	= $form_data->{'database'};
+		my $http_query_page	= $form_data->{'page'};
+		my $http_query_confirm 	= $form_data->{'confirm'};
+
+		my $pagedata = "";
+		my $selectionlist = "";
+
+		if ($http_query_confirm){
+
+			# The action has been confirmed, so try to delete the selected page
+			# from the database.
+
+			$pagedata = kiriwrite_page_delete($http_query_database, $http_query_page, $http_query_confirm);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{deletepagetitle}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		$pagedata = kiriwrite_page_delete($http_query_database, $http_query_page);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{deletepagetitle}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+
+	} elsif ($http_query_action eq "multidelete"){
+
+		# The action selected was to delete multiple pages from a
+		# database.
+
+		my $http_query_database	= $form_data->{'database'};
+		my $http_query_confirm 	= $form_data->{'confirm'};
+
+		my @filelist;
+		my $pagedata;
+
+		if ($http_query_confirm){
+
+			# The action to delete multiple pages from the selected
+			# database has been confirmed.
+
+			@filelist	= kiriwrite_selectedlist();
+			$pagedata 	= kiriwrite_page_multidelete($http_query_database, $http_query_confirm, @filelist);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{deletemultiplepages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		# Get the list of selected pages and pass them to the
+		# multiple page delete subroutine.
+
+		@filelist	= kiriwrite_selectedlist();
+		$pagedata 	= kiriwrite_page_multidelete($http_query_database, $http_query_confirm, @filelist);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{deletemultiplepages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} elsif ($http_query_action eq "multimove"){
+
+		# The action selected was to move multiple pages from a
+		# database.
+
+		my $http_query_database		= $form_data->{'database'};
+		my $http_query_newdatabase	= $form_data->{'newdatabase'};
+		my $http_query_confirm		= $form_data->{'confirm'};
+
+		my @filelist;
+		my $pagedata;
+
+		if ($http_query_confirm){
+
+			# The action to move multiple pages from the selected
+			# database has been confirmed.
+
+			@filelist	= kiriwrite_selectedlist();
+			$pagedata	= kiriwrite_page_multimove($http_query_database, $http_query_newdatabase, $http_query_confirm, @filelist);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{movepages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		# Get the list of selected pages and pass them to the
+		# multiple page move subroutine.
+
+		@filelist	= kiriwrite_selectedlist();
+		$pagedata	= kiriwrite_page_multimove($http_query_database, $http_query_newdatabase, $http_query_confirm, @filelist);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{movepages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} elsif ($http_query_action eq "multicopy"){
+
+		# The action selected was to copy multiple pages from a
+		# database.
+
+		my $http_query_database		= $form_data->{'database'};
+		my $http_query_newdatabase	= $form_data->{'newdatabase'};
+		my $http_query_confirm		= $form_data->{'confirm'};
+
+		my @filelist;
+		my $pagedata;
+
+		if ($http_query_confirm){
+
+			# The action to copy multiple pages from the selected
+			# database has been confirmed.
+
+			@filelist	= kiriwrite_selectedlist();
+			$pagedata	= kiriwrite_page_multicopy($http_query_database, $http_query_newdatabase, $http_query_confirm, @filelist);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{copypages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+			exit;				# End the script.
+
+		}
+
+		# Get the list of selected pages and pass them to the
+		# multiple page copy subroutine.
+
+		@filelist	= kiriwrite_selectedlist();
+		$pagedata	= kiriwrite_page_multicopy($http_query_database, $http_query_newdatabase, $http_query_confirm, @filelist);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{copypages}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} elsif ($http_query_action eq "multiedit"){
+
+		# The action selected was to edit multiple pages from a
+		# database.
+
+		my $http_query_database		= $form_data->{'database'};
+		my $http_query_newsection	= $form_data->{'newsection'};
+		my $http_query_altersection	= $form_data->{'altersection'};
+		my $http_query_newtemplate	= $form_data->{'newtemplate'};
+		my $http_query_altertemplate	= $form_data->{'altertemplate'};
+		my $http_query_newsettings	= $form_data->{'newsettings'};
+		my $http_query_altersettings	= $form_data->{'altersettings'};
+		my $http_query_confirm		= $form_data->{'confirm'};
+
+		my @filelist;
+		my $pagedata;
+
+		if (!$http_query_confirm){
+
+			@filelist 	= kiriwrite_selectedlist();
+			$pagedata	= kiriwrite_page_multiedit($http_query_database, $http_query_newsection, $http_query_altersection, $http_query_newtemplate, $http_query_altertemplate, $http_query_newsettings, $http_query_altersettings, $http_query_confirm, @filelist);
+
+			kiriwrite_output_header;	# Output the header to browser/console/stdout.
+			kiriwrite_output_page($kiriwrite_lang->{pages}->{multiedit}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+			exit;
+
+		}
+
+		# Get the list of selected pages and pass them to the
+		# multiple page edit subroutine.
+
+		@filelist 	= kiriwrite_selectedlist();
+		$pagedata	= kiriwrite_page_multiedit($http_query_database, $http_query_newsection, $http_query_altersection, $http_query_newtemplate, $http_query_altertemplate, $http_query_newsettings, $http_query_altersettings, $http_query_confirm, @filelist);
+
+		kiriwrite_output_header;	# Output the header to browser/console/stdout.
+		kiriwrite_output_page($kiriwrite_lang->{pages}->{multiedit}, $pagedata, "pages"); # Output the page to browser/console/stdout.
+		exit;				# End the script.
+
+	} else {
+		kiriwrite_error("invalidaction");
+	}
+
+} else {
+
+	# If there the action option is left blank, then print out a form where the database
+	# can be selected to view pages from.
+
+	my $pagedata = kiriwrite_page_list();
+
+	kiriwrite_output_header;	# Output the header to browser/console/stdout.
+	kiriwrite_output_page($kiriwrite_lang->{pages}->{databaseselecttitle}, $pagedata, "pages");	# Output the page to browser/console/stdout.
+	exit;				# End the script.
+
+}
+
+#################################################################################
+# Begin list of relevant subroutines.						#
+#################################################################################
+
+sub kiriwrite_page_list{
+#################################################################################
+# kiriwrite_page_list: Lists pages from an database.				#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_list([database], [browsernumber]);				#
+#										#
+# database	Specifies the database to retrieve the pages from.		#
+# browsenumber	Specifies which list of pages to look at.			#
+#################################################################################
+
+	# Get the database file name from what was passed to the subroutine.
+
+	my ($database_file, $page_browsenumber) = @_;
+
+	# Check if the database_file variable is empty, if it is then print out a
+	# select box asking the user to select a database from the list.
+
+	if (!$database_file) {
+
+		# Define the variables required for this section.
+
+		my %database_info;
+		my @database_list;
+		my @databasefilenames;
+		my @databasenames;
+		my $dbseek		= 0;
+		my $dbfilename		= "";
+		my $dbname		= "";
+		my $data_file 		= "";
+		my $data_file_length	= 0;
+		my $data_file_friendly	= "";
+		my $database_name	= "";
+		my $file_permissions	= "";
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Open the data directory and get all of the databases.
+
+		@database_list	= $kiriwrite_dbmodule->getdblist();
+
+		# Check if any errors occured while trying to get the list of databases.
+
+ 		if ($kiriwrite_dbmodule->geterror eq "DataDirMissing"){
+
+			# The database directory is missing so return an error.
+
+			kiriwrite_error("datadirectorymissing");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
+
+			# The database directory has invalid permissions set so return
+			# an error.
+
+			kiriwrite_error("datadirectoryinvalidpermissions");
+
+		}
+
+		# Get the information about each database (the short name and friendly name).
+
+		foreach $data_file (@database_list){
+
+			$kiriwrite_dbmodule->selectdb({ DatabaseName => $data_file });
+
+			# Check if any errors occured while selecting the database.
+
+			if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+				# The database does not exist, so process the next
+				# database.
+
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+				# The database has invalid permissions set, so process
+				# the next database.
+
+				next;
+
+			}
+
+			# Get the database information.
+
+			%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+			# Check if any errors had occured while getting the database
+			# information.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured, so process the next 
+				# database.
+
+				next;
+
+			};
+
+			# Set the database name.
+
+			$database_name 		= $database_info{"DatabaseName"};
+
+			# Check if the database name is undefined and if it is
+			# then set it blank.
+
+			if (!$database_name){
+				$database_name = "";
+			}
+
+			# Append the database to the list of databases available.
+
+			push(@databasefilenames, $data_file);
+			push(@databasenames, $database_name);
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write the page data.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{viewpages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{nodatabaseselected});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"});
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "view");
+		$kiriwrite_presmodule->addselectbox("database");
+		foreach $dbfilename (@databasefilenames){
+			$dbname = $databasenames[$dbseek];
+			$dbseek++;
+			$kiriwrite_presmodule->addoption($dbname . " (" . $dbfilename . ")", { Value => $dbfilename });
+		}
+		$kiriwrite_presmodule->endselectbox();
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{viewbutton});
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		my %database_info;
+		my %page_info;
+		my @database_pages;
+		my $pagemultioptions	= "";
+		my $db_name		= "";
+		my $tablestyle		= "";
+
+		my $page_filename	= "";
+		my $page_name		= "";
+		my $page_description	= "";
+		my $page_modified	= "";
+
+		my $tablestyletype	= 0;
+		my $page_count		= 0;
+		my $db_file_notblank	= 0;
+		my $page_split		= $kiriwrite_config{"display_pagecount"};
+		my $page_list		= 0;
+		my $page_list_count	= 0;
+
+		tie(%database_info, 'Tie::IxHash');
+		tie(%page_info, 'Tie::IxHash');
+
+		# The database_file variable is not blank, so print out a list of pages from
+		# the selected database.
+
+		# Preform a variable check on the database filename to make sure that it is
+		# valid before using it.
+
+		kiriwrite_variablecheck($database_file, "filename", "", 0);
+		kiriwrite_variablecheck($database_file, "maxlength", 32, 0);
+
+		if (!$page_browsenumber || $page_browsenumber eq 0){
+
+			$page_browsenumber = 1;
+
+		}
+
+		# Check if the page browse number is valid and if it isn't
+		# then return an error.
+
+		my $kiriwrite_browsenumber_length_check		= kiriwrite_variablecheck($page_browsenumber, "maxlength", 7, 1);
+		my $kiriwrite_browsenumber_number_check		= kiriwrite_variablecheck($page_browsenumber, "numbers", 0, 1);
+
+		if ($kiriwrite_browsenumber_length_check eq 1){
+
+			# The browse number was too long so return
+			# an error.
+
+			kiriwrite_error("browsenumbertoolong");
+
+		}
+
+		if ($kiriwrite_browsenumber_number_check eq 1){
+
+			# The browse number wasn't a number so
+			# return an error.
+
+			kiriwrite_error("browsenumberinvalid");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database_file });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		$db_name = $database_info{"DatabaseName"};
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Get the count of pages in the database.
+
+		my $page_total_count = $kiriwrite_dbmodule->getpagecount();
+
+		# Check if any errors had occured while getting the count of
+		# pages in the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Work out the total amount of page browse numbers.
+
+		if ($page_total_count ne 0){
+
+			if ($page_total_count eq $page_split){
+
+				$page_list = int(($page_total_count / $page_split));
+
+			} else {
+
+				$page_list = int(($page_total_count / $page_split) + 1);
+
+			}
+
+		}
+
+		my $start_from = ($page_browsenumber - 1) * $page_split;
+
+		# Get the list of pages.
+
+		@database_pages = $kiriwrite_dbmodule->getpagelist({ StartFrom => $start_from, Limit => $page_split });
+
+		# Check if any errors had occured while getting the list of pages.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Check if there are any page names in the database array.
+
+		if (@database_pages){
+
+			# Write the start of the page.
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pagelist}, $db_name), { Style => "pageheader" });
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+			$kiriwrite_presmodule->startbox();
+			$kiriwrite_presmodule->addhiddendata("mode", "page");
+			$kiriwrite_presmodule->addhiddendata("database", $database_file);
+			$kiriwrite_presmodule->addhiddendata("type", "multiple");
+
+			# Write out the page browsing list.
+
+			$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{showlistpage});
+			$kiriwrite_presmodule->addselectbox("browsenumber");
+
+			# Write out the list of available pages to browse.
+			
+			while ($page_list_count ne $page_list){
+
+				$page_list_count++;
+
+				if ($page_list_count eq 1 && !$page_browsenumber){
+
+					$kiriwrite_presmodule->addoption($page_list_count, { Value => $page_list_count, Selected => 1 });
+
+				} else {
+
+					if ($page_browsenumber eq $page_list_count){
+
+						$kiriwrite_presmodule->addoption($page_list_count, { Value => $page_list_count, Selected => 1 });
+
+					} else {
+
+						$kiriwrite_presmodule->addoption($page_list_count, { Value => $page_list_count });
+
+					}
+
+				}
+
+			}
+
+			$kiriwrite_presmodule->endselectbox();
+			$kiriwrite_presmodule->addbutton("action", { Value => "view", Description => $kiriwrite_lang->{pages}->{show} });
+
+
+			if ($page_list ne $page_browsenumber){
+
+				$kiriwrite_presmodule->addtext(" | ");
+				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database_file . "&browsenumber=" . ($page_browsenumber + 1), { Text => $kiriwrite_lang->{pages}->{nextpage} });
+
+			}
+
+			# Check if the page browse number is not blank and
+			# not set as 0 and hide the Previous page link if
+			# it is.
+
+			if ($page_browsenumber > 1){
+
+				$kiriwrite_presmodule->addtext(" | ");
+				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database_file . "&browsenumber=" . ($page_browsenumber - 1), { Text => $kiriwrite_lang->{pages}->{previouspage} });
+
+			}
+
+			$kiriwrite_presmodule->addlinebreak();
+
+			# Write the list of multiple selection options.
+
+			$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{selectnone});
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addbutton("action", { Value => "multidelete", Description => $kiriwrite_lang->{pages}->{deleteselectedbutton} });
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addbutton("action", { Value => "multimove", Description => $kiriwrite_lang->{pages}->{moveselectedbutton} });
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addbutton("action", { Value => "multicopy", Description => $kiriwrite_lang->{pages}->{copyselectedbutton} });
+			$kiriwrite_presmodule->addtext(" | ");
+			$kiriwrite_presmodule->addbutton("action", { Value => "multiedit", Description => $kiriwrite_lang->{pages}->{editselectedbutton} });
+
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->endbox();
+
+			# Write the table header.
+
+			$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+			$kiriwrite_presmodule->startheader();
+			$kiriwrite_presmodule->addheader("", { Style => "tablecellheader" });
+			$kiriwrite_presmodule->addheader($kiriwrite_lang->{pages}->{pagefilename}, { Style => "tablecellheader" });
+			$kiriwrite_presmodule->addheader($kiriwrite_lang->{pages}->{pagename}, { Style => "tablecellheader" });
+			$kiriwrite_presmodule->addheader($kiriwrite_lang->{pages}->{pagedescription}, { Style => "tablecellheader" });
+			$kiriwrite_presmodule->addheader($kiriwrite_lang->{pages}->{lastmodified}, { Style => "tablecellheader" });
+			$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{options}, { Style => "tablecellheader" });
+			$kiriwrite_presmodule->endheader();
+
+			# Process each page filename and get the page information.
+
+			foreach $page_filename (@database_pages){
+
+				%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $page_filename, Reduced => 1 });
+
+				# Check if any errors have occured.
+
+				if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+					# A database error has occured so return an error and
+					# also the extended error information.
+
+					kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+				} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+					# The page does not exist, so process the next page.
+
+					next;
+
+				}
+
+				$page_count++;
+
+				$page_filename 		= $page_info{"PageFilename"};
+				$page_name		= $page_info{"PageName"};
+				$page_description	= $page_info{"PageDescription"};
+				$page_modified		= $page_info{"PageLastModified"};
+
+				# Set the table cell style.
+
+				if ($tablestyletype eq 0){
+
+					$tablestyle = "tablecell1";
+					$tablestyletype = 1;
+
+				} else {
+
+					$tablestyle = "tablecell2";
+					$tablestyletype = 0;
+
+				}
+
+				# Write out the row of data.
+
+				$kiriwrite_presmodule->startrow();
+				$kiriwrite_presmodule->addcell($tablestyle);
+				$kiriwrite_presmodule->addhiddendata("id[" . $page_count . "]", $page_filename);
+				$kiriwrite_presmodule->addcheckbox("name[" . $page_count . "]");
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->addcell($tablestyle);
+				$kiriwrite_presmodule->addtext($page_filename);
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->addcell($tablestyle);
+
+				if (!$page_name){
+
+					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+
+				} else {
+
+					$kiriwrite_presmodule->addtext($page_name);
+
+				}
+
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->addcell($tablestyle);
+
+				if (!$page_description){
+
+					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{nodescription});
+
+				} else {
+
+					$kiriwrite_presmodule->addtext($page_description);
+
+				}
+
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->addcell($tablestyle);
+
+				if (!$page_modified){
+
+					$kiriwrite_presmodule->additalictext("No Date");
+
+				} else {
+
+					$kiriwrite_presmodule->addtext($page_modified);
+
+				}
+
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->addcell($tablestyle);
+				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"}  . "?mode=page&action=edit&database=" . $database_file . "&page=" . $page_filename, { Text => $kiriwrite_lang->{options}->{edit} });
+				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"}  . "?mode=page&action=delete&database=" . $database_file . "&page=" . $page_filename, { Text => $kiriwrite_lang->{options}->{delete} });
+				$kiriwrite_presmodule->endcell();
+				$kiriwrite_presmodule->endrow();
+
+				# Increment the counter.
+
+			}
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->endtable();
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("count", $page_count);
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		if (!@database_pages && $page_browsenumber > 1){
+
+			# There were no values given for the page browse
+			# number given so write a message saying that
+			# there were no pages for the page browse number
+			# given.
+
+			$kiriwrite_presmodule->clear();
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pagelist}, $db_name), { Style => "pageheader" });
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("errorbox");
+			$kiriwrite_presmodule->enterdata($kiriwrite_lang->{pages}->{nopagesinpagebrowse});
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database_file, { Text => $kiriwrite_lang->{pages}->{returntofirstpagebrowse} });
+			$kiriwrite_presmodule->endbox();	
+
+		} elsif (!@database_pages || !$page_count){
+
+			# There were no values in the database pages array and 
+			# the page count had not been incremented so write a
+			# message saying that there were no pages in the
+			# database.
+
+			$kiriwrite_presmodule->clear();
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pagelist}, $db_name), { Style => "pageheader" });
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("errorbox");
+			$kiriwrite_presmodule->enterdata($kiriwrite_lang->{pages}->{nopagesindatabase});
+			$kiriwrite_presmodule->endbox();
+
+		}
+
+		return $kiriwrite_presmodule->grab();
+
+	}
+
+}
+
+sub kiriwrite_page_add{
+#################################################################################
+# kiriwrite_page_add: Adds a page to a database					#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_add(database, pagefilename, title, description, section,	#
+#			template, settings, info, confirm);			#
+#										#
+# database	Specifies the database name.					#
+# pagefilename	Specifies the page filename.					#
+# title		Specifies the page title to be used.				#
+# description	Specifies the short description of the page.			#
+# section	Specifies the section assigned to the page.			#
+# template	Specifies the template to use.					#
+# settings	Specifies the settings to be used on the page.			#
+# data		Specifies the data which consists the page.			#
+# confirm	Confirms action to add an page.					#
+#################################################################################
+
+	# Fetch the required variables that have been passed to the subroutine.
+
+	my ($pagedatabase, $pagefilename, $pagetitle, $pagedescription, $pagesection, $pagetemplate, $pagesettings, $pagefiledata, $confirm) = @_;
+
+	# Check if the action to add a new page has been confirmed (or not).
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	kiriwrite_variablecheck($confirm, "maxlength", 1, 0);
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($pagedatabase, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check the length the database name and return an error if it's
+	# too long.
+
+	my $pagedatabase_length_check 	= kiriwrite_variablecheck($pagedatabase, "maxlength", 32, 1);
+
+	if ($pagedatabase_length_check eq 1){
+
+		# The database name is too long, so return an error.
+
+		kiriwrite_error("databasefilenametoolong");
+
+	}
+
+	if ($confirm eq "1"){
+
+		# Check all the variables to see if they UTF8 valid.
+
+		kiriwrite_variablecheck($pagefilename, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagetitle, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagedescription, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagesection, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagedatabase, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagesettings, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagetemplate, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagefiledata, "utf8", 0, 0);
+
+		# Convert the values into proper UTF8 values.
+
+		$pagefilename 		= kiriwrite_utf8convert($pagefilename);
+		$pagetitle		= kiriwrite_utf8convert($pagetitle);
+		$pagedescription	= kiriwrite_utf8convert($pagedescription);
+		$pagesection		= kiriwrite_utf8convert($pagesection);
+		$pagedatabase		= kiriwrite_utf8convert($pagedatabase);
+		$pagesettings		= kiriwrite_utf8convert($pagesettings);
+		$pagetemplate		= kiriwrite_utf8convert($pagetemplate);
+		$pagefiledata		= kiriwrite_utf8convert($pagefiledata);
+
+		# Check all the variables (except for the page data, filename and settings 
+		# will be checked more specifically later if needed) that were passed to 
+		# the subroutine.
+
+		my $pagefilename_maxlength_check 		= kiriwrite_variablecheck($pagefilename, "maxlength", 256, 1);
+		my $pagetitle_maxlength_check			= kiriwrite_variablecheck($pagetitle, "maxlength", 512, 1);
+		my $pagedescription_maxlength_check		= kiriwrite_variablecheck($pagedescription, "maxlength", 512, 1);
+		my $pagesection_maxlength_check			= kiriwrite_variablecheck($pagesection, "maxlength", 256, 1);
+		my $pagedatabase_maxlength_check		= kiriwrite_variablecheck($pagedatabase, "maxlength", 32, 1);
+		my $pagesettings_maxlength_check		= kiriwrite_variablecheck($pagesettings, "maxlength", 1, 1);
+		my $pagetemplate_maxlength_check 		= kiriwrite_variablecheck($pagetemplate, "maxlength", 64, 1);
+
+		# Check if an value returned is something else other than 0.
+
+		if ($pagefilename_maxlength_check eq 1){
+
+			# The page filename given is too long, so return an error.
+
+			kiriwrite_error("pagefilenametoolong");
+
+		}
+
+		if ($pagetitle_maxlength_check eq 1){
+
+			# The page title given is too long, so return an error.
+
+			kiriwrite_error("pagetitletoolong");
+
+		}
+
+		if ($pagedescription_maxlength_check eq 1){
+
+			# The page description given is too long, so return an error.
+
+			kiriwrite_error("pagedescriptiontoolong");
+
+		}
+
+		if ($pagesection_maxlength_check eq 1){
+
+			# The page section given is too long, so return an error.
+
+			kiriwrite_error("pagesectiontoolong");
+
+		}
+
+		if ($pagedatabase_maxlength_check eq 1){
+
+			# The page database given is too long, so return an error.
+
+			kiriwrite_error("pagedatabasefilenametoolong");
+
+		}
+
+		if ($pagesettings_maxlength_check eq 1){
+
+			# The page settings given is too long, so return an error.
+
+			kiriwrite_error("pagesettingstoolong");
+
+		}
+
+		if ($pagetemplate_maxlength_check eq 1){
+
+			# The page template given is too long, so return an error.
+
+			kiriwrite_error("pagetemplatefilenametoolong");
+
+		}
+
+		# The action to create a new page has been confirmed, so add the page to the
+		# selected database.
+
+		if (!$pagefilename){
+			kiriwrite_error("pagefilenameblank");
+		}
+
+		# Check the page filename and page settings.
+
+		my $pagefilename_filename_check = kiriwrite_variablecheck($pagefilename, "page_filename", 0, 1);
+		my $pagesettings_setting_check	= kiriwrite_variablecheck($pagesettings, "pagesetting", 0, 1);
+		my $pagetemplate_filename_check	= 0;
+
+		if ($pagetemplate ne "!none"){
+
+			# A template is being used so check the filename of the
+			# template.
+
+			$pagetemplate_filename_check	= kiriwrite_variablecheck($pagetemplate, "page_filename", 0, 1);
+
+		}
+
+		if ($pagefilename_filename_check ne 0){
+
+			# The page filename given is invalid, so return an error.
+
+			kiriwrite_error("pagefilenameinvalid");
+
+		}
+
+		if ($pagesettings_setting_check eq 1){
+
+			# The page settings given is invalid, so return an error.
+
+			kiriwrite_error("pagesettingsinvalid");
+
+		}
+
+		if ($pagetemplate_filename_check eq 1){
+
+			# The template filename given is invalid, so return an error
+
+			kiriwrite_error("templatefilenameinvalid");
+
+		}
+
+		# Check if the database has write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($pagedatabase, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database to add the page to.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $pagedatabase });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any error occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		# Add the page to the selected database.
+
+		$kiriwrite_dbmodule->addpage({ PageFilename => $pagefilename, PageName => $pagetitle, PageDescription => $pagedescription, PageSection => $pagesection, PageTemplate => $pagetemplate, PageContent => $pagefiledata, PageSettings => $pagesettings });
+
+		# Check if any errors occured while adding the page.
+
+		if ($kiriwrite_dbmodule->geterror eq "PageExists"){
+
+			# A page with the filename given already exists so
+			# return an error.
+
+			kiriwrite_error("pagefilenameexists");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error
+			# with extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		my $database_name = $database_info{"DatabaseName"};
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{addpage}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pageaddedmessage}, $pagetitle, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $pagedatabase, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0) {
+
+		# The action to create a new page has not been confirmed, so print out a form
+		# for adding a page to a database.
+
+		my %template_list;
+		my %template_info;
+		my @templates_list;
+		my %database_info;
+		my $template_filename;
+		my $template_name;
+		my $template_data = "";
+		my $template_warningmessage;
+		my $template_warning = 0;
+		my $template_count = 0;
+		my $template;
+
+		tie(%template_list, 'Tie::IxHash');
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $pagedatabase });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($pagedatabase, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any error occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		# Check if any errors occured while connecting to the template database.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+			# The template database does not exist so set the template
+			# warning message.
+
+			$template_warningmessage = $kiriwrite_lang->{pages}->{notemplatedatabase};
+ 			$template_warning = 1;
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so write
+			# the template warning message.
+
+ 			$template_warningmessage = $kiriwrite_lang->{pages}->{templatepermissionserror};
+ 			$template_warning = 1;
+
+		}
+
+		if ($template_warning eq 0){
+
+			# Get the list of templates available.
+
+			@templates_list = $kiriwrite_dbmodule->gettemplatelist();
+
+			# Check if any errors had occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+				# A database error occured while getting the list
+				# of templates so return a warning message with the 
+				# extended error information.
+
+				$template_warningmessage = kiriwrite_language($kiriwrite_lang->{pages}->{templatedatabaseerror}, $kiriwrite_dbmodule->geterror(1));
+				$template_warning = 1;
+
+			}
+
+			if ($template_warning eq 0){
+
+				# Check to see if there are any templates in the templates
+				# list array.
+
+				my $template_filename = "";
+				my $template_name = "";
+
+				foreach $template (@templates_list){
+
+					# Get information about the template.
+
+					%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template });
+
+					# Check if any error occured while getting the template information.
+
+					if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+						# A database error has occured, so return an error.
+
+						kiriwrite_error("templatedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+					} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+						# The template does not exist, so process the next template.
+
+						next;
+
+					}
+
+					# Get the template filename and name.
+
+					$template_filename = $template_info{"TemplateFilename"};
+					$template_name = $template_info{"TemplateName"};
+
+					$template_list{$template_count}{Filename} = $template_filename;
+					$template_list{$template_count}{Name} = $template_name;
+
+					$template_count++;
+
+				}
+
+				# Check if the final template list is blank.
+
+				if (!%template_list){
+
+					# The template list is blank so write the template
+					# warning message.
+
+					$template_warningmessage = $kiriwrite_lang->{pages}->{notemplatesavailable};
+
+				}
+
+			}
+
+		}
+
+ 		my $database_name 	= $database_info{"DatabaseName"};
+
+		# Disconnect from the template database.
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# write out the form for adding a page.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{addpage}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");#
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "add");
+ 		$kiriwrite_presmodule->addhiddendata("database", $pagedatabase);
+		$kiriwrite_presmodule->addhiddendata("confirm", "1");
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addcell("tablecellheader");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{setting});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecellheader");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{value});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endheader();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{database});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtext($database_name);
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagename", { Size => 64, MaxLength => 512 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagedescription});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagedescription", { Size => 64, MaxLength => 512 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesection});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagesection", { Size => 64, MaxLength => 256 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagetemplate});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+
+		# Check if the template warning value has been set
+		# and write the error message in place of the templates
+		# list if it is.
+
+		if ($template_warning eq 1){
+
+			$kiriwrite_presmodule->addhiddendata("pagetemplate", "!none");
+			$kiriwrite_presmodule->addtext($template_warningmessage);
+
+		} else {
+
+			my $template_file;
+			my $page_filename;
+			my $page_name;
+
+			$kiriwrite_presmodule->addselectbox("pagetemplate");
+
+			foreach $template_file (keys %template_list){
+
+				$page_filename 	= $template_list{$template_file}{Filename};
+				$page_name	= $template_list{$template_file}{Name};
+				$kiriwrite_presmodule->addoption($page_name . " (" . $page_filename . ")", { Value => $page_filename });
+				$template_count++;
+
+				$template_count = 0;
+			}
+
+			$kiriwrite_presmodule->addoption($kiriwrite_lang->{pages}->{usenotemplate}, { Value => "!none", Selected => 1 });
+			$kiriwrite_presmodule->endselectbox();
+
+		}
+
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagefilename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagefilename", { Size => 64, MaxLength => 256 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagecontent});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"} });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+		$kiriwrite_presmodule->addboldtext($kiriwrite_lang->{common}->{tags});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagetitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagename});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagedescription});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagesection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautosection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautotitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesettings});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepageandsection}, Value => "1", Selected => 1, LineBreak => 1});
+		$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepagename}, Value => "2", Selected => 0, LineBreak => 1});
+		$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usesectionname}, Value => "3", Selected => 0, LineBreak => 1});
+		$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{nopagesection}, Value => "0", Selected => 0, LineBreak => 1});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->endtable();
+
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{addpagebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{clearvalues});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $pagedatabase, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# The confirm value is something else than '1' or '0' so
+		# return an error.
+
+		kiriwrite_error("invalidvalue");
+
+	}
+
+
+
+}
+
+sub kiriwrite_page_delete{
+#################################################################################
+# kiriwrite_page_delete: Deletes a (single) page from a database.		#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_delete(database, page, [confirm]);				#
+#										#
+# database	Specifies the database to delete from.				#
+# page		Specifies the page to delete.					#
+# confirm	Confirms the action to delete the page.				#
+#################################################################################
+
+	my ($database, $page, $confirm) = @_;
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check the length the database name and return an error if it's
+	# too long.
+
+	my $pagedatabase_length_check 	= kiriwrite_variablecheck($database, "maxlength", 32, 1);
+
+	if ($pagedatabase_length_check eq 1){
+
+		# The database name is too long, so return an error.
+
+		kiriwrite_error("databasefilenametoolong");
+
+	}
+
+	# Check if the page name is specified is blank and return an error if
+	# it is.
+
+	if (!$page){
+
+		# The page name is blank, so return an error.
+
+		kiriwrite_error("blankfilename");
+
+	}
+
+	# If the confirm value is blank, then set the confirm value to 0.
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	if ($confirm eq 1){
+
+		# The action to delete the selected page from the database
+		# has been confirmed.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database to delete the page from.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get the information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any error occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Get the information about the page that is going to be deleted.
+
+		my %page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $page });
+
+		# Check if any errors occured while getting the page information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+			# The page does not exist, so return an error.
+
+			kiriwrite_error("pagefilenamedoesnotexist");
+
+		}
+
+		# Delete the page from the database.
+
+		$kiriwrite_dbmodule->deletepage({ PageFilename => $page });
+
+		# Check if any errors occured while deleting the page from the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+			# The page does not exist, so return an error.
+
+			kiriwrite_error("pagefilenamedoesnotexist");
+
+		}
+
+		# Get the database name and page name.
+
+		my $database_name 	= $database_info{"DatabaseName"};
+		my $page_name		= $page_info{"PageName"};
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out a message saying that the selected page from
+		# the database has been deleted.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagedeleted}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pagedeletedmessage}, $page_name, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name)});
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0){
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Get information about the page that is going to be deleted.
+
+		my %page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $page });
+
+		# Check if any errors occured while getting the page information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+			# The page does not exist, so return an error.
+
+			kiriwrite_error("pagefilenamedoesnotexist");
+
+		}
+
+		my $database_name 	= $database_info{"DatabaseName"};
+		my $page_name		= $page_info{"PageName"};
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write a message asking the user to confirm the deletion of the
+		# page.
+
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{deletepage}, $page_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "delete");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("page", $page);
+		$kiriwrite_presmodule->addhiddendata("confirm", "1");
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{deletepagemessage}, $page_name, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{deletepagebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{deletepagesreturnlink}, $database_name)});
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# Another page deletion type was specified, so return an error.
+
+		kiriwrite_error("invalidoption");
+
+	}
+
+}
+
+sub kiriwrite_page_edit{
+#################################################################################
+# kiriwrite_page_edit: Edits a page from a database.				#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_edit(database, filename, newfilename, newname, newdescription, #
+#			newsection, newtemplate,  newsettings, newpagecontent	#
+#			confirm);						#
+#										#
+# database	 Specifies the database to edit from.				#
+# filename	 Specifies the filename to use.					#
+# newfilename	 Specifies the new page filename to use.			#
+# newname	 Specifies the new page name to use.				#
+# newdescription Specifies the new description for the page.			#
+# newsection	 Specifies the new section name to use.				#
+# newtemplate	 Specifies the new template filename to use.			#
+# newsettings	 Specifies the new page settings to use.			#
+# newpagecontent Specifies the new page content to use.				#
+# confirm	 Confirms the action to edit the page.				#
+#################################################################################
+
+	# Get the values that have been passed to the subroutine.
+
+	my ($database, $pagefilename, $pagenewfilename, $pagenewtitle, $pagenewdescription, $pagenewsection, $pagenewtemplate, $pagenewsettings, $pagenewcontent, $confirm) = @_;
+
+	# Check if the confirm value is blank and if it is, then set it to '0'.
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	# Check if the confirm value is more than one character long and if it
+	# is then return an error.
+
+	kiriwrite_variablecheck($confirm, "maxlength", 1, 0);
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check the length the database name and return an error if it's
+	# too long.
+
+	my $pagedatabase_length_check 	= kiriwrite_variablecheck($database, "maxlength", 32, 1);
+
+	if ($pagedatabase_length_check eq 1){
+
+		# The database name is too long, so return an error.
+
+		kiriwrite_error("databasefilenametoolong");
+
+	}
+
+	# Check if the page identification number is blank (which it shouldn't
+	# be) and if it is, then return an error.
+
+	if (!$pagefilename){
+
+		kiriwrite_error("blankfilename");
+
+	}
+
+	# Check if the confirm value is '1' and if it is, edit the specified
+	# page in the database.
+
+	if ($confirm eq 1){
+
+		# Check if the new page filename is blank.
+
+		if (!$pagenewfilename){
+
+			# The page filename is blank so return an error.
+
+			kiriwrite_error("pagefilenameblank");
+
+		}
+
+		# The action to edit a page has been confirmed so check the
+		# variables recieved are UTF8 compiliant before converting.
+
+		kiriwrite_variablecheck($database, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagefilename, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewfilename, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewtitle, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewdescription, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewsection, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewsettings, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewtemplate, "utf8", 0, 0);
+		kiriwrite_variablecheck($pagenewcontent, "utf8", 0, 0);
+
+		# Convert the variables into proper UTF8 variables.
+
+		$database		= kiriwrite_utf8convert($database);
+		$pagefilename 		= kiriwrite_utf8convert($pagefilename);
+		$pagenewfilename	= kiriwrite_utf8convert($pagenewfilename);
+		$pagenewtitle		= kiriwrite_utf8convert($pagenewtitle);
+		$pagenewdescription	= kiriwrite_utf8convert($pagenewdescription);
+		$pagenewsection		= kiriwrite_utf8convert($pagenewsection);
+		$pagenewsettings	= kiriwrite_utf8convert($pagenewsettings);
+		$pagenewtemplate	= kiriwrite_utf8convert($pagenewtemplate);
+		$pagenewcontent		= kiriwrite_utf8convert($pagenewcontent);
+
+		# Check the lengths of the variables.
+
+		my $pagenewfilename_maxlength_check	= kiriwrite_variablecheck($pagenewfilename, "maxlength", 256, 1);
+		my $pagenewtitle_maxlength_check	= kiriwrite_variablecheck($pagenewtitle, "maxlength", 512, 1);
+		my $pagenewdescription_maxlength_check	= kiriwrite_variablecheck($pagenewdescription, "maxlength", 512, 1);
+		my $pagenewsection_maxlength_check	= kiriwrite_variablecheck($pagenewsection, "maxlength", 256, 1);
+		my $pagenewsettings_maxlength_check	= kiriwrite_variablecheck($pagenewsettings, "maxlength", 1, 1);
+		my $pagenewtemplate_maxlength_check	= kiriwrite_variablecheck($pagenewtemplate, "maxlength", 64, 1);
+
+		# Check each result to see if the length of the variable
+		# is valid and return an error if it isn't.
+
+		if ($pagenewfilename_maxlength_check eq 1){
+
+			# The new page filename given is too long, so return an error.
+
+			kiriwrite_error("pagefilenametoolong");
+
+		}
+
+		if ($pagenewtitle_maxlength_check eq 1){
+
+			# The new page title given is too long, so return an error.
+
+			kiriwrite_error("pagetitletoolong");
+
+		}
+
+		if ($pagenewdescription_maxlength_check eq 1){
+
+			# The new page description given is too long, so return an error.
+
+			kiriwrite_error("pagedescriptiontoolong");
+
+		}
+
+		if ($pagenewsection_maxlength_check eq 1){
+
+			# The new page section given is too long, so return an error.
+
+			kiriwrite_error("pagesectiontoolong");
+
+		}
+
+		if ($pagenewsettings_maxlength_check eq 1){
+
+			# The new page settings given is too long, so return an error.
+
+			kiriwrite_error("pagesettingstoolong");
+
+		}
+
+		if ($pagenewtemplate_maxlength_check eq 1){
+
+			# The new page template given is too long, so return an error.
+
+			kiriwrite_error("pagetemplatefilenametoolong");
+
+		}
+
+		# Check if the new page filename and new page settings
+		# are valid.
+
+		my $pagenewfilename_filename_check	= kiriwrite_variablecheck($pagenewfilename, "page_filename", 0, 1);
+		my $pagenewsettings_settings_check	= kiriwrite_variablecheck($pagenewsettings, "pagesetting", 0, 1);
+		my $pagetemplate_filename_check	= 0;
+
+		if ($pagenewtemplate ne "!none"){
+
+			# A template is being used so check the filename of the
+			# template.
+
+			$pagetemplate_filename_check	= kiriwrite_variablecheck($pagenewtemplate, "page_filename", 0, 1);
+
+		}
+
+		# Check each result to see if the variables have passed
+		# their tests and return an error if they haven't.
+
+		if ($pagenewfilename_filename_check ne 0){
+
+			# The new page filename is invalid, so return an error.
+
+			kiriwrite_error("pagefilenameinvalid");
+
+		}
+
+		if ($pagenewsettings_settings_check eq 1){
+
+			# The new page settings is invalid, so return an error.
+
+			kiriwrite_error("pagesettingsinvalid");
+
+		}
+
+		if ($pagetemplate_filename_check eq 1){
+
+			# The template filename given is invalid, so return an error
+
+			kiriwrite_error("templatefilenameinvalid");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get the database information.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		my $database_name = $database_info{"DatabaseName"};
+
+		# Edit the selected page.
+
+		$kiriwrite_dbmodule->editpage({ PageFilename => $pagefilename, PageNewFilename => $pagenewfilename, PageNewName => $pagenewtitle, PageNewDescription => $pagenewdescription, PageNewSection => $pagenewsection, PageNewTemplate => $pagenewtemplate, PageNewContent => $pagenewcontent, PageNewSettings => $pagenewsettings });
+
+		# Check if any errors occured while editing the page.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+			# The pages does not exist in the database.
+
+			kiriwrite_error("pagefilenamedoesnotexist");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageExists"){
+
+			# A page already exists with the new filename.
+
+			kiriwrite_error("pagefilenameexists");
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{editedpage}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{editedpagemessage}, $pagenewtitle));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0) {
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get the information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		my $database_name = $database_info{"DatabaseName"};
+
+		# Get the page info.
+
+		my %page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $pagefilename });
+
+		# Check if any errors occured while getting the page information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+			# The page does not exist, so return an error.
+
+			kiriwrite_error("pagefilenamedoesnotexist");
+
+		}
+
+		# Get the values from the hash.
+
+		my $data_filename		= $page_info{"PageFilename"};
+		my $data_name			= $page_info{"PageName"};
+		my $data_description		= $page_info{"PageDescription"};
+		my $data_section		= $page_info{"PageSection"};
+		my $data_template		= $page_info{"PageTemplate"};
+		my $data_content		= $page_info{"PageContent"};
+		my $data_settings		= $page_info{"PageSettings"};
+		my $data_lastmodified		= $page_info{"PageLastModified"};
+
+		my $template_warning;
+		my $page_count = 0;
+		my %template_list;
+		my %template_info;
+		my @database_pages;
+		my @database_info;
+		my @database_templates;
+		my @template_filenames;
+		my $template_file;
+		my $template_filename;
+		my $template_name;
+		my $template_count = 0;
+		my $template_found = 0;
+
+		tie(%template_list, 'Tie::IxHash');
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		# Check if any errors occured while connecting to the template database.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+			# The template database does not exist so set the template
+			# warning message.
+
+			$template_warning = $kiriwrite_lang->{pages}->{notemplatedatabasekeep};
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so write
+			# the template warning message.
+
+ 			$template_warning = $kiriwrite_lang->{pages}->{templatepermissionserrorkeep};
+
+		}
+
+		if (!$template_warning){
+
+			# Get the list of available templates.
+
+			@template_filenames = $kiriwrite_dbmodule->gettemplatelist();
+
+			# Check if any errors had occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+				# A database error occured while getting the list
+				# of templates so return an error with the 
+				# extended error information.
+
+				$template_warning = kiriwrite_language($kiriwrite_lang->{pages}->{templatedatabaseerrorkeep} , $kiriwrite_dbmodule->geterror(1));
+
+			}
+
+			if (!$template_warning){
+
+				foreach $template_filename (@template_filenames){
+
+					# Get the information about each template.
+
+					%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_filename });
+
+					# Check if any errors occured while getting the template information.
+
+					if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+						# A template database error has occured so return a warning message
+						# with the extended error information.
+
+						$template_warning = kiriwrite_language($kiriwrite_lang->{pages}->{templatedatabaseerrorkeep} , $kiriwrite_dbmodule->geterror(1));
+						last;
+
+					} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+						# The template does not exist so process the next template.
+
+						next;
+
+					}
+
+					# Append the template name and filename to the list of available templates.
+
+					$template_list{$template_count}{Filename} = $template_info{"TemplateFilename"};
+					$template_list{$template_count}{Name}	  = $template_info{"TemplateName"};
+
+					# Append the template filename and name and make it the selected
+					# template if that is the template the page is using.
+
+					if ($data_template eq $template_filename && !$template_found){
+
+						$template_list{$template_count}{Selected} 	= 1;
+						$template_found = 1;
+
+					} else {
+
+						$template_list{$template_count}{Selected} 	= 0;
+
+					}
+
+					$template_count++;
+
+				}
+
+			}
+
+		}
+
+		# Check if certain values are undefined and if they
+		# are then set them blank (defined).
+
+		if (!$data_name){
+			$data_name = "";
+		}
+
+		if (!$data_description){
+			$data_description = "";
+		}
+
+		if (!$data_section){
+			$data_section = "";
+		}
+
+		if (!$data_template){
+			$data_template = "";
+
+		}
+
+		if (!$data_content){
+			$data_content = "";
+		}
+
+		if (!$data_settings){
+			$data_settings = "";
+		}
+
+		if (!$data_lastmodified){
+			$data_lastmodified = "";
+		}
+
+		# Begin writing out the form for editing the selected page.
+
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{editpage}, $data_name), { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "edit");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("page", $pagefilename);
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+		$kiriwrite_presmodule->endbox();
+
+		$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->endheader();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{database});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtext($database_name);
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagename", { Size => 64, MaxLength => 512, Value => $data_name });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagedescription});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagedescription", { Size => 64, MaxLength => 512, Value => $data_description });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesection});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagesection", { Size => 64, MaxLength => 256, Value => $data_section });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagetemplate});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+
+		# Check if any template warnings have occured.
+
+		if ($template_warning){
+
+			$kiriwrite_presmodule->addtext($template_warning);
+			$kiriwrite_presmodule->addlinebreak();
+
+		}
+
+		$kiriwrite_presmodule->addselectbox("pagetemplate");
+
+		# Process the list of templates, select one if the
+		# template filename for the page matches, else give
+		# an option for the user to keep the current template
+		# filename.
+
+		$template_count = 0;
+
+		foreach $template_file (keys %template_list){
+
+			if ($template_list{$template_count}{Selected}){
+
+				$kiriwrite_presmodule->addoption($template_list{$template_count}{Name} . " (" . $template_list{$template_count}{Filename} . ")", { Value => $template_list{$template_count}{Filename}, Selected => 1 });
+
+			} else {
+
+				$kiriwrite_presmodule->addoption($template_list{$template_count}{Name} . " (" . $template_list{$template_count}{Filename} . ")", { Value => $template_list{$template_count}{Filename} });
+
+			}
+
+			$template_count++;
+
+		}
+
+		if ($data_template eq "!none"){
+
+			$kiriwrite_presmodule->addoption($kiriwrite_lang->{pages}->{usenotemplate}, { Value => "!none", Selected => 1 });
+			$template_found = 1;
+
+		} else {
+
+			$kiriwrite_presmodule->addoption($kiriwrite_lang->{pages}->{usenotemplate}, { Value => "!none" });
+
+		}
+
+		if ($template_found eq 0 && $data_template ne "!none"){
+
+			# The template with the filename given was not found.
+
+			$kiriwrite_presmodule->addoption(kiriwrite_language($kiriwrite_lang->{pages}->{keeptemplatefilename}, $data_template), { Value => $data_template, Selected => 1, Style => "warningoption" });
+
+		}
+
+		# Disconnect from the template database.
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->endselectbox();
+
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagefilename});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addinputbox("pagefilename", { Size => 64, MaxLength => 256, Value => $data_filename });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagecontent});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtextbox("pagecontent", { Columns => $kiriwrite_config{"display_textareacols"}, Rows => $kiriwrite_config{"display_textarearows"},  Value => $data_content });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+		$kiriwrite_presmodule->addboldtext($kiriwrite_lang->{common}->{tags});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagetitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagename});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagedescription});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pagesection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautosection});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{common}->{pageautotitle});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesettings});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+
+		# Check if the page settings value is set to a 
+		# certain number and select that option based
+		# on the number else set the value to 0.
+
+		if ($data_settings eq 1){
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepageandsection}, Value => "1", Selected => 1, LineBreak => 1});
+		} else {
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepageandsection}, Value => "1", LineBreak => 1});
+		}
+
+		if ($data_settings eq 2){
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepagename}, Value => "2", Selected => 1, LineBreak => 1});
+		} else {
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usepagename}, Value => "2", LineBreak => 1});
+		}
+
+		if ($data_settings eq 3){
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usesectionname}, Value => "3", Selected => 1, LineBreak => 1});
+		} else {
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{usesectionname}, Value => "3", LineBreak => 1});
+		}
+
+		if ($data_settings eq 0 || ($data_settings ne 1 && $data_settings ne 2 && $data_settings ne 3)){
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{nopagesection}, Value => "0", Selected => 1, LineBreak => 1});
+		} else {
+			$kiriwrite_presmodule->addradiobox("pagesettings", { Description => $kiriwrite_lang->{pages}->{nopagesection}, Value => "0", LineBreak => 1});
+		}
+
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+		$kiriwrite_presmodule->endtable();
+
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{editpagebutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{restorecurrent});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) } );
+		$kiriwrite_presmodule->endbox();
+
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# The confirm value is a value other than '0' and '1' so
+		# return an error.
+
+		kiriwrite_error("invalidvalue");
+
+	}
+
+}
+
+sub kiriwrite_page_multidelete{
+#################################################################################
+# kiriwrite_page_multidelete: Delete mulitple pages from the database.		#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_multidelete(database, confirm, filelist);			#
+#										#
+# database	Specifies the database to delete multiple pages from.		#
+# confirm	Confirms the action to delete the selected pages from the	#
+#		database.							#
+# filelist	The list of files to delete from the selected database.		#
+#################################################################################
+
+	# Get the information passed to the subroutine.
+
+	my ($database, $confirm, @filelist) = @_;
+
+	# Check if the database name is blank and return an error if
+	# it is.
+
+	if (!$database){
+
+		# The database name is blank so return an error.
+
+		kiriwrite_error("databasenameblank");
+
+	}
+
+	# Check if the file list array has any values and return
+	# an error if it doesn't.
+
+	if (!@filelist){
+
+		# The page list really is blank so return
+		# an error.
+
+		kiriwrite_error("nopagesselected");
+	}
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check the length the database name and return an error if it's
+	# too long.
+
+	my $pagedatabase_length_check 	= kiriwrite_variablecheck($database, "maxlength", 32, 1);
+
+	if ($pagedatabase_length_check eq 1){
+
+		# The database name is too long, so return an error.
+
+		kiriwrite_error("databasefilenametoolong");
+
+	}
+
+	# Check if the confirm value is blank and if it is, then
+	# set it to 0.
+
+	if (!$confirm){
+
+		# The confirm value is blank so set the confirm value
+		# to 0.
+
+		$confirm = 0;
+
+	}
+
+	if ($confirm eq 1){
+
+		# The action to delete multiple pages from the database has
+		# been confirmed.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		my $database_name	= $database_info{"DatabaseName"};
+
+		# Define some variables for later.
+
+		my @database_page;
+		my %page_info;
+		my $filelist_filename;
+		my %deleted_list;
+		my $page;
+		my $page_name;
+		my $page_found = 0;
+		my $page_count = 0;
+
+		tie (%deleted_list, 'Tie::IxHash');
+
+		my $deleted_list = "";
+
+		foreach $filelist_filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filelist_filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			# Add the page to the list of deleted pages.
+
+			$deleted_list{$page_count}{Filename}	= $page_info{"PageFilename"};
+			$deleted_list{$page_count}{Name}	= $page_info{"PageName"};
+
+			# Delete the page.
+
+			$kiriwrite_dbmodule->deletepage({ PageFilename => $filelist_filename });
+
+			# Check if any errors occured while deleting the page from the database.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			$page_found = 0;
+			$page_count++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{selectedpagesdeleted}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{selectedpagesdeletedmessage}, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+
+		foreach $page (keys %deleted_list){
+
+			if (!$deleted_list{$page}{Name}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+				$kiriwrite_presmodule->addtext(" (" . $deleted_list{$page}{Filename} . ")");
+
+			} else {
+				$kiriwrite_presmodule->addtext($deleted_list{$page}{Name} . " (" . $deleted_list{$page}{Filename} . ")");
+			}
+
+			$kiriwrite_presmodule->addlinebreak();
+		}
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name)});
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0){
+
+		# The action to delete multiple pages from the database has
+		# not been confirmed, so write a form asking the user to confirm
+		# the deletion of those pages.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+ 		my $database_name	= $database_info{"DatabaseName"};
+
+		# Define some variables for later.
+
+		my %page_info;
+		my %delete_list;
+		my $pagename;
+		my $page = "";
+		my $filelist_filename;
+		my $filelist_filename_sql;
+		my $pageseek = 0;
+
+		tie(%delete_list, 'Tie::IxHash');
+
+		# Process each filename given.
+
+		foreach $filelist_filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filelist_filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			# Add the page file name and name to the list
+			# of pages to delete.
+
+			$delete_list{$pageseek}{Filename}	= $page_info{"PageFilename"};
+			$delete_list{$pageseek}{Name}		= $page_info{"PageName"};
+
+			# Increment the page seek counter and reset the
+			# page found value.
+
+			$pageseek++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Check if any files were selected and return
+		# an error if there wasn't.
+
+		if ($pageseek eq 0){
+
+			# No pages were selected so return an error.
+
+			kiriwrite_error("nopagesselected");
+
+		}
+
+		# Write the form for displaying pages.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{deletemultiplepages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "multidelete");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("confirm", "1");
+		$kiriwrite_presmodule->addhiddendata("count", $pageseek);
+
+		$pageseek = 1;
+
+		foreach $page (keys %delete_list){
+
+			$kiriwrite_presmodule->addhiddendata("name[" . $pageseek . "]", "on");
+			$kiriwrite_presmodule->addhiddendata("id[" . $pageseek . "]", $delete_list{$page}{Filename});
+
+			$pageseek++;
+
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{deletemultiplemessage}, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+
+		foreach $page (keys %delete_list){
+
+			if (!$delete_list{$page}{Name}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+				$kiriwrite_presmodule->addtext(" (" . $delete_list{$page}{Filename} . ")");
+			} else {
+				$kiriwrite_presmodule->addtext($delete_list{$page}{Name} . " (" . $delete_list{$page}{Filename} . ")");
+			}
+			$kiriwrite_presmodule->addlinebreak();
+
+		}
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{deletepagesbutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{deletepagesreturnlink}, $database_name)});
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# A confirm value other than 0 or 1 is given, so
+		# return an error.
+
+		kiriwrite_error("invaildvalue");
+
+	}
+
+}
+
+sub kiriwrite_page_multimove{
+#################################################################################
+# kiriwrite_page_multimove: Move several pages from one database to another	#
+# database.									#
+#										#
+# Usage:									#
+# 										#
+# kiriwrite_page_multimove(database, newdatabase, confirm, filelist);		#
+#										#
+# database	Specifies the database to move the selected pages from.		#
+# newdatabase	Specifies the database to move the selected pages to.		#
+# confirm	Confirms the action to move the pages from one database to	#
+#		another.							#
+# filelist	Specifies the list of pages to move.				#
+#################################################################################
+
+	# Get the values that were passed to the subroutine.
+
+	my ($database, $newdatabase, $confirm, @filelist) = @_;
+
+	# Check if the database filename is valid and return
+	# an error if it isn't.
+
+	my $newpagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($newpagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($newpagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check if the file list is blank and return an error
+	# if it is.
+
+	if (!@filelist){
+
+		# The file list really is blank so return
+		# an error.
+
+		kiriwrite_error("nopagesselected");
+
+	}
+
+	# Check if the confirm value is blank and if it is then
+	# set the confirm value to 0.
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	if ($confirm eq 1){
+
+		# The action to move several pages from one database
+		# to another has been confirmed.
+
+		# Check if the database that the pages are moving from 
+		# is the same as the database the pages are moving to.
+		# Return an error if it is.
+
+		if ($database eq $newdatabase){
+
+			# The database that the pages are moving from
+			# and the database the pages are moving to
+			# is the same, so return an error.
+
+			kiriwrite_error("databasemovesame");
+
+		}
+
+		# Check if the new database filename is valid and return an error if
+		# it isn't.
+
+		my $newpagedatabase_filename_check = kiriwrite_variablecheck($newdatabase, "filename", 0, 1);
+
+		if ($newpagedatabase_filename_check eq 1){
+
+			# The database filename is blank, so return an error.
+
+			kiriwrite_error("blankdatabasepageadd");
+
+		} elsif ($newpagedatabase_filename_check eq 2){
+
+			# The database filename is invalid, so return an error.
+
+			kiriwrite_error("databasefilenameinvalid");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database the pages are going to be moved from.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("oldmovedatabasedoesnotexist");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("oldmovedatabasefileinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("oldmovedatabasefileinvalidpermissions");
+
+		}
+
+		# Select the database the pages are going to be moved to.
+
+		$kiriwrite_dbmodule->selectseconddb({ DatabaseName => $newdatabase });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("newmovedatabasedoesnotexist");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("newmovedatabasefileinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		$database_permissions = $kiriwrite_dbmodule->dbpermissions($newdatabase, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("newmovedatabasefileinvalidpermissions");
+
+		}
+
+		# Define some values for later.
+
+		my %moved_list;
+		my %warning_list;
+		my %page_info;
+
+		my $filename;
+
+		my $olddatabase_name;
+		my $newdatabase_name;
+
+		my $page;
+		my $warning;
+
+		my $page_found = 0;
+		my $move_count = 0;
+		my $warning_count = 0;
+
+		tie(%moved_list, 'Tie::IxHash');
+		tie(%warning_list, 'Tie::IxHash');
+
+		# Get information about the database that the selected pages are moving from.
+
+		my %olddatabase_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("oldmovedatabasedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		$olddatabase_name = $olddatabase_info{"DatabaseName"};
+
+		# Get information about the database that the selected pages are moving to.
+
+		my %newdatabase_info = $kiriwrite_dbmodule->getseconddatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("newmovedatabasedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		$newdatabase_name = $newdatabase_info{"DatabaseName"};
+
+		# Get each file in the old database, get the page values,
+		# put them into the new database and delete the pages
+		# from the old database.
+
+		foreach $filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so write a warning message and
+				# also the extended error information.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{pagedoesnotexist}, $filename);
+				$warning_count++;
+				next;
+
+			}
+
+			# Move the selected page.
+
+			$kiriwrite_dbmodule->movepage({ PageFilename => $filename });
+
+			# Check if any errors occured while moving the page.
+
+			if ($kiriwrite_dbmodule->geterror eq "OldDatabaseError"){
+
+				# A database error has occured while moving the pages from
+				# the old database, so write a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasemovefrompageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "NewDatabaseError"){
+
+				# A database error has occured while moving the pages to
+				# the new database, so write a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasemovetopageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page with the filename given in the database that
+				# the page is to be moved from doesn't exist so write
+				# a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasemovefrompagenotexist}, $filename);
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageAlreadyExists"){
+
+				# The page with the filename given in the database that
+				# the page is to be moved to already exists so write a
+				# warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasemovetopageexists}, $filename);
+				$warning_count++;
+				next;
+
+			}
+
+			$moved_list{$move_count}{Filename} 	= $page_info{"PageFilename"};
+			$moved_list{$move_count}{Name} 		= $page_info{"PageName"};
+
+			$move_count++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out a message saying that the pages were moved (if any)
+		# to the new database (and any warnings given).
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{movepages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		if (%moved_list){
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{movedpagesmessage}, $olddatabase_name, $newdatabase_name));
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+
+			$kiriwrite_presmodule->startbox("datalist");
+			foreach $page (keys %moved_list){
+				if (!$moved_list{$page}{Name}){
+					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+					$kiriwrite_presmodule->addtext(" (" . $moved_list{$page}{Filename} . ")");
+				} else {
+					$kiriwrite_presmodule->addtext($moved_list{$page}{Name} . " (" . $moved_list{$page}{Filename} . ")");
+				}
+
+				$kiriwrite_presmodule->addlinebreak();
+			}
+			$kiriwrite_presmodule->endbox();
+
+		} else {
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{nopagesmoved}, $olddatabase_name, $newdatabase_name));
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+
+		}
+
+		if (%warning_list){
+
+			$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{errormessages});
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("datalist");
+			foreach $warning (keys %warning_list){
+				$kiriwrite_presmodule->addtext($warning_list{$warning}{Message});
+				$kiriwrite_presmodule->addlinebreak();
+			}
+			$kiriwrite_presmodule->endbox();
+
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $olddatabase_name)}); 
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $newdatabase, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{viewpagelist}, $newdatabase_name)});
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0) {
+
+		# The action to move several pages from one database
+		# to another has not been confirmed so write a form.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+ 		my $database_name	= $database_info{"DatabaseName"};
+
+		# Define some values for later.
+
+		my %db_list;
+		my %move_list;
+		my %page_info;
+		my $page;
+		my $data_file;
+		my $db_name;
+		my $filename;
+		my $filelist_filename;
+		my $pagename;
+		my $pageseek	= 0;
+		my $dbseek	= 0;
+
+		# Process each filename given.
+
+		tie (%move_list, 'Tie::IxHash');
+		tie (%db_list, 'Tie::IxHash');
+
+		foreach $filelist_filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filelist_filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			# Add the page name and file name to the list of
+			# pages to move.
+
+			$move_list{$pageseek}{Filename}	= $page_info{"PageFilename"};
+			$move_list{$pageseek}{Name} 	= $page_info{"PageName"};
+
+			# Increment the page seek counter and reset the
+			# page found value.
+
+			$pageseek++;
+
+		}
+
+		# Check if any pages exust and return an error if
+		# there wasn't.
+
+		if ($pageseek eq 0){
+
+			# None of the selected pages exist, so return
+			# an error.
+
+			kiriwrite_error("nopagesselected");
+
+		}
+
+		# Get the list of databases.
+
+		my @database_list	= $kiriwrite_dbmodule->getdblist();
+
+		# Check if any errors occured while trying to get the list of databases.
+
+ 		if ($kiriwrite_dbmodule->geterror eq "DataDirMissing"){
+
+			# The database directory is missing so return an error.
+
+			kiriwrite_error("datadirectorymissing");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
+
+			# The database directory has invalid permissions set so return
+			# an error.
+
+			kiriwrite_error("datadirectoryinvalidpermissions");
+
+		}
+
+		# Get the information about each database (the short name and friendly name).
+
+		foreach $data_file (@database_list){
+
+			$kiriwrite_dbmodule->selectdb({ DatabaseName => $data_file });
+
+			# Check if any errors occured while selecting the database.
+
+			if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+				# The database does not exist, so process the next
+				# database.
+
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+				# The database has invalid permissions set, so process
+				# the next database.
+
+				next;
+
+			}
+
+			# Get the database information.
+
+			%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+			# Check if any errors had occured while getting the database
+			# information.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so process the next
+				# database.
+
+				next;
+
+			};
+
+			# Check if the database name is undefined and if it is
+			# then set it blank.
+
+			if (!$database_name){
+				$database_name = "";
+			}
+
+			# Append the database to the list of databases available.
+
+ 			$db_list{$dbseek}{Filename}	= $data_file;
+ 			$db_list{$dbseek}{Name}		= $database_info{"DatabaseName"};
+
+			$dbseek++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out the form.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{movepages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "multimove");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("count", $pageseek);
+		$kiriwrite_presmodule->addhiddendata("confirm", "1");
+
+		# Write the page form data.
+
+		$pageseek = 1;
+
+		foreach $page (keys %move_list){
+			$kiriwrite_presmodule->addhiddendata("name[" . $pageseek . "]", "on");
+			$kiriwrite_presmodule->addhiddendata("id[" . $pageseek . "]", $move_list{$page}{Filename});
+			$pageseek++;
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{movepagesmessage}, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+
+		foreach $page (keys %move_list){
+			if (!$move_list{$page}{Name}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+				$kiriwrite_presmodule->addtext(" (" . $move_list{$page}{Filename} . ")");
+			} else {
+				$kiriwrite_presmodule->addtext($move_list{$page}{Name} . " (" . $move_list{$page}{Filename} . ")");
+			}
+			$kiriwrite_presmodule->addlinebreak();
+		}
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{movepagesto});
+
+		$kiriwrite_presmodule->addselectbox("newdatabase");
+
+		foreach $db_name (keys %db_list){
+			$kiriwrite_presmodule->addoption($db_list{$db_name}{Name} . " (" . $db_list{$db_name}{Filename} . ")", { Value => $db_list{$db_name}{Filename}});
+		}
+
+		$kiriwrite_presmodule->endselectbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{movepagesbutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name)});
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# The confirm value is other than 0 or 1, so return
+		# an error.
+
+		kiriwrite_error("invalidvariable");
+
+	}
+
+
+}
+
+
+sub kiriwrite_page_multicopy{
+#################################################################################
+# kiriwrite_page_multicopy: Copy several pages from one database to another	#
+# database.									#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_multicopy(database, newdatabase, confirm, filelist);		#
+# 										#
+# database	Specifies the database to copy the selected pages from.		#
+# newdatabase	Specifies the database to copy the selected page to.		#
+# confirm	Confirms the action to copy the pages.				#
+# filelist	A list of filenames to copy in an array.			#
+#################################################################################
+
+	# Get the values that were passed to the subroutine.
+
+	my ($database, $newdatabase, $confirm, @filelist) = @_;
+
+	# Check if the file list is blank and return an error
+	# if it is.
+
+	if (!@filelist){
+
+		# The file list really is blank so return
+		# an error.
+
+		kiriwrite_error("nopagesselected");
+
+	}
+
+	# Check if the confirm value is blank and if it is then
+	# set the confirm value to 0.
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	if ($confirm eq 1){
+
+		# The action to copy several pages from one database
+		# to another has been confirmed.
+
+		# Check if the database that the pages are copied from 
+		# is the same as the database the pages are copied to.
+		# Return an error if it is.
+
+		if ($database eq $newdatabase){
+
+			# The database that the pages are being copied from
+			# and the database that the pages are copied to
+			# is the same, so return an error.
+
+			kiriwrite_error("databasecopysame");
+
+		}
+
+		# Check if the new database filename is valid and return an error if
+		# it isn't.
+
+		my $pagedatabase_filename_check = kiriwrite_variablecheck($newdatabase, "filename", 0, 1);
+
+		if ($pagedatabase_filename_check eq 1){
+
+			# The database filename is blank, so return an error.
+
+			kiriwrite_error("blankdatabasepageadd");
+
+		} elsif ($pagedatabase_filename_check eq 2){
+
+			# The database filename is invalid, so return an error.
+
+			kiriwrite_error("databasefilenameinvalid");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database the pages are going to be copied from.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("oldcopydatabasedoesnotexist");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("oldcopydatabasefileinvalidpermissions");
+
+		}
+
+		# Select the database the pages are going to be copied to.
+
+		$kiriwrite_dbmodule->selectseconddb({ DatabaseName => $newdatabase });
+
+		# Check if any errors had occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("newcopydatabasedoesnotexist");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("newcopydatabasefileinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($newdatabase, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("newcopydatabasefileinvalidpermissions");
+
+		}
+
+		# Define some values for later.
+
+		my %copied_list;
+		my %warning_list;
+		my %page_info;
+
+		my @olddatabase_info;
+		my @olddatabase_page;
+		my @newdatabase_info;
+		my @newdatabase_page;
+
+		my $filename;
+
+		my $olddatabase_name;
+		my $newdatabase_name;
+
+		my $page;
+		my $warning;
+		my $page_filename;
+		my $page_name;
+		my $page_description;
+		my $page_section;
+		my $page_template;
+		my $page_data;
+		my $page_settings;
+		my $page_lastmodified;
+
+		my $page_seek = 0;
+		my $warning_count = 0;
+
+		my $page_found = 0;
+
+		tie(%copied_list, 'Tie::IxHash');
+		tie(%warning_list, 'Tie::IxHash');
+
+		# Get information about the database that the selected pages are moving from.
+
+		my %olddatabase_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("oldcopydatabasedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		$olddatabase_name = $olddatabase_info{"DatabaseName"};
+
+		# Get information about the database that the selected pages are moving to.
+
+		my %newdatabase_info = $kiriwrite_dbmodule->getseconddatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("newcopydatabasedatabaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		$newdatabase_name = $newdatabase_info{"DatabaseName"};
+
+		# Check if the database filename is valid and return an error if
+		# it isn't.
+
+		my $newpagedatabase_filename_check = kiriwrite_variablecheck($newdatabase, "filename", 0, 1);
+
+		if ($newpagedatabase_filename_check eq 1){
+
+			# The database filename is blank, so return an error.
+
+			kiriwrite_error("blankdatabasepageadd");
+
+		} elsif ($newpagedatabase_filename_check eq 2){
+
+			# The database filename is invalid, so return an error.
+
+			kiriwrite_error("databasefilenameinvalid");
+
+		}
+
+		foreach $filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasecopyfrompageerror}, $filename);
+				$warning_count++;
+				next;
+
+			}
+
+			$kiriwrite_dbmodule->copypage({ PageFilename => $filename });
+
+			# Check if any errors occured while copying the page.
+
+			if ($kiriwrite_dbmodule->geterror eq "OldDatabaseError"){
+
+				# A database error has occured while copying the pages from
+				# the old database, so write a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasecopyfromdatabaseerror}, $filename,  $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "NewDatabaseError"){
+
+				# A database error has occured while copying the pages to
+				# the new database, so write a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasecopytodatabaseerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page with the filename given in the database that
+				# the page is to be copied from doesn't exist so write
+				# a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasecopyfrompagenotexist}, $filename);
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageAlreadyExists"){
+
+				# The page with the filename given in the database that
+				# the page is to be copied to already exists so write a
+				# warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasecopytopageexists}, $filename);
+				$warning_count++;
+				next;
+
+			}
+
+			# Append the copied page (filename and name) to the list of
+			# copied pages.
+
+			$copied_list{$page_seek}{Filename} 	= $filename;
+			$copied_list{$page_seek}{Name}		= $page_info{"PageName"};
+			$page_seek++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out a message saying that the pages were moved (if any)
+		# to the new database (and any warnings given).
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{copypages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		if (%copied_list){
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{copypagesresultmessage}, $olddatabase_name, $newdatabase_name));
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("datalist");
+			foreach $page (keys %copied_list){
+				if (!$copied_list{$page}{Name}){
+					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+					$kiriwrite_presmodule->addtext(" (" . $copied_list{$page}{Filename} . ")");
+				} else {
+					$kiriwrite_presmodule->addtext($copied_list{$page}{Name} . " (" . $copied_list{$page}{Filename} . ")");
+				}
+				$kiriwrite_presmodule->addlinebreak();
+			}
+			$kiriwrite_presmodule->endbox();
+
+		} else {
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{nopagescopied}, $olddatabase_name, $newdatabase_name));
+
+		}
+
+		if (%warning_list){
+
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{copypageswarnings});
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("datalist");
+			foreach $warning (keys %warning_list){
+				$kiriwrite_presmodule->addtext($warning_list{$warning}{Message});
+							$kiriwrite_presmodule->addlinebreak();
+			}
+			$kiriwrite_presmodule->endbox();
+
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $olddatabase_name)});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $newdatabase, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{viewpagelist}, $newdatabase_name)});
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0) {
+
+		# The action to copy several pages from one database
+		# to another has not been confirmed so write a form.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database to copy the pages from.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		my $database_name	= $database_info{"DatabaseName"};
+
+		# Define some values for later.
+
+		my %page_info;
+		my %copy_list;
+		my %db_list;
+		my @page_info;
+		my $page;
+		my $data_file;
+		my $dbname;
+		my $filename;
+		my $pageseek	= 0;
+		my $dbseek	= 0;
+		my $pagefound 	= 0;
+
+		tie(%copy_list, 'Tie::IxHash');
+		tie(%db_list, 'Tie::IxHash');
+
+		# Process each filename given.
+
+		foreach $filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			# Add the page name and file name to the list of
+			# pages to move.
+
+			$copy_list{$pageseek}{Filename}	= $page_info{"PageFilename"};
+			$copy_list{$pageseek}{Name} 	= $page_info{"PageName"};
+
+			# Increment the page seek counter.
+
+ 			$pageseek++;
+
+		}
+
+		# Check if any pages exust and return an error if
+		# there wasn't.
+
+		if ($pageseek eq 0){
+
+			# None of the selected pages exist, so return
+			# an error.
+
+			kiriwrite_error("nopagesselected");
+
+		}
+
+ 		# Get the database filenames and names.
+
+		my @database_list	= $kiriwrite_dbmodule->getdblist();
+
+		# Check if any errors occured while trying to get the list of databases.
+
+ 		if ($kiriwrite_dbmodule->geterror eq "DataDirMissing"){
+
+			# The database directory is missing so return an error.
+
+			kiriwrite_error("datadirectorymissing");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
+
+			# The database directory has invalid permissions set so return
+			# an error.
+
+			kiriwrite_error("datadirectoryinvalidpermissions");
+
+		}
+
+		# Process each database to get the database name.
+
+		foreach $data_file (@database_list){
+
+			$kiriwrite_dbmodule->selectdb({ DatabaseName => $data_file });
+
+			# Check if any errors occured while selecting the database.
+
+			if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+				# The database does not exist, so process the next
+				# database.
+
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+				# The database has invalid permissions set, so process
+				# the next database.
+
+				next;
+
+			}
+
+			# Get the database information.
+
+			%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+			# Check if any errors had occured while getting the database
+			# information.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so process the next
+				# database.
+
+				next;
+
+			};
+
+			# Check if the database name is undefined and if it is
+			# then set it blank.
+
+			if (!$database_name){
+				$database_name = "";
+			}
+
+			# Append the database filename and name to the list of databases
+			# to move the pages to.
+
+			$db_list{$dbseek}{Filename}	= $data_file;
+			$db_list{$dbseek}{Name}		= $database_info{"DatabaseName"};
+
+			$dbseek++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write out the form.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{copypages}, { Style => "pageheader" });
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "multicopy");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("count", $pageseek);
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+
+		$pageseek = 1;
+
+		foreach $page (keys %copy_list){
+			$kiriwrite_presmodule->addhiddendata("name[" . $pageseek . "]", "on");
+			$kiriwrite_presmodule->addhiddendata("id[" . $pageseek . "]", $copy_list{$page}{Filename});
+			$pageseek++;
+		}
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{copypagesmessage}, $database_name));
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		$kiriwrite_presmodule->startbox("datalist");
+
+		foreach $page (keys %copy_list){
+			if (!$copy_list{$page}{Name}){
+				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+				$kiriwrite_presmodule->addtext(" (" . $copy_list{$page}{Filename} . ")");
+			} else {
+				$kiriwrite_presmodule->addtext($copy_list{$page}{Name} . " (" . $copy_list{$page}{Filename} . ")");
+			}
+			$kiriwrite_presmodule->addlinebreak();
+		}
+
+		$kiriwrite_presmodule->endbox();
+
+		$kiriwrite_presmodule->addlinebreak();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{copypagesto});
+		$kiriwrite_presmodule->addselectbox("newdatabase");
+
+		foreach $dbname (keys %db_list){
+			$kiriwrite_presmodule->addoption($db_list{$dbname}{Name} . " (" . $db_list{$dbname}{Filename} . ")", { Value => $db_list{$dbname}{Filename}});
+		}
+
+		$kiriwrite_presmodule->endselectbox();
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{copypagesbutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+
+		$kiriwrite_presmodule->endbox();		
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# The confirm value is other than 0 or 1, so return
+		# an error.
+
+		kiriwrite_error("invalidvariable");
+
+	}
+
+}
+
+sub kiriwrite_page_multiedit{
+#################################################################################
+# kiriwrite_page_multiedit: Edit several pages from a database.			#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_page_multiedit(database, newsection, altersection, newtemplate, 	#
+#				altertemplate, newsettings, altersettings	#
+#				confirm, filelist);				#
+#										#
+# database	Specifies the database to edit the pages from.			#
+# newsection	Specifies the new section name to use on the selected pages.	#
+# altersection	Specifies if the section name should be altered.		#
+# newtemplate	Specifies the new template filename to use on the selected	#
+#		pages.								#
+# altertemplate	Specifies if the template filename should be altered.		#
+# newsettings	Specifies the new settings to use on the selected pages.	#
+# altersettings	Specifies if the settings should be altered.			#
+# confirm	Confirms the action to edit the selected pages.			#
+# filelist	The list of file names to edit.					#
+#################################################################################
+
+	# Get the values that were passed to the subroutine.
+
+	my ($database, $newsection, $altersection, $newtemplate, $altertemplate, $newsettings, $altersettings, $confirm, @filelist) = @_;
+
+	# Check if the file list is blank and return an error
+	# if it is.
+
+	if (!@filelist){
+
+		# The file list really is blank so return
+		# an error.
+
+		kiriwrite_error("nopagesselected");
+
+	}
+
+	# Check if certain values are undefined and define them if
+	# they are.
+
+	if (!$altersection){
+
+		# The alter section value is blank, so set it to
+		# off.
+
+		$altersection 	= "off";
+
+	}
+
+	if (!$altertemplate){
+
+		# The alter template value is blank, so set it to
+		# off.
+
+		$altertemplate 	= "off";
+
+	}
+
+	if (!$altersettings){
+
+		# The alter settings value is blank, so set it to
+		# off.
+
+		$altersettings 	= "off";
+
+	}
+
+	# Check if the database filename is valid and return an error if
+	# it isn't.
+
+	my $pagedatabase_filename_check = kiriwrite_variablecheck($database, "filename", 0, 1);
+
+	if ($pagedatabase_filename_check eq 1){
+
+		# The database filename is blank, so return an error.
+
+		kiriwrite_error("blankdatabasepageadd");
+
+	} elsif ($pagedatabase_filename_check eq 2){
+
+		# The database filename is invalid, so return an error.
+
+		kiriwrite_error("databasefilenameinvalid");
+
+	}
+
+	# Check if the confirm value is blank and if it is then
+	# set the confirm value to 0.
+
+	if (!$confirm){
+
+		$confirm = 0;
+
+	}
+
+	if ($confirm eq 1){
+
+		# The action to edit the template has been confirmed so
+		# edit the selected pages.
+
+		# Check the values recieved at UTF8 compliant before
+		# converting.
+
+		kiriwrite_variablecheck($newsection, "utf8", 0, 0);
+		kiriwrite_variablecheck($newtemplate, "utf8", 0, 0);
+		kiriwrite_variablecheck($newsettings, "utf8", 0, 0);
+
+		# Convert the values into proper UTF8 values.
+
+		$newsection 	= kiriwrite_utf8convert($newsection);
+		$newtemplate	= kiriwrite_utf8convert($newtemplate);
+		$newsettings	= kiriwrite_utf8convert($newsettings);
+
+		# Check the length of the variables.
+
+		kiriwrite_variablecheck($altersection, "maxlength", 3, 0);
+		kiriwrite_variablecheck($altertemplate, "maxlength", 3, 0);
+		kiriwrite_variablecheck($altersettings, "maxlength", 3, 0);
+		my $newsection_maxlength_check 	= kiriwrite_variablecheck($newsection, "maxlength", 256, 1);
+		my $newtemplate_maxlength_check = kiriwrite_variablecheck($newtemplate, "maxlength", 256, 1);
+		my $newtemplate_filename_check	= kiriwrite_variablecheck($newtemplate, "filename", 0, 1);
+		my $newsettings_maxlength_check	= kiriwrite_variablecheck($newsettings, "maxlength", 1, 1);
+		my $newsettings_settings_check	= kiriwrite_variablecheck($newsettings, "pagesetting", 0, 1);
+
+		# Check the values and return an error if needed.
+
+		if ($newsection_maxlength_check eq 1 && $altersection eq "on"){
+
+			# The new section name is too long, so return an
+			# error.
+
+			kiriwrite_error("pagesectiontoolong");
+
+		}
+
+		if ($newtemplate_maxlength_check eq 1 && $altertemplate eq "on"){
+
+			# The new template name is too long, so return an
+			# error.
+
+			kiriwrite_error("templatefilenametoolong");
+
+		}
+
+		# Check if the template filename is set to !skip or !none
+		# and skip this check if it is.
+
+		if ($newtemplate eq "!skip" || $newtemplate eq "!none"){
+
+			# Skip this check as the template filename is 
+			# !skip or !none.
+
+		} else {
+			if ($newtemplate_filename_check eq 1 && $altertemplate eq "on" || $newtemplate_filename_check eq 2 && $altertemplate eq "on"){
+
+				# The new template filename is invalid, so return
+				# an error.
+
+				kiriwrite_error("templatefilenameinvalid");
+
+			}
+		}
+
+		if ($newsettings_maxlength_check eq 1 && $altertemplate eq "on"){
+
+			# The new settings value is too long, so return
+			# an error.
+
+			kiriwrite_error("pagesettingstoolong");
+
+		}
+
+		if ($newsettings_settings_check eq 1 && $altersettings eq "on"){
+
+			# The new settings value is invalid, so return
+			# an error.
+
+			kiriwrite_error("pagesettingsinvalid");
+
+		}
+
+		# Define some values for later.
+
+		my %database_info;
+		my %edited_list;
+		my %warning_list;
+		my %page_info;
+		my $page;
+		my $warning;
+		my $filename;
+		my $page_name;
+		my $pagefound = 0;
+		my $pageedited = 0;
+		my $warning_count = 0;
+
+		tie(%edited_list, 'Tie::IxHash');
+		tie(%warning_list, 'Tie::IxHash');
+
+		# Check if the template filename is !skip and
+		# set the alter template value to off if it
+		# is.
+
+		if ($newtemplate eq "!skip"){
+
+			$altertemplate = "off";
+
+		}
+
+		# Check if all values are not selected and return
+		# an error if they are.
+
+		if ($altersection ne "on" && $altertemplate ne "on" && $altersettings ne "on"){
+
+			# All values are not selected so return 
+			# an error.
+
+			kiriwrite_error("noeditvaluesselected");
+
+		}
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+		my $database_name = $database_info{"DatabaseName"};
+
+		# Edit the selected pages.
+
+		foreach $filename (@filelist){
+
+			# Get the page information.
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so write a warning message.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so write a warning message.
+
+ 				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepagedoesnotexist}, $filename);
+ 				$warning_count++;
+				next;
+
+			}
+
+			# Check if the page section should be altered.
+
+			if ($altersection eq "on"){
+
+				# Change the section name.
+
+				$page_info{"PageSection"} = $newsection;
+
+			}
+
+			# Check if the page template should be altered.
+
+			if ($altertemplate eq "on"){
+
+				# Change the page template filename.
+
+				$page_info{"PageTemplate"} = $newtemplate;
+
+			}
+
+			# Check if the page settings should be altered.
+
+			if ($altersettings eq "on"){
+
+				# Change the page settings value.
+
+				$page_info{"PageSettings"} = $newsettings;
+
+			}
+
+			# Edit the selected page.
+
+			$kiriwrite_dbmodule->editpage({ PageFilename => $page_info{"PageFilename"}, PageNewFilename => $page_info{"PageFilename"}, PageNewName => $page_info{"PageName"}, PageNewDescription => $page_info{"PageDescription"}, PageNewSection => $page_info{"PageSection"}, PageNewTemplate => $page_info{"PageTemplate"}, PageNewContent => $page_info{"PageContent"}, PageNewSettings => $page_info{"PageSettings"} });
+
+			# Check if any errors occured while editing the page.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so write a warning message
+				# with the extended error information.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepageerror}, $filename, $kiriwrite_dbmodule->geterror(1));
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The pages does not exist in the database.
+
+				$warning_list{$warning_count}{Message} = kiriwrite_language($kiriwrite_lang->{pages}->{databasepagedoesnotexist}, $filename);
+				$warning_count++;
+				next;
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageExists"){
+
+				# A page already exists with the new filename.
+
+				kiriwrite_error("pagefilenameexists");
+
+			}
+
+			# The page has been edited so write a message saying that the page
+			# has been edited.
+
+ 			$edited_list{$pageedited}{Filename} 	= $page_info{"PageFilename"};
+ 			$edited_list{$pageedited}{Name}		= $page_info{"PageName"};
+ 
+ 			# Increment the counter of edited pages.
+ 
+ 			$pageedited++;
+
+		}
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{multiedit}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+
+		# Check if the counter of edited pages is 0 and if it is
+		# then write a message saying that no pages were edited
+		# else write a message listing all of the pages edited.
+
+		if ($pageedited eq 0){
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{nopagesedited}, $database_name));
+
+		} else {
+
+			# Write out the message saying that the selected pages
+			# were edited.
+
+			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{pagesedited}, $database_name));
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("datalist");
+
+			foreach $page (keys %edited_list){
+
+				# Check if the page name is not blank.
+
+				if (!$edited_list{$page}{Name}){
+
+					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname});
+					$kiriwrite_presmodule->addtext(" (" . $edited_list{$page}{Filename} . ")");
+
+				} else {
+
+					$kiriwrite_presmodule->addtext($edited_list{$page}{Name});
+					$kiriwrite_presmodule->addtext(" (" . $edited_list{$page}{Filename} . ")");
+
+				}
+
+				$kiriwrite_presmodule->addlinebreak();
+			}
+
+			$kiriwrite_presmodule->endbox();
+
+		}
+
+		# Check if any warnings have occured and write a message
+		# if any warnings did occur.
+
+		if (%warning_list){
+
+			# One or several warnings have occured so 
+			# write a message.
+
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{editedpageswarnings});
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->addlinebreak();
+			$kiriwrite_presmodule->startbox("datalist");
+			foreach $warning (keys %warning_list) {
+				$kiriwrite_presmodule->addtext($warning_list{$warning}{Message});
+				$kiriwrite_presmodule->addlinebreak();
+			}
+			$kiriwrite_presmodule->endbox();
+
+		}
+
+		# Write a link going back to the page list for
+		# the selected database.
+
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+
+		return $kiriwrite_presmodule->grab();
+
+	} elsif ($confirm eq 0){
+
+		# The action to edit the template has not been confirmed
+		# so write a form out instead.
+
+		# Connect to the database server.
+
+		$kiriwrite_dbmodule->connect();
+
+		# Check if any errors occured while connecting to the database server.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+
+			# A database connection error has occured so return
+			# an error.
+
+			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+
+		}
+
+		# Select the database.
+
+		$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+
+		# Check if any errors occured while selecting the database.
+
+		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+
+			# The database does not exist, so return an error.
+
+			kiriwrite_error("databasemissingfile");
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+
+			# The database has invalid permissions set, so return
+			# an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Check if the database has read and write permissions.
+
+		my $database_permissions = $kiriwrite_dbmodule->dbpermissions($database, 1, 1);
+
+		if ($database_permissions eq 1){
+
+			# The database permissions are invalid so return an error.
+
+			kiriwrite_error("databaseinvalidpermissions");
+
+		}
+
+		# Get information about the database.
+
+		my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+
+		# Check if any errors had occured while getting the database
+		# information.
+
+		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+			# A database error has occured so return an error and
+			# also the extended error information.
+
+			kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+		};
+
+ 		my $database_name	= $database_info{"DatabaseName"};
+
+		# Define some variables for later.
+
+		my %edit_list;
+		my %template_list;
+		my %template_info;
+		my %page_info;
+		my @templates_list;
+		my @filenames;
+		my $filelist_filename;
+		my $filename;
+		my $page;
+		my $pageseek = 0;
+		my $page_name;
+		my $page_filename;
+		my $template;
+		my $template_filename;
+		my $template_warning;
+		my $templateseek = 0;
+
+		tie(%edit_list, 'Tie::IxHash');
+		tie(%template_list, 'Tie::IxHash');
+
+		# Get the information about each page that is going
+		# to be edited.
+
+		foreach $filelist_filename (@filelist){
+
+			%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $filelist_filename });
+
+			# Check if any errors occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+
+				# A database error has occured so return an error and
+				# also the extended error information.
+
+				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+
+			} elsif ($kiriwrite_dbmodule->geterror eq "PageDoesNotExist"){
+
+				# The page does not exist, so process the next page.
+
+				next;
+
+			}
+
+			# Add the page name and file name to the list of
+			# pages to edit.
+
+			$edit_list{$pageseek}{Filename}	= $page_info{"PageFilename"};
+			$edit_list{$pageseek}{Name}	= $page_info{"PageName"};
+
+			# Increment the page seek counter and reset the
+			# page found value.
+
+			$pageseek++;
+
+		}
+
+		# Check if any pages were found in the database and return
+		# an error if not.
+
+		if ($pageseek eq 0){
+
+			# No pages were found so return an error.
+
+			kiriwrite_error("nopagesselected");
+
+		}
+
+		# Connect to the template database.
+
+		$kiriwrite_dbmodule->connecttemplate();
+
+		# Check if any errors had occured.
+
+		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+
+			# The template database does not exist so write a warning
+			# message.
+
+			$template_warning = $kiriwrite_lang->{pages}->{templatedatabasenotexistmultieditkeep};
+
+		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+
+			# The template database has invalid permissions set so
+			# return an error.
+
+			$template_warning = $kiriwrite_lang->{pages}->{templatedatabasepermissionsinvalidmultieditkeep};
+
+		}
+
+		if (!$template_warning){
+
+			# Get the list of templates available.
+
+			@templates_list = $kiriwrite_dbmodule->gettemplatelist();
+
+			# Check if any errors had occured.
+
+			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+				# A database error occured while getting the list
+				# of templates so write a warning message with the 
+				# extended error information.
+
+				$template_warning = kiriwrite_language($kiriwrite_lang->{pages}->{templatedatabaseerrormultieditkeep}, $kiriwrite_dbmodule->geterror(1));
+
+			}
+
+			if (!$template_warning){
+
+				foreach $template_filename (@templates_list){
+
+					# Get the template data.
+
+					%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_filename });
+
+					# Check if any error occured while getting the template information.
+
+					if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+
+						# A database error has occured, so write a warning message with
+						# the extended error information.
+
+						$template_warning = kiriwrite_language($kiriwrite_lang->{pages}->{templatedatabaseerrormultieditkeep}, $kiriwrite_dbmodule->geterror(1));
+
+					} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+
+						# The template does not exist, so process the next page.
+
+						next;
+
+					}
+
+					# Add the template to the list of templates.
+
+					$template_list{$templateseek}{Filename}	= $template_info{"TemplateFilename"};
+					$template_list{$templateseek}{Name} 	= $template_info{"TemplateName"};
+
+					$templateseek++;
+
+				}
+
+			}
+
+		}
+
+		# Disconnect from the template database.
+
+		$kiriwrite_dbmodule->disconnecttemplate();
+
+		# Disconnect from the database server.
+
+		$kiriwrite_dbmodule->disconnect();
+
+		# Write a form for editing the selected pages.
+
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{multiedit}, { Style => "pageheader" });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
+		$kiriwrite_presmodule->startbox();
+		$kiriwrite_presmodule->addhiddendata("mode", "page");
+		$kiriwrite_presmodule->addhiddendata("action", "multiedit");
+		$kiriwrite_presmodule->addhiddendata("database", $database);
+		$kiriwrite_presmodule->addhiddendata("count", $pageseek);
+		$kiriwrite_presmodule->addhiddendata("confirm", 1);
+
+		$pageseek = 1;
+
+		foreach $page (keys %edit_list){
+			$kiriwrite_presmodule->addhiddendata("name[" . $pageseek . "]", "on");
+			$kiriwrite_presmodule->addhiddendata("id[" . $pageseek  . "]", $edit_list{$page}{Filename});
+			$pageseek++;
+		}
+
+		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{pages}->{multieditmessage}, $database_name));
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->startbox("datalist");
+
+		foreach $page (keys %edit_list){
+			if (!$edit_list{$page}{Name}){
+				$kiriwrite_presmodule->additalictext("No Name");
+				$kiriwrite_presmodule->addtext(" (" . $edit_list{$page}{Filename} . ")");
+			} else {
+				$kiriwrite_presmodule->addtext($edit_list{$page}{Name} . " (" . $edit_list{$page}{Filename} . ")");
+			}
+
+			$kiriwrite_presmodule->addlinebreak();
+		}
+
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{multieditmessagevalues});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+
+		$kiriwrite_presmodule->startheader();
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{alter}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
+		$kiriwrite_presmodule->endheader();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addcheckbox("altersection");
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesection});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addinputbox("newsection", { Size => 64, MaxLength => 256 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addcheckbox("altertemplate");
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell2");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagetemplate});
+		$kiriwrite_presmodule->endcell();
+
+		$kiriwrite_presmodule->addcell("tablecell2");
+
+		if ($template_warning){
+
+			$kiriwrite_presmodule->addhiddendata("newtemplate", "!skip");
+			$kiriwrite_presmodule->addtext($template_warning);
+
+		} else {
+
+			$kiriwrite_presmodule->addselectbox("newtemplate");
+
+			foreach $template (keys %template_list){
+
+				$kiriwrite_presmodule->addoption($template_list{$template}{Name} . " (" . $template_list{$template}{Filename} . ")", { Value => $template_list{$template}{Filename}});
+
+			}
+
+			$kiriwrite_presmodule->addoption($kiriwrite_lang->{pages}->{usenotemplate}, { Value => "!none", Selected => 1 });
+			$kiriwrite_presmodule->endselectbox();
+		}
+
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->startrow();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addcheckbox("altersettings");
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addtext($kiriwrite_lang->{pages}->{pagesettings});
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->addcell("tablecell1");
+		$kiriwrite_presmodule->addradiobox("newsettings", { Description => $kiriwrite_lang->{pages}->{usepageandsection}, Value => 1 , Selected => 1});
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addradiobox("newsettings", { Description => $kiriwrite_lang->{pages}->{usepagename}, Value => 2 });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addradiobox("newsettings", { Description => $kiriwrite_lang->{pages}->{usesectionname}, Value => 3 });
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addradiobox("newsettings", { Description => $kiriwrite_lang->{pages}->{nopagesection}, Value => 0 });
+		$kiriwrite_presmodule->endcell();
+		$kiriwrite_presmodule->endrow();
+
+		$kiriwrite_presmodule->endtable();
+		$kiriwrite_presmodule->addlinebreak();
+		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{pages}->{editpagesbutton});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{clearvalues});
+		$kiriwrite_presmodule->addtext(" | ");
+		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database, { Text => kiriwrite_language($kiriwrite_lang->{pages}->{returnpagelist}, $database_name) });
+		$kiriwrite_presmodule->endbox();
+		$kiriwrite_presmodule->endform();
+
+		return $kiriwrite_presmodule->grab();
+
+	} else {
+
+		# The confirm value is something else other than
+		# 1 or 0, so return an error.
+
+		kiriwrite_error("invalidvariable");
+
+	}
+
+}
+
+1;

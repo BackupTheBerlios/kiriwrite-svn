@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.29: editpage</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.29 editpage</span><br><br>
+
+Edits a page in the selected database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->editpage(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectdb(“database”);<br>
+    $kiriwrite_dbmodule->editpage({ PageFilename => “page.html”, PageNewFilename => “editedpage.html”, PageNewName => “Edited Page Name”, PageNewDescription => “Edited Page Description”, PageNewSection => “Edited Page Section”, PageNewTemplate => “editedpagetemplate.html”, PageNewContent => “This is the edited page content.”, PageNewSettings => 0 });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageFilename</td>
+        <td class="tabledata">Specifies the page with the filename to edit.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewFilename</td>
+        <td class="tabledata">Specifies the new filename of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewName</td>
+        <td class="tabledata">Specifies the new name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewDescription</td>
+        <td class="tabledata">Specifies the new description of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewSection</td>
+        <td class="tabledata">Specifies the new section of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewTemplate</td>
+        <td class="tabledata">Specifies the new template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewContent</td>
+        <td class="tabledata">Specifies the new page content to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageNewSettings</td>
+        <td class="tabledata">Specifies the new page settings to use.<br>
+            1: Use page name and section name.<br>
+            2: Use the page name only.<br>
+            3: Use the section name only.<br>
+            0: Don't use page name or section name.
+        </td>
+    </tr>
+</table>
+
+<br>
+
+If the page does not already exist then the error returned should be 'PageDoesNotExist' in the $error scalar.<br><br>
+
+If a page with the filename given already exists when renaming the filename of the page then the error returned should be 'PageExists' in the $error scalar.<br><br>
+
+If a database error occurs while editing a page in the database then the error returned should be 'DatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.
+		</div>
+	</body>
+</html>

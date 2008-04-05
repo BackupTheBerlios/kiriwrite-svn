@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.25: kiriwrite_compile_clean</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.25 kiriwrite_compile_clean</span><br><br>
+
+kiriwrite_compile_clean cleans the output directory. If no confirm value is given then a form appears asking if the output directory should be cleaned.<br><br>
+
+kirwirite_compile_clean will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_compile_clean(confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_compile_clean();<br>
+    $pagedata = kiriwrite_compile_clean(1);
+</div>
+
+<br>
+
+<i>confirm</i><br>
+Specifies if the action to clean the output directory should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.18: deletedatabase</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.18 deletedatabase</span><br><br>
+
+Deletes a database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->deletedatabase(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->deletedatabase({ DatabaseName => “database” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseName</td>
+        <td class="tabledata">Specifies the database to delete.</td>
+    </tr>
+</table>
+
+<br>
+
+If the database with the name given does not exist then the error returned should be 'DoesNotExist' in the $error scalar.<br><br>
+If a database error occurs while deleting the database, the error returned should be 'DatabaseError' in the $error scalar and the information about the error placed in the $errorext scalar.<br><br>
+If (when using a file-based database module) the database module can't be deleted because of invalid permissions set then the error returned should be 'InvalidPermissionsSet' in the $error scalar.
+		</div>
+	</body>
+</html>

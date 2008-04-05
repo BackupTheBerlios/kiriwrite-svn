@@ -1,0 +1,1321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation -  - User Documentation</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				&nbsp;
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">User Documentation</span><br>
+
+The User Documentation contains information on how to install Kiriwrite, operate Kiriwrite, solutions to common problems that occur while using Kiriwrite and tips on using Kiriwrite.
+
+<br><br>
+
+<span class="heading">Contents</span><br>
+
+<a href="user-preface.html">Preface</a><br>
+<a href="user-introduction.html">Introduction</a><br>
+<a href="user-chapter1.html">Chapter 1: Installation</a><br>
+&nbsp;<a href="user-chapter1-obtainingkiriwrite.html">1.1: Obtaining Kiriwrite</a><br>
+&nbsp;<a href="user-chapter1-installingkiriwrite.html">1.2: Installing Kiriwrite</a><br>
+&nbsp;<a href="user-chapter1-installerscript.html">1.3: Kiriwrite Installer Script</a><br>
+<a href="user-chapter2.html">Chapter 2: Operation</a><br>
+&nbsp;<a href="user-chapter2-databases.html">2.1: Databases</a><br>
+&nbsp;<a href="user-chapter2-pages.html">2.2: Pages</a><br>
+&nbsp;<a href="user-chapter2-filters.html">2.3: Filters</a><br>
+&nbsp;<a href="user-chapter2-templates.html">2.4: Templates</a><br>
+&nbsp;<a href="user-chapter2-compiling.html">2.5: Compiling</a><br>
+<a href="user-chapter3.html">Chapter 3: Kiriwrite Settings</a><br>
+<a href="user-chapter4.html">Chapter 4: Usage Tips</a><br>
+&nbsp;<a href="user-chapter4-securing.html">4.1: Securing your Kiriwrite installation</a><br>
+&nbsp;<a href="user-chapter4-renaming.html">4.2: Renaming the Kiriwrite script (kiriwrite.cgi)</a><br>
+&nbsp;<a href="user-chapter4-removing.html">4.3: Removing unneeded modules and language files</a><br>
+<a href="user-chapter5.html">Chapter 5: Troubleshooting</a><br>
+<a href="user-chapter6.html">Chapter 6: Contributing to Kiriwrite</a>
+<hr>
+<span class="pagetitle">Preface</span><br><br>
+Kiriwrite originally came into existence in 2003 when I was designing a new layout for my personal website (Kirinji's Pad) and found that I had so many pages to edit, I had to find an easier way of editing the website layout as I needed to and apply those changes to all of the pages on the website very quickly.<br><br>
+As I was designing my website using an advanced free ware text-editor (at it's time) which allowed me to create a template and create pages as I needed which was great, until I wanted to redesign the website. At that point I had around 50 pages which had to be changed and became somewhat time consuming.<br><br>
+That was when I wrote the original Kiriwrite script which was coded pretty much to my own needs and wasn't really well organised and was coded in Perl (although not that brilliantly as strict and warnings weren't used since I was learning Perl at the time) and by the time I finished coding it, I was able to do what I needed to do with Kiriwrite.<br><br>
+Around the end of 2005 (and after a two-year spell at St. Austell College which is now Cornwall College St. Austell) I decided to rewrite the Kiriwrite code because the original Kiriwrite did not do any input validation and so little of the code was commented which meant I forgot what everything did and I wanted to add some new features which would become useful in the future.<br><br>
+The rewritten Kiriwrite version was pretty much done in October 2006, following a suggestion from a good friend I decided to replace the flat-file based system which I used since the original Kiriwrite with a file-based database system called SQLite. Once that was done pretty much around the end of January 2007, I then separated the database code, presentation code and language strings into separate modules and files which meant that a MySQL 5.x server-based database could be used instead of file-based SQLite. The presentation code used to render internal output from Kiriwrite was separated and placed in the HTML4S (HTML 4.01 Strict) presentation module. The language strings that was hard-coded were separated and placed in the English (British) language file.<br><br>
+After some minor tweaks, the rewritten Kiriwrite code was pretty much ready and once the documentation was written Kiriwrite was ready for release. What I would like to see in the future for Kiriwrite is to make it work with mod_perl and add some extra customisable features as some settings are currently hard-coded when they could very well not be hard-coded.<br><br>
+I leave you with some advice, if you are going to design a website which uses a white background don't assume everyone will use a white background by default if no colour is specified and actually declare it as white background in the Cascading Style Sheet markup. You'd be amazed at how many commercial websites and some personal websites (that expect you to have) assume you have a white background when really you have a teal coloured background.<hr>
+<span class="pagetitle">Introduction</span><br><br>
+Kiriwrite is a web-based (browser-based) interface for creating pages for websites, intended for those who know how to create pages by hand and want to accelerate the process of (re)designing a static-only website.<br><br>
+The documentation is split into three parts, the user documentation (which is this part), the developer documentation (for writing new modules or language files) and the tutorial documentation (the basics and how to use Kiriwrite).<br><br>
+Although Kiriwrite isn't limited for creating pages for websites (as in you can create other types of text-based formats), Kiriwrite is primarily intended for creating pages for websites.<br><br><hr>
+<span class="pagetitle">Chapter 1: Installation</span><br><br>
+Before Kiriwrite can be used, Kiriwrite needs to be installed properly and this involves obtaining the code from a source package or from a Subversion<sup>1</sup> repository, copying the needed files into the correct place, setting the correct permissions on the files and running the installation script.<br><br>
+
+<div class="warningbox">
+    <div class="message warning">
+        <span class="warningtext">
+            <b>Warning</b><br>
+            Please be aware (for this version), that Kiriwrite <b>is intended to be used on a private web server and not on a public web server unless it is properly secured down</b> because by default anyone can run Kiriwrite and manipulate the data already there. Suggested methods of securing down your Kiriwrite installation are available in Chapter 4: Usage Tips.
+        </span>
+    </div>
+</div>
+
+<br>
+
+This chapter is split into two parts with the first part explaining on how to obtain Kiriwrite and the second part explaining on how to install Kiriwrite.<br><br>
+
+<div class="footnote"></div>
+<sup>1</sup> Subversion is a version control system which tracks changes to data stored in the repositories and allows easy updating of source code after the source code is checked out.<hr>
+<span class="pagetitle">1.1 Obtaining Kiriwrite</span><br><br>
+Kiriwrite can be obtained either through the Subversion repository or extracted from a source archive that is available on Kiriwrite homepage.<br><br>
+<span class="heading">1.1.1: Archive Extraction</span><br><br>
+The contents of the Kiriwrite archive can be extracted using gzip if it's a Gzip archive, bzip2 if it's a Bzip2'ed archive, 7za if it's a 7-Zip archive and unzip if it's a ZIP archive.<br><br>
+Bear in mind the following is done from a command console. GUI interfaces can also do the same as preformed here and mainly involves opening the archive and clicking on the Extract/Extract All button or simply dragging the folder containing from out of the archive (usually making a copy of the contents in the archive).<br><br>
+
+<div class="messagebox">
+    <div class="message note">
+        <b>Note</b><br>
+        The naming convention of the Kiriwrite archives go as the following:<br><br>
+        <div class="code">
+            kiriwrite-x.y.z(-e).arc
+        </div>
+        <br>
+        Where x is the major version, y is the minor version and z is the revision with (-e) meaning a very tiny modification that had to be done that did not merit an increment to the revision number.
+    </div>
+</div>
+
+<br>
+
+When downloading an archive, the archive can be checked (by downloading the file with the same name but with .sha256 or .md5 added to the end of it) using shasum<sup>1</sup> or md5sum by doing the following to ensure it is downloaded correctly:<br><br>
+
+<div class="code">
+    shasum -a 256 kiriwrite-x.y.z(-e).arc<br>
+    md5sum kiriwrite-x.y.z(-e).arc
+</div>
+
+<br>
+
+shasum or md5sum should then generate the SHA-256 or MD5 checksum that should match the one that appears in the file with .sha256 or .md5 appended to it. If it does not match (and the file containing the sha256 or md5sum hash is the correct version) then the archive should be downloaded again and repeat the same process.<br><br>
+To extract the gzip archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    gzip -d -c <i>(path)</i>/kiriwrite-0.1.0.tar.gz | tar -xv
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the bzip2 archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    bzip2 -d -c <i>(path)</i>/kiriwrite-0.1.0.tar.bz2 | tar -xv
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the ZIP archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    unzip <i>(path)</i>/kiriwrite-0.1.0.zip
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+To extract the 7Zip archive, the following command should be preformed when switched to the correct directory to extract from.<br><br>
+
+<div class="code">
+    7za e <i>(path)</i>/kiriwrite-0.1.0.7z
+</div>
+
+<br>
+
+A list of files that have been extracted will then appear with the contents of the archive appearing in the directory that the archive was extracted to.<br><br>
+
+<span class="heading">1.1.2: Subversion Access</span><br><br>
+Kiriwrite can also be obtained through checking out the code from the Subversion repository.<br><br>
+
+<div class="messagebox">
+    <div class="message note">
+        <b>Note</b><br>
+        Bear in mind that the code that is in the Kiriwrite Subversion repository is normally unstable and could very well cause unexpected problems (such as warnings that appear in the web server error log that can be easily fixed and alterations to the database structure which requires an upgrade script which hasn't been written yet for that particular version yet).
+    </div>
+</div>
+
+<br>
+
+Kiriwrite can be obtained from the Subversion repository by doing the following in a command console after selecting the correct directory to put it in:<br><br>
+
+<div class="code">
+    svn checkout svn://svn.berlios.de/kiriwrite/trunk
+</div>
+
+<br>
+
+A list of files then appear as they are received from the Subversion repository and placed in the directory the command console is currently in. To update the code stored locally with code that is in the Kiriwrite Subversion repository this command should be done after changing to the directory where the local copy of the Kiriwrite Subversion code is:<br><br>
+
+<div class="code">
+    svn update
+</div>
+
+<br>
+
+A list of files will then appear showing which files has been updated.
+
+<div class="footnote"></div>
+<sup>1</sup> The version of shasum talked about here is the shasum script that is used by the Digest::SHA::PurePerl Perl module which can produce checksums in SHA-1, SHA-224, SHA-256, SHA-384 and SHA-512 which can be installed via CPAN.<hr>
+<span class="pagetitle">1.2.1 Copying files</span><br><br>
+Before Kiriwrite can be used, the files need to be copied to the correct place. After extracting the archive, the structure of the extracted archive should be like this:<br><br>
+<b>Documentation</b> – Documentation that is available in several languages.<br>
+<b>cgi-files</b> – The main Kiriwrite script, associated modules, installer script and language files.<br>
+&nbsp;<b>Modules</b> – Modules for Kiriwrite are stored here.<br>
+&nbsp;&nbsp;<b>Database</b> – Database modules are stored here.<br>
+&nbsp;&nbsp;<b>Presentation</b> – Presentation modules are stored here.<br>
+&nbsp;<b>db</b> – Default database directory (for file based Database modules).<br>
+&nbsp;<b>lang</b> – The directory for language files in Kiriwrite.<br>
+&nbsp;<b>lib</b> - Library files that are used by Kiriwrite.<br>
+&nbsp;<b>output</b> – The output directory when pages are compiled.<br>
+<b>misc</b> – Miscellaneous files (mainly for developers).<br>
+<b>non-cgi-files</b> – Non CGI files that need to be placed outside of the cgi-bin folder.<br><br>
+The files in the cgi-files folder should be copied to the cgi-bin<sup>1</sup> folder<sup>2</sup> and the files in the non-cgi-files folder should be copied to a folder which can be accessed from the web server.<br><br>
+<span class="heading">1.2.2 Setting Permissions</span><br><br>
+The following permissions should be set for the files that have been copied to the cgi-files directory (the following file list should apply to those running *nix/BSD systems):<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Filename</td>
+        <td class="tableheading">Owner</td>
+        <td class="tableheading">Group</td>
+        <td class="tableheading">Others</td>
+    </tr>
+    <tr>
+        <td class="tabledata"><i>(Top Directory)</i></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules/Database</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Database/MySQL.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Database/SQLite.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>Modules/Presentation</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">Modules/Presentation/HTML4S.pm</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>db</b></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>output</b></td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>lang</b></td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata">RX</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">lang/*.lang</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata"><b>lib</b></td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">lib\*.lib</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">kiriwrite.cgi</td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">install.cgi</td>
+        <td class="tabledata">RWX</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+    <tr>
+        <td class="tabledata">page.html</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata">R</td>
+        <td class="tabledata"><i>None</i></td>
+    </tr>
+</table>
+
+<br><br>
+
+R = Read, W = Write, X = Execute/Allow directory listing<br><br>
+For the non-cgi files folder, read only permissions should be set on all files (and read and allow directory listings for directories) as no writing should be needed.<br><br>
+Once this is done, the installer script can be run by browsing to URI location of where the files in the cgi-files directory were in place and adding install.cgi to the end of it.<br><br>
+<div class="footnote"></div>
+<sup>1</sup>The cgi-bin folder is used for storing scripts that use the Common Gateway Interface (CGI). CGI scripts are typically associated with Perl scripts but can also be C++, C, Python, shell script and many others.<br>
+<sup>2</sup>Some servers are configured so that CGI scripts can run from any directory so in this case Kiriwrite doesn't have to be placed in the cgi-bin directory.<hr>
+<span class="pagetitle">1.3 Kiriwrite Installer Script</span><br><br>
+After pointing your browser to the installer script, a page appears which guides you through configuring the settings for Kiriwrite.<br><br>
+At the top of the page a drop down box is available to change the language of the installer script to another language which is more easier to understand, simply select the language from the drop down box and click on the Switch button, the script will then switch to the selected language.<br><br>
+The installer script will preform three tests, the first being to check if all the needed modules are there, the second test is to check if the modules needed for the database modules are there and finally a test to check if the directories have their correct permissions set.<br><br>
+Before the settings can be configured, checks are made to make sure that all of the needed modules are installed properly. If any of the needed modules are missing an error message will appear saying that one or more of the required Perl modules is missing and will need to be installed which can be done from the CPAN interface.<br><br>
+The installer script then checks to see if at least of the Perl modules for the database modules are installed. If none of the Perl modules needed for the database modules are found then an error message will appear saying that none of the Perl modules needed for the database modules are installed and will need to be installed which can be done from the CPAN interface.<br><br>
+Finally, the installer script then checks to see if the directories have the minimum correct permissions set. If one or more of the directories has an error, then a message appears saying to make sure that the correct permissions are set.<br><br>
+
+<div class="messagebox">
+    <div class="message hint">
+        <b>Hint</b><br>
+        More information on solving problems that occur while installing Kiriwrite can be found in Chapter 5: Troubleshooting.
+    </div>
+</div>
+
+<br>
+
+When the installer finds that everything is fine in regards to Perl modules and file permissions, a form appears allowing to configure the Kiriwrite installation to specific needs. Some default values are given which will work with the file-based database modules.<br><br>
+The configuration settings in detail:<br><br>
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Directory</td>
+        <td class="tabledata">Specifies the database directory to use for storing databases that are created by the file-based database modules. This option is ignored by the server-based modules.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Output Directory</td>
+        <td class="tabledata">Specifies the output directory to use to store the compiled pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Images (URI path)</td>
+        <td class="tabledata">Specifies the Images (URI path) to use for displaying images when using the page template with Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Columns</td>
+        <td class="tabledata">Specifies the width of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Rows</td>
+        <td class="tabledata">Specifies the height of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Date Format</td>
+        <td class="tabledata">Specifies the date format to use when list the pages from the database. A selection of date formats are available from the drop down box or a custom one can be entered into the text box next to the drop down box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Language</td>
+        <td class="tabledata">Specifies the system language to use in Kiriwrite. If the language used in the installer script is available as language to use in Kiriwrite then that language will be selected by default.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Presentation Module</td>
+        <td class="tabledata">Specifies the presentation module to use in Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Module</td>
+        <td class="tabledata">Specifies the database module to use in Kiriwrite. SQLite is a file-based database module which uses the database directory and the SQLite Perl module while MySQL5 is a server-based database module which uses a MySQL 5.x server from the MySQL Perl module.</td>
+    </tr>
+</table>
+
+<br>
+
+The following options are used only by the server-based database modules:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Server</td>
+        <td class="tabledata">Specifies the database server to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Port</td>
+        <td class="tabledata">Specifies the database port to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Protocol</td>
+        <td class="tabledata">Specifies the database protocol to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the database name to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Username</td>
+        <td class="tabledata">Specifies the database username to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Password</td>
+        <td class="tabledata">Specifies the database password to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Table Prefix</td>
+        <td class="tabledata">Specifies the table prefix to use. Multiple Kiriwrite installations can use the same server database so long as the table prefix is different.</td>
+    </tr>
+</table>
+
+<br>
+
+There is an option that is enabled by default to attempt to delete the installation script after the configuration file has been written since the installation script would no longer be needed after that. Unchecking the box for this option disables this.<br><br>
+Click on the Save Settings button to write the configuration file or the Reset Settings button to restore the settings to their default values.<br><br>
+After clicking on the Save Settings button, some checks are made to make sure that data passed is correct, the configuration file is written (and the installer script deleted if requested) and a message appears saying that Kiriwrite can now be used by clicking on the link at the bottom of the page.
+<hr>
+<span class="pagetitle">Chapter 2: Operation</span><br><br>
+Now that Kiriwrite is installed and working, this chapter is about operating Kiriwrite. This chapter is split into five parts:<br>
+
+<ul>
+<li>Databases, how to add a database, edit a database and delete a database.</li>
+<li>Pages, Selecting a database, creating, editing and deleting pages, deleting, moving, copying and editing multiple pages.</li>
+<li>Filters, adding a filter, editing a filter and deleting a filter.</li>
+<li>Templates, adding a template, editing a template and deleting a template.</li>
+<li>Compiling, compiling one, selected or all databases and cleaning the output directory.</li>
+</ul><hr>
+<span class="pagetitle">2.1 Databases</span><br><br>
+Databases are used for storing the pages that are created in Kiriwrite. Before pages can be stored in a database, a database has to be created.<br><br>
+The default view when you run the Kiriwrite script is to show the list of databases. If there are no databases available, then a message appears saying that there are no databases than can be used.<br><br>
+<span class="heading">2.1.1 Add a database</span><br><br>
+To add a database, from the View Databases sub-menu click on the 'Add Database' link, a form then appears allowing to enter the information about the new database.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Settings</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the database name of the new Kiriwrite database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Description</td>
+        <td class="tabledata">Specifies the description of the new Kiriwrite database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Categories</td>
+        <td class="tabledata">Specifies the categories the database should belong to.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Notes</td>
+        <td class="tabledata">The notes that gives information about the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Filename</td>
+        <td class="tabledata">Specifies the database filename to use. If nothing is entered for the filename than an attempt to automatically generate a filename will be done.</td>
+    </tr>
+</table>
+
+<br>
+
+To add the database with the settings given, click on the 'Add Database' button and a confirmation message should then appear saying that the database has been added and offering a link back to the list of databases. To clear the settings, click on the 'Clear values' button.<br><br>
+
+<span class="heading">2.2 Edit a database</span><br><br>
+To edit a database, click on the 'Edit' link opposite the name and description of the database you want to edit. A form then appears similar to the form for adding a database.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Settings</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the new database name of the Kiriwrite database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Description</td>
+        <td class="tabledata">Specifies the new description of the Kiriwrite database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Categories</td>
+        <td class="tabledata">Specifies the new categories the database should belong to.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Notes</td>
+        <td class="tabledata">The notes that gives information about the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Filename</td>
+        <td class="tabledata">Specifies the database filename to use.</td>
+    </tr>
+</table>
+
+<br>
+
+To edit a database with the new settings given click on the 'Edit Database' button and a confirmation message should appear saying that the database has been edited and offering a link back to the database list. Clicking on the 'Restore current settings' button will undo any changes and revert to the currently used settings.<br><br>
+
+<span class="heading">2.3 Delete a database</span><br><br>
+To delete a database, click on the 'Delete' link opposite. A message then appears asking if the selected database should be deleted. Clicking on the 'Yes, delete the database' button will delete the database and display a confirmation message saying that the selected database has been deleted offering a link to return to the database list. Clicking on 'No, return to the database list.' link will make it return to the database list.<br><br>
+
+<div class="warningbox">
+    <div class="message warning">
+        <span class="warningtext">
+            <b>Warning</b><br>
+            When a database is deleted, the pages in the database are deleted as well.
+        </span>
+    </div>
+</div><hr>
+<span class="pagetitle">2.2 Pages</span><br><br>
+
+Pages are used for storing information that is relevant to that page.<br><br>
+
+Pages can be access from the 'View Pages' menu link. As no database is selected, a drop down box will appear listing the databases that are available, select a database and then click on the View button. A list of pages for that database will then appear and if there are no pages in the database a message will appear saying that no pages exist in this database.<br><br>
+
+To view the next (or previous list) of pages, click on the relevant link at the top of the page and to view a specific list of pages, select the list page number in the drop down menu box at the top of the page and click on the Show button.<br><br>
+
+<span class="heading">2.2.1: Creating a page</span><br><br>
+A page can be created in the selected database by clicking on the 'Add Page' link in the View Pages sub-menu, a form then appears allowing to enter the information about the new page.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the database that the page is being added to.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Specifies the name of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">Specifies the description of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the section name of the new page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the page template to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">Specifies the page filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">Specifies the content of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies if the page name and section should be used for the title.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags can be used with the page content to automatically place information such as page name, description and section:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div>      
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+
+</table>
+
+<br>
+
+After entering the needed page information, the page can be added to the selected database by clicking on the 'Add Page' button and then a confirmation message would appear saying that the selected page has been added and offering a link to return to the page list for the selected database. The new page settings can be cleared by clicking on the 'Reset Settings' button.<br><br>
+
+<span class="heading">2.2.2: Editing a page</span><br><br>
+
+To edit a page, click on the 'Edit' link opposite the page filename you want to edit. A form then appears that is similar for adding a page.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the database that the page is being edited from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Name</td>
+        <td class="tabledata">Specifies the new name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Description</td>
+        <td class="tabledata">Specifies the new description of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the new section name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the new page template to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Filename</td>
+        <td class="tabledata">Specifies the new page filename.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Content</td>
+        <td class="tabledata">Specifies the new content of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies if there should be a new page name and section setting.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags are used for when adding a page can also be used when editing a page:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                        If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div>
+
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After entering the new information, the page can be edited by clicking on the 'Edit Page' button and a confirmation message appears saying that the page has been edited and offering a link back to the list of pages for the currently selected database. Clicking on the 'Restore current settings' button will undo any changes and revert to the current page settings.<br><br>
+
+<span class="heading">2.2.3: Deleting a page</span><br><br>
+
+To delete a page, click on the 'Delete' link opposite the page filename you want to delete, a message then appears asking to confirm that page will be deleted. Clicking on the 'Yes, delete the page' button will delete the page and offer a link back to the list of pages for the selected database. Clicking on the 'No, return to the page list for the (database name) database.' link will return to the list of pages for the selected database.<br><br>
+
+<span class="heading">2.2.4: Delete multiple pages</span><br><br>
+
+To delete multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to delete and then click on the 'Delete Selected' button at the top of the page, a form will then appear asking to confirm if the selected pages listed should be deleted.<br><br>
+
+Clicking on the 'Yes, delete the selected pages' button will display a confirmation message saying that the selected pages were deleted offering a link back to the list of pages for the selected database. Clicking on the 'No, return to the page list for the (database name) database.' will return to the list of pages for the selected database.<br><br>
+
+<span class="heading">2.2.5: Move multiple pages</span><br><br>
+
+To move multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to delete and then click on the 'Move Selected' button at the top of the page, a form will then appear asking to select which database the selected pages should go to and confirm that those pages are being moved to the new database.<br><br>
+
+Clicking on the 'Move selected pages' button will display a confirmation message saying that the selected pages were moved to the new database selected offering a link back to the selected database that the pages were moved from and a link to the selected database where the pages have moved to. Clicking on the 'Return to the page list for the (database name) database' will return to the list of pages in the selected database.<br><br>
+
+<span class="heading">2.2.6: Copy multiple pages</span><br><br>
+
+To copy multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to copy and then click on the 'Copy Selected' button at the top of the page, a form will then appear asking to select which database the selected pages should be copied to and confirm that those pages are being copied to the new database.<br><br>
+
+Clicking on the 'Copy selected pages' button will display a confirmation message saying that the selected pages were copied to the new database selected offering a link back to the selected pages that the pages were copied from and a link to the selected database where the pages have been copied to. Clicking on the 'Return to the page list for the (database name) database.' will return to the list of pages in the selected database.<br><br>
+
+<span class="heading">2.2.7: Edit multiple pages</span><br><br>
+
+To edit multiple pages from the selected database click on the check-box that is to the left of the page filenames you want to edit and then click on the 'Edit Selected' button at the top of the page, a form will then appear that allows certain settings of each page to be edited as shown in the table below:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Section</td>
+        <td class="tabledata">Specifies the new page section to be used on the selected pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Template</td>
+        <td class="tabledata">Specifies the new page template to be used on the selected pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page Settings</td>
+        <td class="tabledata">Specifies the new page settings to be used on the selected pages.</td>
+    </tr>
+</table>
+
+<br>
+
+Each setting that needs to be changed needs to have the check-box on the left of the name needs to be checked otherwise the change will not take effect. This is done to make sure that only the selected page settings are changed.<br><br>
+Clicking on the 'Edit selected pages' button will display a confirmation message saying that the selected pages were edited offering a link back to the list of pages in the selected database, clicking on the 'Clear values' button will clear the currently selected values and clicking on the 'Return to the page list for the '(database name)' database.' link will return to the page list for selected database.<hr>
+<span class="pagetitle">2.3 Filters</span><br><br>
+
+Filters allows text to be easily replaced by looking for certain words, tag or phrase and then replacing it with another set of words, tag or phrase.<br><br>
+
+The list of filters can be viewed by clicking on the 'View Filters' link. If the filter database doesn't exist than a message will appear saying that the filter database doesn't exist and will be created when a filter is added or if the filter database does exist but there are no filters then a message appears saying that there is no filters in the filter database.<br><br>
+
+When compiling the pages, the order of the filters list is determined by the filter priority number with the lower numbers being processed first and the filters with the higher filter priority numbers being processed last.<br><br>
+
+To view the next (or previous list) of filters, click on the relevant link at the top of the page and to view a specific list of filters, select the list page number in the drop down menu box at the top of the page and click on the Show button.<br><br>
+
+<span class="heading">2.3.1 Add a filter</span><br><br>
+
+To add a filter click on the 'Add Filter' link on the View Filters sub-menu, a form then appears allowing to enter the information about the new filter.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Find...</td>
+        <td class="tabledata">Specifies the find setting to search text for.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Replace With...</td>
+        <td class="tabledata">Specifies the replace setting to replace the text with if the search text is found.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Priority</td>
+        <td class="tabledata">Specifies the priority of the filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Notes</td>
+        <td class="tabledata">Specifies the notes for this filter.</td>
+    </tr>
+</table>
+
+<br>
+
+After entering the needed filter information, the filter can be added by clicking on the 'Add Filter' button which displays a confirmation message saying that the filter has been added to the filter database and offering a link back to the list of filters in the filter database. Clicking on the 'Clear values' button will clear any of the filter settings that have been entered and clicking on the 'Return to the filter list.' link will return to the list of filters in the filter database.<br><br>
+
+<span class="heading">2.3.2 Edit a filter</span><br><br>
+To edit a filter click on the 'Edit' link opposite the filter you want to edit. A form then appears that is similar to adding a filter.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Find...</td>
+        <td class="tabledata">Specifies the new find setting to search text for.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Replace With...</td>
+        <td class="tabledata">Specifies the new replace setting to replace the text with if the search text is found.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Priority</td>
+        <td class="tabledata">Specifies the new priority of the filter.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Notes</td>
+        <td class="tabledata">Specifies the new notes for this filter.</td>
+    </tr>
+</table>
+
+<br>
+
+To update the information about the filter, click on the 'Edit Filter' button and a confirmation message should appear saying that the selected filter was edited offering a link back to the list of filters in the filter database. Clicking on the 'Restore current settings' will undo any changes made and will revert the currently used filter settings and clicking on the 'Return to the filter list.' link will return to the list of filters in the filter database.<br><br>
+
+<span class="heading">2.3.3 Delete a filter</span><br><br>
+
+To delete a filter click on the 'Delete' link opposite the filter you want to delete. A form then  appears asking to confirm the deletion of the selected filter. Clicking on the 'Yes, delete the selected filter' button will display a confirmation message saying that the selected filter was deleted. Clicking on the 'No, return to the filter list.' link will return to the list of filters in the filter database.<hr>
+<span class="pagetitle">2.4 Templates</span><br><br>
+
+Templates allows pages to use a common layout which is used to keep a consistent layout on a website or keep the format of documentation pages the same. Templates also allow small tweaks to the page layout to be made without needing to edit each page so the change is reflected in all of the pages by simply changing the template layout and then recompile the pages.<br><br>
+
+The list of templates can be accessed by clicking on the 'View Templates' link. A list of templates from the template database should then appear. If the template database does not exist then a message will appear saying that the template database does not exist and will be created when a template is added. If no templates exist in the template database then a message appears saying that there are no templates in the template database.<br><br>
+
+To view the next (or previous list) of templates, click on the relevant link at the top of the page and to view a specific list of templates, select the list page number in the drop down menu box at the top of the page and click on the Show button.<br><br>
+
+<span class="heading">2.4.1 Add a template</span><br><br>
+
+To add a template to the template database click on the 'Add Template' link from the View Templates sub-menu, a form then appears allowing to enter the new information about the template.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Name</td>
+        <td class="tabledata">Specifies the template name to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Description</td>
+        <td class="tabledata">Specifies the template description to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Filename</td>
+        <td class="tabledata">Specifies the template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Layout</td>
+        <td class="tabledata">Specifies the content of the template layout.</td>
+    </tr>
+</table>
+
+<br>
+
+The following Kiriwrite tags can be used with the template layout to automatically place information such as page content, name, description and section:
+
+<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagecontent&gt;</td>
+        <td class="tabledata">Places the page content here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div> 
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After entering the needed template information, click on the 'Add Template' button to display a confirmation message saying that add the template to the list of templates in the template database and offering a link back to the list of templates in the template database. Clicking on the 'Clear values' button will clear all of the template settings entered. Clicking on the 'Return to the template list.' link will return to the list of templates in the template database.<br><br>
+
+<span class="heading">2.4.2 Edit a template</span><br><br>
+To edit a template click on the 'Edit' link opposite the template name you want to edit, a form then appears that is similar to adding a template.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Name</td>
+        <td class="tabledata">Specifies the new template name to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Description</td>
+        <td class="tabledata">Specifies the new template description to be used.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Filename</td>
+        <td class="tabledata">Specifies the new template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Template Layout</td>
+        <td class="tabledata">Specifies the new content of the template layout.</td>
+    </tr>
+</table>
+
+<br>
+
+The Kiriwrite tags used when adding a template can also be used when editing a template.
+
+<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Tag</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagecontent&gt;</td>
+        <td class="tabledata">Places the page content here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagetitle&gt;</td>
+        <td class="tabledata">Places the page title here. The format of the page title can be changed using the Page Settings value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagename&gt;</td>
+        <td class="tabledata">Places the page name here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagedescription&gt;</td>
+        <td class="tabledata">Places the page description here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:pagesection&gt;</td>
+        <td class="tabledata">Places the page section here.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autosection&gt;</td>
+        <td class="tabledata">Places the automatic page section here.<br><br>
+            <div class="messagebox">
+                <div class="message note">
+                    <b>Note</b><br>
+                    If there is a page section then the page section will appear bracketed. If Information was the page section then the automatic page section name would be '(Information)' and if the page section name is blank then no brackets will appear and will be blank.
+                </div>
+            </div> 
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">&lt;kiriwrite:autotitle&gt;</td>
+        <td class="tabledata">Places the automatic page title here. This combines the section name and page name with brackets around them and a dash separating them with '(Section Name – Page Name)' being the example. The format can be changed by changing the Page Settings value.</td>
+    </tr>
+</table>
+
+<br>
+
+After editing the information about the template, the template can be edited by clicking on the 'Edit Template' button which will display a confirmation message saying that the template information was edited offering a link back to the list of templates in the template database. Clicking on the 'Restore current settings' button will undo any changes and revert to the currently used settings. Clicking on the 'Return to the template list.' will return to the list of templates in the template database.<br><br>
+
+<span class="heading">2.4.3 Delete a template</span><br><br>
+
+To delete a template click on the 'Delete' link opposite the template name you want to delete, a message then appears asking to confirm the deletion of the selected template. Clicking on the 'Yes, delete the template' button will display a confirmation message saying that the selected template has been deleted offering a link back to the list of templates in the template database. Clicking on the 'No, return to the template list.' link will return to the list of templates in the template database.<hr>
+<span class="pagetitle">2.5 Compiling</span><br><br>
+
+Compiling combines the page data with the template layout and the filters that are in the filter database to create pages as if they were created manually.<br><br>
+
+To compile the pages from their databases, click on the 'Compile Pages' menu link. A list of databases will then appear which can be compiled. If no databases are available then a message will appear saying that no databases are available.<br><br>
+
+<span class="heading">2.5.1 Compiling a database</span><br><br>
+
+To compile a database, click on the 'Compile' link opposite the database name you want to compile, a message then appears asking if the database should really be compiled. Clicking on the 'Compile Database' button will display a log of pages that have been compiled and any error messages that might appear with the link to return to the list of databases to compile at the end of the log. <br><br>
+
+When compiling a database, the template being used on the pages in the database selected can be overridden. To override the templates being used, click on the 'Override the template being used' box and select the template to override with.<br><br>
+
+Clicking on the 'Return to the compile database list.' will return to the list of databases to compile.<br><br>
+
+<span class="heading">2.5.2 Compiling multiple databases</span><br><br>
+
+To compile multiple databases click on the check-box to the left of the database name for each database that should have its pages compiled and click on the 'Compile Selected' button which will display a message asking to confirm if the selected databases shown should be compiled. Clicking on the 'Compile Selected Databases' button will display a log of pages that have been compiled and any error messages that might appear with the link to return to the list of databases to compile at the end of the log. <br><br>
+
+When compiling a database, the templates being used on the pages in the databases selected can be overridden. To override the templates being used, click on the 'Override the template being used' box and select the template to override with.<br><br>
+
+Clicking on the 'Return to the compile database list.' will return to the list of databases to compile.<br><br>
+
+<span class="heading">2.5.3 Compiling all databases</span><br><br>
+
+To compile all of the available databases click on the 'Compile All' link in the Compile Pages sub-menu which will display a message asking to confirm if all of the databases should have its pages compiled. Clicking on the 'Compile All Databases' button will display a log of pages that have been compiled and any error messages that might appear with the link to return to the list of databases to compile at the end of the log.<br><br>
+
+When compiling a database, the templates being used on the pages in all of the databases can be overridden. To override the templates being used, click on the 'Override the template being used' box and select the template to override with.<br><br>
+
+Clicking on the 'Return to the compile database list.' link will return to the list of databases to compile.<br><br>
+
+<span class="heading">2.5.4 Cleaning the output directory</span><br><br>
+
+Cleaning the output directory removes all of the contents that is in the output directory. To clean the output directory click on the 'Clean Output Directory' link which will display a message asking to confirm that the output directory should be cleaned. Clicking on the 'Yes, clean output directory' will display a confirmation message saying that the output directory was cleaned. Clicking on the 'Return to the compile database list.' link will return to the list of databases to compile.<hr>
+<span class="pagetitle">Chapter 3: Kiriwrite Settings</span><br><br>
+
+The settings that are used in Kiriwrite can be viewed by clicking on the 'View Settings' link in the menu which will display a list of settings that are currently in use.<br><br>
+
+<span class="heading">3.1 Editing the settings</span><br><br>
+
+To edit the settings, click on the 'Edit Settings' link in the View Settings sub-menu, a form then appears allowing the settings in Kiriwrite to be edited.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Directory</td>
+        <td class="tabledata">Specifies the database directory to use for storing databases that are created by the file-based database modules. This option is ignored by the server-based modules.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Output Directory</td>
+        <td class="tabledata">Specifies the output directory to use to store the compiled pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Images (URI path)</td>
+        <td class="tabledata">Specifies the Images (URI path) to use for displaying images when using the page template with Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Columns</td>
+        <td class="tabledata">Specifies the width of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Rows</td>
+        <td class="tabledata">Specifies the height of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Date Format</td>
+        <td class="tabledata">Specifies the date format to use when list the pages from the database. A selection of date formats are available from the drop down box or a custom one can be entered into the text box next to the drop down box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Language</td>
+        <td class="tabledata">Specifies the system language to use in Kiriwrite. If the language used in the installer script is available as language to use in Kiriwrite then that language will be selected by default.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Presentation Module</td>
+        <td class="tabledata">Specifies the presentation module to use in Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Module</td>
+        <td class="tabledata">Specifies the database module to use in Kiriwrite. SQLite is a file-based database module which uses the database directory and the SQLite Perl module while MySQL5 is a server-based database module which uses a MySQL 5.x server from the MySQL Perl module.</td>
+    </tr>
+</table>
+
+<br>
+
+The following options are used only by the server-based database modules:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Server</td>
+        <td class="tabledata">Specifies the database server to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Port</td>
+        <td class="tabledata">Specifies the database port to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Protocol</td>
+        <td class="tabledata">Specifies the database protocol to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the database name to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Username</td>
+        <td class="tabledata">Specifies the database username to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Password</td>
+        <td class="tabledata">Specifies the database password to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Table Prefix</td>
+        <td class="tabledata">Specifies the table prefix to use. Multiple Kiriwrite installations can use the same server database so long as the table prefix is different.</td>
+    </tr>
+</table>
+
+<br>
+
+To save the new settings, click on the 'Change Settings' button which will display a confirmation message saying that the settings were changed and will take effect on the next page load of Kiriwrite offering a link back to the updated list of settings. Clicking on the 'Restore current settings' button will undo any changes made and will restore the current settings. Clicking on the 'Return to the list of settings.' link will return to the list of currently used settings.<hr>
+<span class="pagetitle">Chapter 4: Usage Tips</span><br><br>
+This chapter mainly contains usage tips in securing your Kiriwrite installation and small features which may be useful for some users.<br><br>
+
+<div class="specific apache132x">
+   In this chapter, directory specific settings used in Apache is .htaccess. Typically, if the web server software is configured to check a file other than .htaccess then a different filename would be used (and would be blocked from being accessed from the web server).
+</div>
+<hr>
+<span class="pagetitle">4.1 Securing your Kiriwrite installation</span><br><br>
+
+This section is about securing your Kiriwrite installation.<br><br>
+
+<span class="heading">4.1.1 HTTP Authentication</span><br><br>
+
+HTTP Authentication allows users who only know the correct username and password to access pages that are not available to the public. HTTP Authentication is done by the following if you're using Apache 1.3.x/2.x from a command console:<br><br>
+
+<div class="code">
+    htpasswd -c .htpasswd username
+</div>
+
+<br>
+
+The -c switch specifies that a password file should be created called .htpasswd (although can be called something else), while username is the username of the login (which can be something else other than username), after pressing enter a password prompt then appears asking for a password to be entered the same twice.<br><br>
+
+After the .htpasswd file is created, the file should be copied to a location that cannot be accessed from a URI resource (such as outside the htdocs/web documents directory) and then create a .htaccess file (if it doesn't exist) pointing to the password file with the following directives as an example.<br><br>
+
+<div class="code">
+    AuthUserFile /home/www/website/private/.htpasswd<br>
+    AuthType Digest<br>
+    AuthName “Private Area”
+</div>
+
+<br>
+
+The AuthUserFile directive should point to the htpasswd file that was created earlier on. The AuthType directive specifies the authentication type to use and AuthName specifies the name of the area to appear when entering the username and password.<br><br>
+
+<span class="heading">4.1.2 IP Address Filtering</span><br><br>
+
+IP Address filtering allows certain IP addresses or hosts to be blocked from access and allowing everyone else access or blocking everyone from access and allowing certain IP addresses or hosts in. Typically when using Kiriwrite, the best method would be the white list method where everyone is blocked from access and only certain IP addresses or hosts can be allowed access.<br><br>
+
+To setup a white list, open the .htaccess file and insert the following (if it already exists) if you're using Apache 1.3/2.x:<br><br>
+
+<div class="code">
+    Order Deny, Allow<br>
+    Deny from all<br>
+    Allow from 127.0.0.1
+</div>
+
+<br>
+
+This example denies everyone and then only allows 127.0.0.1 (which is the computer the web server is running from which tends to be the machine you're using on a personal installation). Multiple Allow commands can be entered which allows multiple hosts.<br><br>
+
+More information on using Allow and Deny can be found in the Apache 1.3/2.x Documentation.<hr>
+<span class="pagetitle">4.2 Renaming the main Kiriwrite script (kiriwrite.cgi)</span><br><br>
+
+While the Kiriwrite script can be used as kiriwrite.cgi, the script has been designed so that it can work if it's renamed to something else such as docmake.cgi, private.cgi or even flyingrhinos.cgi. This can simply be done by renaming the script to whatever name is needed.<br><br>
+
+<div class="warningbox">
+    <div class="message warning">
+        <span class="warningtext">
+            <b>Warning</b><br>
+            Bear in mind that no matter what the script filename is called, it will always look for configuration file as kiriwrite.xml, the modules in the Modules directory and the language files in the lang directory.
+        </span>
+    </div>
+</div>
+<hr>
+<span class="pagetitle">4.3 Removing unneeded modules and language files</span><br><br>
+
+As Kiriwrite uses a modular system for manipulating the databases, outputting the pages internally by Kiriwrite and language files for each language used, space can be recovered by removing unneeded modules from the Modules directory and language files from the lang directory.<br><br>
+
+To make sure that the currently used database module, presentation module and language file are not deleted from their directories. Check which ones should be kept by clicking on the 'View Settings' menu link.<hr>
+<span class="pagetitle">Chapter 5: Troubleshooting</span><br><br>
+<span class="heading">5.1 Common Problems</span><br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Problem</td>
+        <td class="tableheading">Symptom</td>
+        <td class="tableheading">Solution</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, some of the needed Perl modules have the word 'Error' next to them.</td>
+        <td class="tabledata">The needed Perl modules are more than likely not installed.</td>
+        <td class="tabledata">Install the needed Perl modules from the CPAN archive using the CPAN command interface.<sup>1</sup></td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, an error message appears saying that none of the needed Perl modules for the database modules are installed.</td>
+        <td class="tabledata">The needed Perl module(s) (or the Perl module needed specifically for that certain database module) are more than likely not installed.</td>
+        <td class="tabledata">Install the needed Perl modules from the CPAN archive using the CPAN command interface.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, an error message appears saying that some of the directories and files have invalid permissions set.</td>
+        <td class="tabledata">The directories and/or files have invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the directories and/or files so that are the correct permissions needed.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, no database or presentation modules appear in the list of available database or presentation modules.</td>
+        <td class="tabledata">The modules weren't copied or were copied to the wrong directories.</td>
+        <td class="tabledata">Copy or move the database modules to the correct directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, no languages appears in the languages selection list.</td>
+        <td class="tabledata">The language files weren't copied or were copied to the wrong location.</td>
+        <td class="tabledata">Copy or move the language files to the correct directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the configuration file does not exist.</td>
+        <td class="tabledata">The configuration file has been deleted or the installation script wasn't run.</td>
+        <td class="tabledata">Run the installer script (again).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the configuration file has invalid permissions set.</td>
+        <td class="tabledata">The configuration file has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the configuration file so that it can be read.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the database module does not exist.</td>
+        <td class="tabledata">The database module has been deleted or renamed.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the Modules and Modules/Database directory have the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the database module has invalid permissions set.</td>
+        <td class="tabledata">The database module has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the database module so that they can be read (execute permissions not usually needed).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the presentation module does not exist.</td>
+        <td class="tabledata">The presentation module has been deleted or renamed.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the Modules and Modules/Presentation directory have the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the presentation module has invalid permissions set.</td>
+        <td class="tabledata">The presentation module has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the presentation module so that they can be read (execute permissions not usually needed).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the language file does not exist.</td>
+        <td class="tabledata">The language file does not exist.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the lang directory has the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the language file has invalid permissions set.</td>
+        <td class="tabledata">The language file has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the language file so that they can be read.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the list of databases, an error message appears saying that the permissions of the database directory is invalid.</td>
+        <td class="tabledata">The database directory has incorrect permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the database directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the template database, an error message appears saying the permissions of the template database is invalid.</td>
+        <td class="tabledata">The template database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the filter database, an error message appears saying that the permissions of the filter database is invalid.</td>
+        <td class="tabledata">The filter database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the filter database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, an error message appears saying that the output directory has invalid permissions set.</td>
+        <td class="tabledata">The output directory has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the output directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, certain pages do not change when the pages are edited.</td>
+        <td class="tabledata">The pages have invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on those pages which have invalid permissions set.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, the template database has invalid permissions set.</td>
+        <td class="tabledata">The template database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, the filter database has invalid permissions set.</td>
+        <td class="tabledata">The filter database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When saving the new settings, an error message appears saying that the configuration file has invalid permissions set.</td>
+        <td class="tabledata">The configuration file has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the configuration file and then change the permissions back to read-only after saving the new settings.</td>
+    </tr>
+</table>
+
+<br>
+
+<div class="footnote"></div>
+
+<sup>1</sup>The CPAN (Comprehensive Perl Archive Network) command interface is normally included with Perl installations and will normally require superuser (root) permissions.<hr>
+<span class="pagetitle">Chapter 6: Contributing to Kiriwrite</span><br><br>
+
+<span class="heading">6.1: Contributing</span><br><br>
+
+You can contribute to Kiriwrite in many different ways like the following examples:
+<ul>
+    <li>Translate Kiriwrite (program or documentation) so that it can be used your own local language.</li>
+    <li>Add functionality to Kiriwrite.</li>
+    <li>Write a presentation or database module.</li>
+    <li>Report a bug or fault (either with Kiriwrite itself or the documentation).</li>
+    <ul><li>
+        When reporting a bug, you should give the version number of Kiriwrite, what operating system you are using, what web server you are using and the version of it, the version of Perl you are using (and if possible the version of the Perl module that is causing the bug), what the error message of the bug is and how to recreate the bug (if possible).
+    <li></ul>
+</ul>
+
+For more information on how to contribute to Kiriwrite visit http://xestia.co.uk/kiriwrite or visit the BerliOS project site at http://developer.berlios.de/projects/kiriwrite . A list of stuff that needs doing can be found in the TODO file in the Kiriwrite package (remember to check the latest Kiriwrite package's TODO file for the latest on what needs doing).
+		</div>
+	</body>
+</html>

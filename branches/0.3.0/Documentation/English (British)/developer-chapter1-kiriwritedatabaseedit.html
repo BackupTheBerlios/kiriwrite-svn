@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.12: kiriwrite_database_edit</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.12 kiriwrite_database_edit</span><br><br>
+
+kiriwrite_database_edit edits information about a database. If the confirm value is not given then it will write a form for editing a database. If a database filename (old or new) is blank or the database name is blank when the database is edited then an error is returned.<br><br>
+
+kiriwrite_database_edit will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_database_edit(filename, newfilename, newname, newdescription, newnotes, newcategories, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_database_edit(“database”);<br>
+    $pagedata = kiriwrite_database_edit(“database”, “newdatabase”, “New Database Name”, “New Database Description”, “New Notes”, “new, edited, database, categories”, 1);
+</div>
+
+<br>
+
+filename<br>
+Specifies the filename of the database to edit. This is required each time the subroutine is called.<br><br>
+
+<i>newfilename</i><br>
+Specifies the new filename of the database. If the filename given is the same as the filename parameter then the filename does not change. This is required when the database is going to be edited.<br><br>
+
+<i>newdescription</i><br>
+Specifies the new description of the database. This is required when the database is going to be edited.<br><br>
+
+<i>newnotes</i><br>
+Specifies the new notes of the database. This is required when the database is going to be edited.<br><br>
+
+<i>newcategories</i><br>
+Specifies the new categories of the database. This is required when the database is going to be edited.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to edit a database should be confirmed by passing a '1'.<br><br>
+		</div>
+	</body>
+</html>

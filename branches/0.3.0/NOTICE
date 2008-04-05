@@ -1,0 +1,22 @@
+Kiriwrite uses a regular expression for checking if UTF8 data that is 
+passed to it is valid is from the World Wide Web Consortium (W3C) 
+website. ( http://www.w3.org )
+
+The W3C Software License (the 31st December 2002 version) 
+is compatable with the GNU General Public License which Kiriwrite is 
+licensed under.
+
+----------------------------------------------------------------------
+
+UTF8 validation check regular expression: 
+http://www.w3.org/International/questions/qa-forms-utf-8
+
+Copyright ©2003 World Wide Web Consortium, 
+(Massachusetts Institute of Technology, European Research Consortium for 
+Informatics and Mathematics, Keio University). All Rights Reserved. This 
+work is distributed under the W3C® Software License [1] in thehope 
+that it will be useful, but WITHOUT ANY WARRANTY; without even the 
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+
+[1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+

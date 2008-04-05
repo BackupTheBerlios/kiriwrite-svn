@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.19: kiriwrite_filter_add</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.19 kiriwrite_filter_add</span><br><br>
+
+kiriwrite_filter_add adds a filter to the filter database. If no confirm value is given then a form for adding a filter to the filter database is written.<br><br>
+
+kiriwrite_filter_add will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_filter_add(filterfind, filterreplace, filterpriority, filternotes, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_filter_add();<br>
+    $pagedata = kiriwrite_filter_add(“Find this”, “And replace it with this”, 1, “Some notes about the filter itself for checking up later.”, 1);
+</div>
+
+<br>
+
+<i>filterfind</i><br>
+Specifies the text to find. This is required when adding a filter.<br><br>
+
+<i>filterreplace</i><br>
+Specifies what will replace the text that is found by the filterfind parameter. This is required when adding a filter.<br><br>
+
+<i>filterpriority</i><br>
+Specifies the filter priority. The bigger the priority number is then the filter will be processed earlier than filters with lower priority numbers. This is required when adding a filter.<br><br>
+
+<i>filternotes</i><br>
+Specifies the notes for the filter. This is required when adding a filter.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to add a filter should be confirmed by passing a '1'.<br><br>
+		</div>
+	</body>
+</html>
