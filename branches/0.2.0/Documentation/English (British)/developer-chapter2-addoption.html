@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.22: addoption</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.22 addoption</span><br><br>
+
+Adds an option.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addoption(optionname, options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addoption(“Option Name”, { Style => “option”, Value => “optionvalue” });
+</div>
+
+<br>
+
+optionname<br>
+Specifies the option name.<br><br>
+
+<i>options</i><br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Style</td>
+        <td class="tabledata">Specifies the CSS style to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Value</td>
+        <td class="tabledata">Specifies the value for the option when selected.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Selected</td>
+        <td class="tabledata">Specifies if the option should be selected by default.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>

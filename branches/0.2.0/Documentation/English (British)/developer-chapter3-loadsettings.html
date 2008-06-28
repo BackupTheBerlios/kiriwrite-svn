@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.3: loadsettings</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.3 loadsettings</span><br><br>
+
+Loads the settings needed for the database module.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->loadsettings(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->loadsettings({ Directory => “db”, DateTime => “DD/MM/YY (hh:mm:ss)”, Server => “localhost”, Port => “3306”, Protocol => “tcp”, Database => “database”, Username => “username”, Password => “password”, TablePrefix => “tableprefix” });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Directory</td>
+        <td class="tabledata">Specifies the directory where the databases are stored.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DateTime</td>
+        <td class="tabledata">Specifies the date and time settings to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Server</td>
+        <td class="tabledata">Specifies the location of the server.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Port</td>
+        <td class="tabledata">Specifies the port number of the server.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Protocol</td>
+        <td class="tabledata">Specifies the protocol type to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the name of the database to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Username</td>
+        <td class="tabledata">Specifies the username to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Password</td>
+        <td class="tabledata">Specifies the password to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TablePrefix</td>
+        <td class="tabledata">Specifies the table prefix to use.</td>
+    </tr>
+</table>
+
+<br>
+
+Typically all the settings except for Directory are used by a server-based database module, while only the Directory and DateTime settings will be used by a file-based database module.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.15: getseconddatabaseinfo</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.15 getseconddatabaseinfo</span><br><br>
+
+Gets information about the database that was selected from the selectseconddb subroutine. The information will be returned as a hash.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->getseconddatabaseinfo();
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectseconddatabase(“database”);<br>
+    %database_info = $kiriwrite_dbmodule->getseconddatabaseinfo();
+</div>
+
+<br>
+
+If a database error occurs while getting the information about the database, the error returned should be 'DatabaseError' in the $error scalar and the information about the error placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

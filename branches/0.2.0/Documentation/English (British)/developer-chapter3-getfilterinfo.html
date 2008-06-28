@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.36: getfilterinfo</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.36 getfilterinfo</span><br><br>
+
+Gets information about the filter. Returns the information about the filter as a hash.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->getfilterinfo(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->connectfilter();
+    $kiriwrite_dbmodule->getfilterinfo({ FilterID => 1, Reduced => 1 });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">FilterID</td>
+        <td class="tabledata">Specifies the filter identification number to get the filter information from.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Reduced</td>
+        <td class="tabledata">Gets a reduced version of the filter information (filter identification number, priority, filter find setting and filter replace setting).</td>
+    </tr>
+</table>
+
+<br>
+
+If the filter with the filter identification number given does not exist then the error returned should be 'FilterDoesNotExist' in the $error scalar.
+		</div>
+	</body>
+</html>

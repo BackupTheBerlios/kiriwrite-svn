@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.37: kiriwrite_filepermissions</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.37 kiriwrite_filepermissions</span><br><br>
+
+kiriwrite_filepermissions checks if the file permissions of a file to see if they are valid and returns a value if the file permissions are invalid.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_filepermissions(filename, read, write, filemissingskip);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $file_permissions = kiriwrite_filepermissions(“test.html”, 1);<br>
+    $file_permissions = kiriwrite_filepermissions(“test.html”, 1, 1);
+    $file_permissions = kiriwrite_filepermissions(“test.html”, 1, 0, 1);
+</div>
+
+<br>
+
+filename<br>
+Specifies the filename to check for valid file permissions. This is required each time the subroutine is called.<br><br>
+
+<i>read</i><br>
+Check if the file with the filename given has valid read permissions.<br><br>
+
+<i>write</i><br>
+Check if the file with the filename given has valid write permissions.<br><br>
+
+<i>filemissingskip</i><br>
+If the file is missing then skip the permissions check (normally used if a file doesn't exist and then has to be created).
+		</div>
+	</body>
+</html>

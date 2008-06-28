@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.25: addtextbox</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.25 addtextbox</span><br><br>
+
+Adds a multiple line text box.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addtextbox(textboxname, options);
+</div>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addtextbox(“textbox”, { Columns => 25, Rows => 5, Style => “textbox”, Value => “This is a text box.” });
+</div>
+
+<br>
+
+textboxname<br>
+Specifies the name of the multiple line text box.<br><br>
+
+<i>options</i><br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Columns</td>
+        <td class="tabledata">Specifies the width of the multiple line text box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Rows</td>
+        <td class="tabledata">Specifies the height of the multiple line text box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Style</td>
+        <td class="tabledata">Specifies the CSS style of the multiple line text box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Value</td>
+        <td class="tabledata">Specifies the value of the multiple line text box.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>

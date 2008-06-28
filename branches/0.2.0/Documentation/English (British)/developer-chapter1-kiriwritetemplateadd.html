@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.15: kiriwrite_template_add</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.15 kiriwrite_template_add</span><br><br>
+
+kiriwrite_template_add adds a template to the template database. If no confirm value is given then it will write a form for adding a template.<br><br>
+
+kiriwrite_template_add will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+kiriwrite_template_add(filename, name, description, layout, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_template_add();<br>
+    $pagedata = kiriwrite_template_add(“template.html”, “Template Filename”, “Template Description”, “This is the template layout, blah, blah, blah”, 1);
+</div>
+
+<br>
+
+<i>filename</i><br>
+Specifies the filename of the new template. This is required when adding a template.<br><br>
+
+<i>name</i><br>
+Specifies the name of the new template. This is required when adding a template.<br><br>
+
+<i>description</i><br>
+Specifies the description of the new template. This is required when adding a template.<br><br>
+
+<i>layout</i><br>
+Specifies the layout of the new template. This is required when adding a template.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to add a template should be confirmed by passing a '1'.<br><br>
+		</div>
+	</body>
+</html>

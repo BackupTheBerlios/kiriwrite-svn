@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - 4.1: Securing your Kiriwrite installation</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">4.1 Securing your Kiriwrite installation</span><br><br>
+
+This section is about securing your Kiriwrite installation.<br><br>
+
+<span class="heading">4.1.1 HTTP Authentication</span><br><br>
+
+HTTP Authentication allows users who only know the correct username and password to access pages that are not available to the public. HTTP Authentication is done by the following if you're using Apache 1.3.x/2.x from a command console:<br><br>
+
+<div class="code">
+    htpasswd -c .htpasswd username
+</div>
+
+<br>
+
+The -c switch specifies that a password file should be created called .htpasswd (although can be called something else), while username is the username of the login (which can be something else other than username), after pressing enter a password prompt then appears asking for a password to be entered the same twice.<br><br>
+
+After the .htpasswd file is created, the file should be copied to a location that cannot be accessed from a URI resource (such as outside the htdocs/web documents directory) and then create a .htaccess file (if it doesn't exist) pointing to the password file with the following directives as an example.<br><br>
+
+<div class="code">
+    AuthUserFile /home/www/website/private/.htpasswd<br>
+    AuthType Digest<br>
+    AuthName “Private Area”
+</div>
+
+<br>
+
+The AuthUserFile directive should point to the htpasswd file that was created earlier on. The AuthType directive specifies the authentication type to use and AuthName specifies the name of the area to appear when entering the username and password.<br><br>
+
+<span class="heading">4.1.2 IP Address Filtering</span><br><br>
+
+IP Address filtering allows certain IP addresses or hosts to be blocked from access and allowing everyone else access or blocking everyone from access and allowing certain IP addresses or hosts in. Typically when using Kiriwrite, the best method would be the white list method where everyone is blocked from access and only certain IP addresses or hosts can be allowed access.<br><br>
+
+To setup a white list, open the .htaccess file and insert the following (if it already exists) if you're using Apache 1.3/2.x:<br><br>
+
+<div class="code">
+    Order Deny, Allow<br>
+    Deny from all<br>
+    Allow from 127.0.0.1
+</div>
+
+<br>
+
+This example denies everyone and then only allows 127.0.0.1 (which is the computer the web server is running from which tends to be the machine you're using on a personal installation). Multiple Allow commands can be entered which allows multiple hosts.<br><br>
+
+More information on using Allow and Deny can be found in the Apache 1.3/2.x Documentation.
+		</div>
+	</body>
+</html>
