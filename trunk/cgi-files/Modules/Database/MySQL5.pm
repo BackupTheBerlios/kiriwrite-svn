@@ -21,7 +21,7 @@
 
 # Define the package (perl module) name.
 
-package Kiriwrite::Database::MySQL5;
+package Modules::Database::MySQL5;
 
 # Enable strict and use warnings.
 
@@ -2533,6 +2533,7 @@ sub addfilter{
         		priority int(5),
         		findsetting varchar(1024),
         		replacesetting varchar(1024),
+			enabled varchar(3),
         		notes text
 		) DEFAULT CHARSET=utf8') or ( $error = "FilterDatabaseError", $errorext = $database_handle->errstr, return );
 		$statement_handle->execute();

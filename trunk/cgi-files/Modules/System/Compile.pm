@@ -1,184 +1,12 @@
-#################################################################################
-# compile.lib: Kiriwrite Compile Library					#
-#										#
-# This library is under the same license as the main Kiriwrite script.		#
-#################################################################################
-
-# This section of the file is for when the library is called from the main
-# Kiriwrite script.
-
-# If the action option is left blank, then print out a form where the list
-# of databases to compile are available.
-
-if ($form_data->{'action'}){
-
-	my $http_query_action = $form_data->{'action'};
-
-	if ($http_query_action eq "compile"){
-
-		# The specified action is to compile the pages, check if the
-		# action to compile the page has been confirmed.
-
-		my $http_query_confirm 	= $form_data->{'confirm'};
-		my $http_query_type	= $form_data->{'type'};
-
-		# If it is blank, set the confirm value to 0.
-
-		if (!$http_query_confirm){
-
-			# The http_query_confirm variable is uninitalised, so place a
-			# '0' (meaning an unconfirmed action).
-
-			$http_query_confirm = 0;
-
-		}
-
-		# If the compile type is blank then return an error.
-
-		if (!$http_query_type){
-
-			# Compile type is blank so return an error.
-
-			kiriwrite_error("blankcompiletype");
-
-		}
-
-		if ($http_query_type eq "multiple"){
-
-			if ($http_query_confirm eq 1){
-
-				# The action to compile the pages has been confirmed so
-				# compile the pages.
-
-				my $http_query_override		= $form_data->{'enableoverride'};
-				my $http_query_overridetemplate	= $form_data->{'overridetemplate'};
-
-				my @selectedlist = kiriwrite_selectedlist();
-				my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, $http_query_override, $http_query_overridetemplate, @selectedlist);
-
-				kiriwrite_output_header;	# Output the header to browser/console/stdout.
-				kiriwrite_output_page($kiriwrite_lang->{compile}->{compilepages}, $pagedata, "compile"); # Output the page to browser/console/stdout.
-				exit;				# End the script.
-
-			} else {
-
-				# The action to compile the pages has not been confirmed
-				# so write a form asking the user to confirm the action
-				# of compiling the pages.
-
-				my @selectedlist = kiriwrite_selectedlist();
-				my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", @selectedlist);
-
-				kiriwrite_output_header;	# Output the header to browser/console/stdout.
-				kiriwrite_output_page($kiriwrite_lang->{compile}->{compileselecteddatabases}, $pagedata, "compile"); # Output the page to browser/console/stdout.
-				exit;				# End the script.
-
-			}
-
-		} elsif ($http_query_type eq "single"){
-
-			my $http_query_database	= $form_data->{'database'};
-			my @selectedlist;
-			$selectedlist[0] = $http_query_database;
-			my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", @selectedlist);
-
-			kiriwrite_output_header;	# Output the header to browser/console/stdout.
-			kiriwrite_output_page($kiriwrite_lang->{compile}->{compiledatabase}, $pagedata, "compile");
-			exit;				# End the script.
-
-		} else {
-
-			kiriwrite_error("invalidcompiletype");
-
-		}
-
-	} elsif ($http_query_action eq "all"){
-
-		# The selected action is to compile all of the databases
-		# in the database directory. Check if the action to
-		# compile all of the databases has been confirmed.
-
-		my $http_query_confirm = $form_data->{'confirm'};
-
-		if (!$http_query_confirm){
-
-			# The http_query_confirm variable is uninitalised, so place a
-			# '0' (meaning an unconfirmed action).
-
-			$http_query_confirm = 0;
-
-		}
-
-		if ($http_query_confirm eq 1){
-
-			# The action to compile all the databases has been confirmed.
-
-		}
-
-		my $pagedata = kiriwrite_compile_all();
-
-		kiriwrite_output_header;			# Output the header to browser/console/stdout.
-		kiriwrite_output_page($kiriwrite_lang->{compile}->{compilealldatabases}, $pagedata, "compile");
-		exit;
-
-	} elsif ($http_query_action eq "clean") {
-
-		# The selected action is to clean the output directory.
-		# Check if the action to clean the output directory
-		# has been confirmed.
-
-		my $http_query_confirm = $form_data->{'confirm'};
-
-		if (!$http_query_confirm){
-
-			# The http_query_confirm variable is uninitalised, so place a
-			# '0' (meaning an unconfirmed action).
-
-			$http_query_confirm = 0;
-
-		}
-
-		if ($http_query_confirm eq 1){
-
-			# The action to clean the output directory has been confirmed.
-
-			my $pagedata = kiriwrite_compile_clean($http_query_confirm);
-
-			kiriwrite_output_header;		# Output the header to browser/console/stdout.
-			kiriwrite_output_page($kiriwrite_lang->{compile}->{cleanoutputdirectory}, $pagedata, "compile");	# Output the page to browser/console/stdout.
-			exit;					# End the script.
-	
-		}
-
-		# The action to clean the output directory is not
-		# confirmed, so write a page asking the user
-		# to confirm cleaning the output directory.
-
-		my $pagedata = kiriwrite_compile_clean();
-
-		kiriwrite_output_header;		# Output the header to browser/console/stdout.
-		kiriwrite_output_page($kiriwrite_lang->{compile}->{cleanoutputdirectory}, $pagedata, "compile");	# Output the page to browser/console/stdout.
-		exit;					# End the script.
-
-	} else {
-
-		# The action specified was something else other than those
-		# above, so return an error.
-
-		kiriwrite_error("invalidaction");
-
-	}
-}
-
-my $pagedata = kiriwrite_compile_list();
-
-kiriwrite_output_header;		# Output the header to browser/console/stdout.
-kiriwrite_output_page($kiriwrite_lang->{compile}->{compilepages}, $pagedata, "compile");	# Output the page to browser/console/stdout.
-exit;					# End the script.
-
-#################################################################################
-# Begin list of relevant subroutines.						#
-#################################################################################
+package Modules::System::Compile;
+
+use Modules::System::Common;
+use strict;
+use warnings;
+use Exporter;
+
+our @ISA = qw(Exporter);
+our @EXPORT = qw(kiriwrite_compile_makepages kiriwrite_compile_all kiriwrite_compile_list kiriwrite_compile_clean kiriwrite_compile_clean_helper);
 
 sub kiriwrite_compile_makepages{
 #################################################################################
@@ -233,8 +61,8 @@ sub kiriwrite_compile_makepages{
 
 	kiriwrite_variablecheck($override_template, "utf8", 0, 0);
 	$override_template	= kiriwrite_utf8convert($override_template);
-	$kiriwrite_overridetemplatefilename_length_check 	= kiriwrite_variablecheck($override_template, "maxlength", 64, 1);
-	$kiriwrite_overridetemplatefilename_filename_check 	= kiriwrite_variablecheck($override_template, "filename", "", 1);
+	my $kiriwrite_overridetemplatefilename_length_check 	= kiriwrite_variablecheck($override_template, "maxlength", 64, 1);
+	my $kiriwrite_overridetemplatefilename_filename_check 	= kiriwrite_variablecheck($override_template, "filename", "", 1);
 
 	if ($kiriwrite_overridetemplatefilename_length_check eq 1){
 
@@ -358,20 +186,20 @@ sub kiriwrite_compile_makepages{
 		my $filters_skip		= 0;
   		my $template;
 		my $templates_skip		= 0;
-		my $information_prefix		= $kiriwrite_lang->{compile}->{informationprefix};
-		my $error_prefix		= $kiriwrite_lang->{compile}->{errorprefix};
-		my $warning_prefix		= $kiriwrite_lang->{compile}->{warningprefix};
+		my $information_prefix		= $main::kiriwrite_lang{compile}{informationprefix};
+		my $error_prefix		= $main::kiriwrite_lang{compile}{errorprefix};
+		my $warning_prefix		= $main::kiriwrite_lang{compile}{warningprefix};
 		my $filehandle_page;
 
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compiledatabases}, { Style => "pageheader" });
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->startbox("datalist");
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compiledatabases}, { Style => "pageheader" });
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->startbox("datalist");
 
 		# Check if the output directory exists and has
 		# valid permissions set.
 
-		$output_exists		= kiriwrite_fileexists($kiriwrite_config{'directory_data_output'});
+		$output_exists		= kiriwrite_fileexists($main::kiriwrite_config{'directory_data_output'});
 
 		if ($output_exists ne 0){
 
@@ -382,7 +210,7 @@ sub kiriwrite_compile_makepages{
 
 		}
 
-		$output_permissions	= kiriwrite_filepermissions($kiriwrite_config{'directory_data_output'}, 1, 1);
+		$output_permissions	= kiriwrite_filepermissions($main::kiriwrite_config{'directory_data_output'}, 1, 1);
 
 		if ($output_permissions ne 0){
 
@@ -395,42 +223,42 @@ sub kiriwrite_compile_makepages{
 
 		# Connect to the database server.
 
-		$kiriwrite_dbmodule->connect();
+		$main::kiriwrite_dbmodule->connect();
 
 		# Check if any errors occured while connecting to the database server.
 
-		if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+		if ($main::kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
 
 			# A database connection error has occured so return
 			# an error.
 
-			kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+			kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 		}
 
 		# Connect to the filter database.
 
-		$kiriwrite_dbmodule->connectfilter();
+		$main::kiriwrite_dbmodule->connectfilter();
 
 		# Check if any error has occured while connecting to the filter
 		# database.
 
-		if ($kiriwrite_dbmodule->geterror eq "FilterDatabaseDoesNotExist"){
+		if ($main::kiriwrite_dbmodule->geterror eq "FilterDatabaseDoesNotExist"){
 
 			# The filter database does not exist so write a warning message.
 
- 			$kiriwrite_presmodule->addtext($warning_prefix . $kiriwrite_lang->{compile}->{filterdatabasemissing});
- 			$kiriwrite_presmodule->addlinebreak();
+ 			$main::kiriwrite_presmodule->addtext($warning_prefix . $main::kiriwrite_lang{compile}{filterdatabasemissing});
+ 			$main::kiriwrite_presmodule->addlinebreak();
  			$filters_skip = 1;
  			$warning_count++;
 
-		} elsif ($kiriwrite_dbmodule->geterror eq "FilterDatabaseInvalidPermissionsSet"){
+		} elsif ($main::kiriwrite_dbmodule->geterror eq "FilterDatabaseInvalidPermissionsSet"){
 
 			# The filter database has invalid permissions set so write a
 			# an error message.
 
-			$kiriwrite_presmodule->addtext($error_prefix . $kiriwrite_lang->{compile}->{filterdatabasepermissions});
-			$kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($error_prefix . $main::kiriwrite_lang{compile}{filterdatabasepermissions});
+			$main::kiriwrite_presmodule->addlinebreak();
 			$filters_skip = 1;
 			$error_count++;
 
@@ -443,16 +271,16 @@ sub kiriwrite_compile_makepages{
 
 			# Get the list of available filters.
 
-			@database_filters	= $kiriwrite_dbmodule->getfilterlist();
+			@database_filters	= $main::kiriwrite_dbmodule->getfilterlist();
 
 			# Check if any errors occured while getting the list of filters.
 
-			if ($kiriwrite_dbmodule->geterror eq "FilterDatabaseError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "FilterDatabaseError"){
 
 				# A database error has occured with the filter database.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{filterdatabaseerror}, $kiriwrite_dbmodule->geterror(1)));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{filterdatabaseerror}, $main::kiriwrite_dbmodule->geterror(1)));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 
 			}
@@ -466,7 +294,7 @@ sub kiriwrite_compile_makepages{
 
 					# Get the filter information.
 
-					%filter_info = $kiriwrite_dbmodule->getfilterinfo({ FilterID => $filter, Reduced => 1 });
+					%filter_info = $main::kiriwrite_dbmodule->getfilterinfo({ FilterID => $filter, Reduced => 1 });
 
 					# Check if the filter is enabled and if it isn't then process
 					# the next filter.
@@ -481,16 +309,16 @@ sub kiriwrite_compile_makepages{
 
 					# Check if any errors occured while getting the filter information.
 
-					if ($kiriwrite_dbmodule->geterror eq "FilterDatabaseError"){
+					if ($main::kiriwrite_dbmodule->geterror eq "FilterDatabaseError"){
 
 						# A database error occured while using the filter database.
 
-						$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{filterdatabaseerror}, $kiriwrite_dbmodule->geterror(1)));
-						$kiriwrite_presmodule->addlinebreak();
+						$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{filterdatabaseerror}, $main::kiriwrite_dbmodule->geterror(1)));
+						$main::kiriwrite_presmodule->addlinebreak();
 						$error_count++;
 						next;
 
-					} elsif ($kiriwrite_dbmodule->geterror eq "FilterDoesNotExist"){
+					} elsif ($main::kiriwrite_dbmodule->geterror eq "FilterDoesNotExist"){
 
 						# The filter does not exist so process the next filter.
 
@@ -505,8 +333,8 @@ sub kiriwrite_compile_makepages{
 
 						if ($filters_find_blank_warning ne 1){
 
-							$kiriwrite_presmodule->addtext($warning_prefix . $kiriwrite_lang->{compile}->{findfilterblank});
-							$kiriwrite_presmodule->addlinebreak();
+							$main::kiriwrite_presmodule->addtext($warning_prefix . $main::kiriwrite_lang{compile}{findfilterblank});
+							$main::kiriwrite_presmodule->addlinebreak();
 							$filters_find_blank_warning = 1;
 						}
 						next;
@@ -524,8 +352,8 @@ sub kiriwrite_compile_makepages{
 
 				}
 
- 				$kiriwrite_presmodule->addtext($information_prefix . $kiriwrite_lang->{compile}->{finishfilterdatabase});
- 				$kiriwrite_presmodule->addlinebreak();
+ 				$main::kiriwrite_presmodule->addtext($information_prefix . $main::kiriwrite_lang{compile}{finishfilterdatabase});
+ 				$main::kiriwrite_presmodule->addlinebreak();
 
 			}
 
@@ -533,31 +361,31 @@ sub kiriwrite_compile_makepages{
 
 		# Disconnect from the filter database.
 
-		$kiriwrite_dbmodule->disconnectfilter();
+		$main::kiriwrite_dbmodule->disconnectfilter();
 
 		# Connect to the template database.
 
-		$kiriwrite_dbmodule->connecttemplate();
+		$main::kiriwrite_dbmodule->connecttemplate();
 
 		# Check if any errors occured while connecting to the template database.
 
-		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+		if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
 
 			# The template database does not exist so set the template
 			# warning message.
 
- 			$kiriwrite_presmodule->addtext($warning_prefix . $kiriwrite_lang->{compile}->{templatedatabasemissing});
- 			$kiriwrite_presmodule->addlinebreak();
+ 			$main::kiriwrite_presmodule->addtext($warning_prefix . $main::kiriwrite_lang{compile}{templatedatabasemissing});
+ 			$main::kiriwrite_presmodule->addlinebreak();
  			$templates_skip = 1;
  			$warning_count++;
 
-		} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+		} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
 
 			# The template database has invalid permissions set so write
 			# the template warning message.
  
- 			$kiriwrite_presmodule->addtext($error_prefix . $kiriwrite_lang->{compile}->{templatedatabasepermissions});
- 			$kiriwrite_presmodule->addlinebreak();
+ 			$main::kiriwrite_presmodule->addtext($error_prefix . $main::kiriwrite_lang{compile}{templatedatabasepermissions});
+ 			$main::kiriwrite_presmodule->addlinebreak();
  			$templates_skip = 1;
  			$error_count++;
 
@@ -568,17 +396,17 @@ sub kiriwrite_compile_makepages{
 
 		if (!$templates_skip){
 
-			@templateslist = $kiriwrite_dbmodule->gettemplatelist();
+			@templateslist = $main::kiriwrite_dbmodule->gettemplatelist();
 
 			# Check if any errors had occured.
 
-			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 				# A database error occured while getting the list
 				# of templates so return a warning message with the 
 				# extended error information.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{templatedatabaseerror}, $kiriwrite_dbmodule->geterror(1)));
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{templatedatabaseerror}, $main::kiriwrite_dbmodule->geterror(1)));
 				$templates_skip = 1;
 				$error_count++;
 
@@ -595,18 +423,18 @@ sub kiriwrite_compile_makepages{
 
 					# Get information about the template.
 
-					%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template });
+					%template_info = $main::kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template });
 
 					# Check if any error occured while getting the template information.
 
-					if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+					if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 						# A database error has occured, so return an error.
 
-						$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{templatedatabaseerror}, $kiriwrite_dbmodule->geterror(1)));
+						$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{templatedatabaseerror}, $main::kiriwrite_dbmodule->geterror(1)));
 						$error_count++;
 
-					} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+					} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
 
 						# The template does not exist, so process the next template.
 
@@ -621,8 +449,8 @@ sub kiriwrite_compile_makepages{
 
 				}
 
- 				$kiriwrite_presmodule->addtext($information_prefix . $kiriwrite_lang->{compile}->{finishtemplatedatabase});
- 				$kiriwrite_presmodule->addlinebreak();
+ 				$main::kiriwrite_presmodule->addtext($information_prefix . $main::kiriwrite_lang{compile}{finishtemplatedatabase});
+ 				$main::kiriwrite_presmodule->addlinebreak();
 
 			}
 
@@ -630,7 +458,7 @@ sub kiriwrite_compile_makepages{
 
 		# Disconnect from the template database.
 
-		$kiriwrite_dbmodule->disconnecttemplate();
+		$main::kiriwrite_dbmodule->disconnecttemplate();
 
 		# Process each database.
 
@@ -639,7 +467,7 @@ sub kiriwrite_compile_makepages{
 			# Check if the database filename and length
 			# are valid.
 
-			$kiriwrite_presmodule->addhorizontalline();
+			$main::kiriwrite_presmodule->addhorizontalline();
 
 			$database_filename_check	= kiriwrite_variablecheck($database, "page_filename", "", 1);
 			$database_maxlength_check	= kiriwrite_variablecheck($database, "maxlength", 32, 1);
@@ -649,8 +477,8 @@ sub kiriwrite_compile_makepages{
 				# The database filename is invalid, so process
 				# the next database.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databasefilenameinvalidcharacters}, $database));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databasefilenameinvalidcharacters}, $database));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 				next;
 
@@ -661,8 +489,8 @@ sub kiriwrite_compile_makepages{
 				# The database file is too long, so process the
 				# next database.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databasefilenametoolong}, $database));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databasefilenametoolong}, $database));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 				next;
 
@@ -670,26 +498,26 @@ sub kiriwrite_compile_makepages{
 
 			# Select the database.
 
-			$kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
+			$main::kiriwrite_dbmodule->selectdb({ DatabaseName => $database });
 
 			# Check if any errors had occured while selecting the database.
 
-			if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DoesNotExist"){
 
 				# The database does not exist, so write a warning message.
 
-				$kiriwrite_presmodule->addtext($warning_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databasemissing}, $database));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($warning_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databasemissing}, $database));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$warning_count++;
 				next;
 
-			} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+			} elsif ($main::kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
 
 				# The database has invalid permissions set, so write
 				# an error message.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databaseinvalidpermissions}, $database));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databaseinvalidpermissions}, $database));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 				next;
 
@@ -697,16 +525,16 @@ sub kiriwrite_compile_makepages{
 
 			# Get information about the database.
 
-			my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+			my %database_info = $main::kiriwrite_dbmodule->getdatabaseinfo();
 
 			# Check if any error occured while getting the database information.
 
-			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DatabaseError"){
 
 				# A database error has occured so write an error.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databaseerror}, $database, $kiriwrite_dbmodule->geterror(1)));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databaseerror}, $database, $main::kiriwrite_dbmodule->geterror(1)));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 				next;
 
@@ -716,22 +544,22 @@ sub kiriwrite_compile_makepages{
 
 			$database_name = $database_info{"DatabaseName"};
 
-			$kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{compilingpages}, $database_name));
-			$kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{compilingpages}, $database_name));
+			$main::kiriwrite_presmodule->addlinebreak();
 
 			# Get the list of pages in the database.
 
-			@databasepages = $kiriwrite_dbmodule->getpagelist();
+			@databasepages = $main::kiriwrite_dbmodule->getpagelist();
 
 			# Check if any errors occured while getting the list of pages.
 
-			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DatabaseError"){
 
 				# A database error has occured so return an error and
 				# also the extended error information.
 
-				$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databasepageerror}, $database, $kiriwrite_dbmodule->geterror(1)));
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databasepageerror}, $database, $main::kiriwrite_dbmodule->geterror(1)));
+				$main::kiriwrite_presmodule->addlinebreak();
 				$error_count++;
 				next;
 
@@ -741,7 +569,7 @@ sub kiriwrite_compile_makepages{
 
 				# Get information about the page.
 
-				%page_info = $kiriwrite_dbmodule->getpageinfo({ PageFilename => $page });
+				%page_info = $main::kiriwrite_dbmodule->getpageinfo({ PageFilename => $page });
 
 				$page_filename		= $page_info{"PageFilename"};
 				$page_name		= $page_info{"PageName"};
@@ -761,8 +589,8 @@ sub kiriwrite_compile_makepages{
 					# The file name is not valid so write a
 					# error and process the next page.
 
-					$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{invalidpagefilename}, $page_name));
-					$kiriwrite_presmodule->addlinebreak();
+					$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{invalidpagefilename}, $page_name));
+					$main::kiriwrite_presmodule->addlinebreak();
 					$error_count++;
 					next;
 
@@ -780,8 +608,8 @@ sub kiriwrite_compile_makepages{
 
 				if (!$templatefiles{$page_template}{valid} && $page_template ne "!none" && $templates_skip eq 0){
 
-					$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{templatefilemissing}, $page_template, $page_name, $page_filename));
-					$kiriwrite_presmodule->addlinebreak();
+					$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{templatefilemissing}, $page_template, $page_name, $page_filename));
+					$main::kiriwrite_presmodule->addlinebreak();
 					$error_count++;
 					next;
 
@@ -926,7 +754,7 @@ sub kiriwrite_compile_makepages{
 
 					$page_directory_path = $page_directory_path . '/' . $page_directory_name;
 
-					mkdir($kiriwrite_config{"directory_data_output"} . '/' . $page_directory_path);
+					mkdir($main::kiriwrite_config{"directory_data_output"} . '/' . $page_directory_path);
 
 				}
 
@@ -934,21 +762,21 @@ sub kiriwrite_compile_makepages{
 				# the permissions of the file and return an error if the
 				# permissions set are invalid.
 
-				$page_filename_exists = kiriwrite_fileexists($kiriwrite_config{"directory_data_output"} . '/' . $page_filename);	
+				$page_filename_exists = kiriwrite_fileexists($main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename);	
 
 				if ($page_filename_exists eq 0){
 
 					# The page filename exists, so check if the permissions given are
 					# valid.
 
-					$page_filename_permissions = kiriwrite_filepermissions($kiriwrite_config{"directory_data_output"} . '/' . $page_filename, 1, 1);
+					$page_filename_permissions = kiriwrite_filepermissions($main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename, 1, 1);
 
 					if ($page_filename_permissions eq 1){
 
 						# The file has invalid permissions set.
 
-						$kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{pageinvalidpermissions}, $page_filename));
-						$kiriwrite_presmodule->addlinebreak();
+						$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pageinvalidpermissions}, $page_filename));
+						$main::kiriwrite_presmodule->addlinebreak();
 						$error_count++;
 
 						# Reset certain values.
@@ -984,9 +812,9 @@ sub kiriwrite_compile_makepages{
 				# Write the file to the output directory.
 
 				($page_filename) = $page_filename =~ m/^(.*)$/g;
-				($kiriwrite_config{"directory_data_output"}) = $kiriwrite_config{"directory_data_output"} =~ m/^(.*)$/g;
+				($main::kiriwrite_config{"directory_data_output"}) = $main::kiriwrite_config{"directory_data_output"} =~ m/^(.*)$/g;
 
-				open($filehandle_page, "> ",  $kiriwrite_config{"directory_data_output"} . '/' . $page_filename) or ($kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{pagenotwritten}, $page_filename, $!)), $kiriwrite_presmodule->addlinebreak(), $error_count++, next);
+				open($filehandle_page, "> ",  $main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename) or ($main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pagenotwritten}, $page_filename, $!)), $main::kiriwrite_presmodule->addlinebreak(), $error_count++, next);
 
 				if (!$page_final){
 
@@ -1003,15 +831,15 @@ sub kiriwrite_compile_makepages{
 				# saying there's no page name.
 
 				if (!$page_name){
-					$kiriwrite_presmodule->addtext($information_prefix . ' ');
-					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname} . ' ');
-					$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{compile}->{compiledpageblankname}, $page_filename));
+					$main::kiriwrite_presmodule->addtext($information_prefix . ' ');
+					$main::kiriwrite_presmodule->additalictext($main::kiriwrite_lang{blank}{noname} . ' ');
+					$main::kiriwrite_presmodule->addtext(kiriwrite_language($main::kiriwrite_lang{compile}{compiledpageblankname}, $page_filename));
 				} else {
-					$kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{compiledpage}, $page_name, $page_filename));
+					$main::kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{compiledpage}, $page_name, $page_filename));
 				}
 
 
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
 				$pages_count++;
 
 			}
@@ -1019,22 +847,22 @@ sub kiriwrite_compile_makepages{
 			# Write a message saying that the database has
 			# been processed.
 
-  			$kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($kiriwrite_lang->{compile}->{databasefinish}, $database_name));
-			$kiriwrite_presmodule->addlinebreak();
+  			$main::kiriwrite_presmodule->addtext($information_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{databasefinish}, $database_name));
+			$main::kiriwrite_presmodule->addlinebreak();
 
 		}
 
 		# Disconnect from the database server.
 
-		$kiriwrite_dbmodule->disconnect();
+		$main::kiriwrite_dbmodule->disconnect();
 
-		$kiriwrite_presmodule->addhorizontalline();
-		$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{compile}->{compileresults}, $pages_count, $error_count, $warning_count));
-		$kiriwrite_presmodule->endbox();
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist} });
+		$main::kiriwrite_presmodule->addhorizontalline();
+		$main::kiriwrite_presmodule->addtext(kiriwrite_language($main::kiriwrite_lang{compile}{compileresults}, $pages_count, $error_count, $warning_count));
+		$main::kiriwrite_presmodule->endbox();
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
 
-		return $kiriwrite_presmodule->grab();
+		return $main::kiriwrite_presmodule->grab();
 
 	} elsif ($confirm eq 0){
 
@@ -1049,6 +877,7 @@ sub kiriwrite_compile_makepages{
 		my $templatedbwarning		= "";
 		my @template_list;
 		my $template_filename;
+		my $template_file;
 		my %template_info;
 		my %template_dblist;
 		tie(%template_dblist, "Tie::IxHash");
@@ -1073,32 +902,32 @@ sub kiriwrite_compile_makepages{
 
 			# Connect to the database server.
 
-			$kiriwrite_dbmodule->connect();
+			$main::kiriwrite_dbmodule->connect();
 
 			# Check if any errors occured while connecting to the database server.
 
-			if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
 
 				# A database connection error has occured so return
 				# an error.
 
-				kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+				kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 			}
 
 			# Select the database.
 
-			$kiriwrite_dbmodule->selectdb({ DatabaseName => $databasefilename });
+			$main::kiriwrite_dbmodule->selectdb({ DatabaseName => $databasefilename });
 
 			# Check if any errors had occured while selecting the database.
 
-			if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DoesNotExist"){
 
 				# The database does not exist, so return an error.
 
 				kiriwrite_error("databasemissingfile");
 
-			} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+			} elsif ($main::kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
 
 				# The database has invalid permissions set, so return
 				# an error.
@@ -1109,42 +938,42 @@ sub kiriwrite_compile_makepages{
 
 			# Get information about the database.
 
-			%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+			%database_info = $main::kiriwrite_dbmodule->getdatabaseinfo();
 
 			# Check if any error occured while getting the database information.
 
-			if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DatabaseError"){
 
 				# A database error has occured so return an error and
 				# also the extended error information.
 
-				kiriwrite_error("databaseerror", $kiriwrite_dbmodule->geterror(1));
+				kiriwrite_error("databaseerror", $main::kiriwrite_dbmodule->geterror(1));
 
 			};
 
 			$database_name = $database_info{"DatabaseName"};
 
-			$kiriwrite_dbmodule->connecttemplate();
+			$main::kiriwrite_dbmodule->connecttemplate();
 
 			# Check if any errors occured while connecting to the
 			# template database.
 
-			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+			if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
 
 				# The template database does not exist so skip processing
 				# the list of templates in the template database.
 
 				$templateoverride_skip = 1;
-				$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbmissing};
+				$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbmissing};
 
-			} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+			} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
 
 				# The template database has invalid permissions set so
 				# skip processing the list of templates in the
 				# template database.
 
 				$templateoverride_skip = 1;
-				$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbinvalidpermissions};
+				$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbinvalidpermissions};
 
 			}
 
@@ -1153,17 +982,17 @@ sub kiriwrite_compile_makepages{
 
 			if ($templateoverride_skip ne 1){
 
-				@template_list = $kiriwrite_dbmodule->gettemplatelist();
+				@template_list = $main::kiriwrite_dbmodule->gettemplatelist();
 
 				# Check if any errors occured while getting the list of templates.
 
-				if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+				if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 					# A template database error has occured so skip processing the
 					# list of templates in the template database.
 
 					$templateoverride_skip = 1;
-					$templatedbwarning = $kiriwrite_lang->{compile}->{templatedberror};
+					$templatedbwarning = $main::kiriwrite_lang{compile}{templatedberror};
 
 				}
 
@@ -1171,13 +1000,13 @@ sub kiriwrite_compile_makepages{
 
 					foreach $template_file (@template_list){
 
-						%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
+						%template_info = $main::kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
 						
-						if ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+						if ($main::kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
 
 							next;
 
-						} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+						} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 							next;
 
@@ -1193,58 +1022,58 @@ sub kiriwrite_compile_makepages{
 
 			# Disconnect from the template database and database server.
 
-			$kiriwrite_dbmodule->disconnecttemplate();
-			$kiriwrite_dbmodule->disconnect();
+			$main::kiriwrite_dbmodule->disconnecttemplate();
+			$main::kiriwrite_dbmodule->disconnect();
 
 			# Write out a form asking the user to confirm if the
 			# user wants to compile the selected database.
 
-			$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compiledatabase}, { Style => "pageheader" });
-			$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-			$kiriwrite_presmodule->startbox();
-			$kiriwrite_presmodule->addhiddendata("mode", "compile");
-			$kiriwrite_presmodule->addhiddendata("action", "compile");
-			$kiriwrite_presmodule->addhiddendata("type", "multiple");
-			$kiriwrite_presmodule->addhiddendata("id[1]", $databasefilename);
-			$kiriwrite_presmodule->addhiddendata("name[1]", "on");
-			$kiriwrite_presmodule->addhiddendata("confirm", 1);
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addtext(kiriwrite_language($kiriwrite_lang->{compile}->{compiledatabasemessage}, $database_name));
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compiledatabase}, { Style => "pageheader" });
+			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+			$main::kiriwrite_presmodule->startbox();
+			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
+			$main::kiriwrite_presmodule->addhiddendata("id[1]", $databasefilename);
+			$main::kiriwrite_presmodule->addhiddendata("name[1]", "on");
+			$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext(kiriwrite_language($main::kiriwrite_lang{compile}{compiledatabasemessage}, $database_name));
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
 
 			if ($templateoverride_skip eq 1){
 
 				# Add message saying why template can't be overridden.
-				$kiriwrite_presmodule->addtext($templatedbwarning);
+				$main::kiriwrite_presmodule->addtext($templatedbwarning);
 
 			} else {
 
 				# Add overwrite template data.
-				$kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $kiriwrite_lang->{compile}->{overridetemplate}, LineBreak => 1 });
-				$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{replacecurrenttemplate});
-				$kiriwrite_presmodule->addselectbox("overridetemplate");
+				$main::kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $main::kiriwrite_lang{compile}{overridetemplate}, LineBreak => 1 });
+				$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{replacecurrenttemplate});
+				$main::kiriwrite_presmodule->addselectbox("overridetemplate");
 
 				foreach $template_file (keys %template_dblist){
 
-					$kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
+					$main::kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
 
 				}
 
-				$kiriwrite_presmodule->addoption($kiriwrite_lang->{compile}->{dontusetemplate}, { Value => "!none" });
-				$kiriwrite_presmodule->endselectbox();
+				$main::kiriwrite_presmodule->addoption($main::kiriwrite_lang{compile}{dontusetemplate}, { Value => "!none" });
+				$main::kiriwrite_presmodule->endselectbox();
 
 			}
 
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{compile}->{compiledatabasebutton});
-			$kiriwrite_presmodule->addtext(" | ");
-			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist} });
-			$kiriwrite_presmodule->endbox();
-			$kiriwrite_presmodule->endform();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compiledatabasebutton});
+			$main::kiriwrite_presmodule->addtext(" | ");
+			$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
+			$main::kiriwrite_presmodule->endbox();
+			$main::kiriwrite_presmodule->endform();
 
-			return $kiriwrite_presmodule->grab();
+			return $main::kiriwrite_presmodule->grab();
 
 		} elsif ($type eq "multiple"){
 
@@ -1263,16 +1092,16 @@ sub kiriwrite_compile_makepages{
 
 			# Connect to the database server.
 
-			$kiriwrite_dbmodule->connect();
+			$main::kiriwrite_dbmodule->connect();
 
 			# Check if any errors occured while connecting to the database server.
 
-			if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+			if ($main::kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
 
 				# A database connection error has occured so return
 				# an error.
 
-				kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+				kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 			}
 
@@ -1296,17 +1125,17 @@ sub kiriwrite_compile_makepages{
 
 				# Select the database to add the page to.
 
-				$kiriwrite_dbmodule->selectdb({ DatabaseName => $databasename });
+				$main::kiriwrite_dbmodule->selectdb({ DatabaseName => $databasename });
 
 				# Check if any errors had occured while selecting the database.
 
-				if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+				if ($main::kiriwrite_dbmodule->geterror eq "DoesNotExist"){
 
 					# The database does not exist, so process the next database.
 
 					next;
 
-				} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
+				} elsif ($main::kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet"){
 
 					# The database has invalid permissions set, so process
 					# the next database.
@@ -1317,11 +1146,11 @@ sub kiriwrite_compile_makepages{
 
 				# Get information about the database.
 
-				my %database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+				my %database_info = $main::kiriwrite_dbmodule->getdatabaseinfo();
 
 				# Check if any error occured while getting the database information.
 
-				if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+				if ($main::kiriwrite_dbmodule->geterror eq "DatabaseError"){
 
 					# A database error has occured so process the next
 					# database.
@@ -1349,20 +1178,20 @@ sub kiriwrite_compile_makepages{
 
 			# Write out the form for compiling the database.
 
-			$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compileselecteddatabases}, { Style => "pageheader" });
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-			$kiriwrite_presmodule->startbox();
-			$kiriwrite_presmodule->addhiddendata("mode", "compile");
-			$kiriwrite_presmodule->addhiddendata("action", "compile");
-			$kiriwrite_presmodule->addhiddendata("type", "multiple");
-			$kiriwrite_presmodule->addhiddendata("count", $database_count);
-			$kiriwrite_presmodule->addhiddendata("confirm", 1);
-			$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compileselecteddatabasesmessage});
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->startbox("datalist");
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compileselecteddatabases}, { Style => "pageheader" });
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+			$main::kiriwrite_presmodule->startbox();
+			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
+			$main::kiriwrite_presmodule->addhiddendata("count", $database_count);
+			$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compileselecteddatabasesmessage});
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->startbox("datalist");
 
 			$database_count = 0;
 
@@ -1372,47 +1201,47 @@ sub kiriwrite_compile_makepages{
 
 				$database_count++;
 
-				$kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database_list{$database}{Filename});
-				$kiriwrite_presmodule->addhiddendata("name[" . $database_count . "]", "on");
+				$main::kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database_list{$database}{Filename});
+				$main::kiriwrite_presmodule->addhiddendata("name[" . $database_count . "]", "on");
 
 				# Check if the database name is undefined and if it is
 				# then write a message saying the database name is blank.
 
 				if (!$database_list{$database}{Name}){
-					$kiriwrite_presmodule->additalictext($kiriwrite_lang->{compile}->{blankdatabasename});
+					$main::kiriwrite_presmodule->additalictext($main::kiriwrite_lang{compile}{blankdatabasename});
 				} else {
-					$kiriwrite_presmodule->addtext($database_list{$database}{Name});
+					$main::kiriwrite_presmodule->addtext($database_list{$database}{Name});
 				}
 
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
 
 			}
 
-			$kiriwrite_presmodule->endbox();
+			$main::kiriwrite_presmodule->endbox();
 
-			$kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
 
-			$kiriwrite_dbmodule->connecttemplate();
+			$main::kiriwrite_dbmodule->connecttemplate();
 
 			# Check if any errors occured while connecting to the
 			# template database.
 
-			if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+			if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
 
 				# The template database does not exist so skip processing
 				# the list of templates in the template database.
 
 				$templateoverride_skip = 1;
-				$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbmissing};
+				$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbmissing};
 
-			} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+			} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
 
 				# The template database has invalid permissions set so
 				# skip processing the list of templates in the
 				# template database.
 
 				$templateoverride_skip = 1;
-				$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbinvalidpermissions};
+				$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbinvalidpermissions};
 
 			}
 
@@ -1421,17 +1250,17 @@ sub kiriwrite_compile_makepages{
 
 			if ($templateoverride_skip ne 1){
 
-				@template_list = $kiriwrite_dbmodule->gettemplatelist();
+				@template_list = $main::kiriwrite_dbmodule->gettemplatelist();
 
 				# Check if any errors occured while getting the list of templates.
 
-				if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+				if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 					# A template database error has occured so skip processing the
 					# list of templates in the template database.
 
 					$templateoverride_skip = 1;
-					$templatedbwarning = $kiriwrite_lang->{compile}->{templatedberror};
+					$templatedbwarning = $main::kiriwrite_lang{compile}{templatedberror};
 
 				}
 
@@ -1439,13 +1268,13 @@ sub kiriwrite_compile_makepages{
 
 					foreach $template_file (@template_list){
 
-						%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
+						%template_info = $main::kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
 						
-						if ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+						if ($main::kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
 
 							next;
 
-						} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+						} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 							next;
 
@@ -1462,40 +1291,40 @@ sub kiriwrite_compile_makepages{
 			if ($templateoverride_skip eq 1){
 
 				# Add message saying why template can't be overridden.
-				$kiriwrite_presmodule->addtext($templatedbwarning);
+				$main::kiriwrite_presmodule->addtext($templatedbwarning);
 
 			} else {
 
 				# Add overwrite template data.
-				$kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $kiriwrite_lang->{compile}->{overridetemplate}, LineBreak => 1 });
-				$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{replacecurrenttemplate});
-				$kiriwrite_presmodule->addselectbox("overridetemplate");
+				$main::kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $main::kiriwrite_lang{compile}{overridetemplate}, LineBreak => 1 });
+				$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{replacecurrenttemplate});
+				$main::kiriwrite_presmodule->addselectbox("overridetemplate");
 
 				foreach $template_file (keys %template_dblist){
 
-					$kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
+					$main::kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
 
 				}
 
-				$kiriwrite_presmodule->addoption($kiriwrite_lang->{compile}->{dontusetemplate}, { Value => "!none" });
-				$kiriwrite_presmodule->endselectbox();
+				$main::kiriwrite_presmodule->addoption($main::kiriwrite_lang{compile}{dontusetemplate}, { Value => "!none" });
+				$main::kiriwrite_presmodule->endselectbox();
 
 			}
 
 			# Disconnect from the template database and database server.
 
-			$kiriwrite_dbmodule->disconnecttemplate();
-			$kiriwrite_dbmodule->disconnect();
+			$main::kiriwrite_dbmodule->disconnecttemplate();
+			$main::kiriwrite_dbmodule->disconnect();
 
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{compile}->{compileselecteddatabasesbutton});
-			$kiriwrite_presmodule->addtext(" | ");
-			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist} });
-			$kiriwrite_presmodule->endbox();
-			$kiriwrite_presmodule->endform();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compileselecteddatabasesbutton});
+			$main::kiriwrite_presmodule->addtext(" | ");
+			$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
+			$main::kiriwrite_presmodule->endbox();
+			$main::kiriwrite_presmodule->endform();
 
-			return $kiriwrite_presmodule->grab();
+			return $main::kiriwrite_presmodule->grab();
 
 		} else {
 
@@ -1529,32 +1358,32 @@ sub kiriwrite_compile_all{
 
 	# Connect to the database server.
 
-	$kiriwrite_dbmodule->connect();
+	$main::kiriwrite_dbmodule->connect();
 
 	# Check if any errors occured while connecting to the database server.
 
-	if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+	if ($main::kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
 
 		# A database connection error has occured so return
 		# an error.
 
-		kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+		kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 	}
 
 	# Get the list of available databases.
 
-	my @database_list = $kiriwrite_dbmodule->getdblist();
+	my @database_list = $main::kiriwrite_dbmodule->getdblist();
 
 	# Check if any errors occured while getting the databases.
 
-	if ($kiriwrite_dbmodule->geterror eq "DataDirMissing"){
+	if ($main::kiriwrite_dbmodule->geterror eq "DataDirMissing"){
 
 		# The database directory is missing so return an error.
 
 		kiriwrite_error("datadirectorymissing");
 
-	} elsif ($kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
+	} elsif ($main::kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
 
 		# The database directory has invalid permissions set so return
 		# an error.
@@ -1582,19 +1411,19 @@ sub kiriwrite_compile_all{
 
 	# Write out a form for confirming the action to compile all of the databases.
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compilealldatabases}, { Style => "pageheader" });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compilealldatabases}, { Style => "pageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
 
-	$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-	$kiriwrite_presmodule->startbox();
-	$kiriwrite_presmodule->addhiddendata("mode", "compile");
-	$kiriwrite_presmodule->addhiddendata("action", "compile");
-	$kiriwrite_presmodule->addhiddendata("type", "multiple");
+	$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+	$main::kiriwrite_presmodule->startbox();
+	$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+	$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+	$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compilealldatabasesmessage});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compilealldatabasesmessage});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
 
 	foreach $database (@database_list){
 
@@ -1624,12 +1453,12 @@ sub kiriwrite_compile_all{
 		}
 
 		$database_count++;
-		$kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database);
-		$kiriwrite_presmodule->addhiddendata("name[" . $database_count . "]", "on");
+		$main::kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database);
+		$main::kiriwrite_presmodule->addhiddendata("name[" . $database_count . "]", "on");
 
 	}
 
-	$kiriwrite_presmodule->addhiddendata("count", $database_count);
+	$main::kiriwrite_presmodule->addhiddendata("count", $database_count);
 
 	my $templateoverride_skip 	= 0;
 	my $templatedbwarning		= "";
@@ -1637,29 +1466,30 @@ sub kiriwrite_compile_all{
 	my $template_filename;
 	my %template_info;
 	my %template_dblist;
+	my $template_file;
 	tie(%template_dblist, "Tie::IxHash");
 
-	$kiriwrite_dbmodule->connecttemplate();
+	$main::kiriwrite_dbmodule->connecttemplate();
 
 	# Check if any errors occured while connecting to the
 	# template database.
 
-	if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
+	if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseDoesNotExist"){
 
 		# The template database does not exist so skip processing
 		# the list of templates in the template database.
 
 		$templateoverride_skip = 1;
-		$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbmissing};
+		$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbmissing};
 
-	} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
+	} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseInvalidPermissionsSet"){
 
 		# The template database has invalid permissions set so
 		# skip processing the list of templates in the
 		# template database.
 
 		$templateoverride_skip = 1;
-		$templatedbwarning = $kiriwrite_lang->{compile}->{templatedbinvalidpermissions};
+		$templatedbwarning = $main::kiriwrite_lang{compile}{templatedbinvalidpermissions};
 
 	}
 
@@ -1668,17 +1498,17 @@ sub kiriwrite_compile_all{
 
 	if ($templateoverride_skip ne 1){
 
-		@template_list = $kiriwrite_dbmodule->gettemplatelist();
+		@template_list = $main::kiriwrite_dbmodule->gettemplatelist();
 
 		# Check if any errors occured while getting the list of templates.
 
-		if ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+		if ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 			# A template database error has occured so skip processing the
 			# list of templates in the template database.
 
 			$templateoverride_skip = 1;
-			$templatedbwarning = $kiriwrite_lang->{compile}->{templatedberror};
+			$templatedbwarning = $main::kiriwrite_lang{compile}{templatedberror};
 
 		}
 
@@ -1686,13 +1516,13 @@ sub kiriwrite_compile_all{
 
 			foreach $template_file (@template_list){
 
-				%template_info = $kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
+				%template_info = $main::kiriwrite_dbmodule->gettemplateinfo({ TemplateFilename => $template_file });
 				
-				if ($kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
+				if ($main::kiriwrite_dbmodule->geterror eq "TemplateDoesNotExist"){
 
 					next;
 
-				} elsif ($kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
+				} elsif ($main::kiriwrite_dbmodule->geterror eq "TemplateDatabaseError"){
 
 					next;
 
@@ -1709,42 +1539,42 @@ sub kiriwrite_compile_all{
 	if ($templateoverride_skip eq 1){
 
 		# Add message saying why template can't be overridden.
-		$kiriwrite_presmodule->addtext($templatedbwarning);
+		$main::kiriwrite_presmodule->addtext($templatedbwarning);
 
 	} else {
 
 		# Add overwrite template data.
-		$kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $kiriwrite_lang->{compile}->{overridetemplate}, LineBreak => 1 });
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{replacecurrenttemplate});
-		$kiriwrite_presmodule->addselectbox("overridetemplate");
+		$main::kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $main::kiriwrite_lang{compile}{overridetemplate}, LineBreak => 1 });
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{replacecurrenttemplate});
+		$main::kiriwrite_presmodule->addselectbox("overridetemplate");
 
 		foreach $template_file (keys %template_dblist){
 
-			$kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
+			$main::kiriwrite_presmodule->addoption($template_dblist{$template_file} . " (" . $template_file . ")", { Value => $template_file });
 
 		}
 
-		$kiriwrite_presmodule->addoption($kiriwrite_lang->{compile}->{dontusetemplate}, { Value => "!none" });
-		$kiriwrite_presmodule->endselectbox();
+		$main::kiriwrite_presmodule->addoption($main::kiriwrite_lang{compile}{dontusetemplate}, { Value => "!none" });
+		$main::kiriwrite_presmodule->endselectbox();
 
 	}
 
 	# Disconnect from the template database and database server.
 
-	$kiriwrite_dbmodule->disconnecttemplate();
-	$kiriwrite_dbmodule->disconnect();
+	$main::kiriwrite_dbmodule->disconnecttemplate();
+	$main::kiriwrite_dbmodule->disconnect();
 
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
 
-	$kiriwrite_presmodule->addhiddendata("confirm", 1);
-	$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{compile}->{compilealldatabasesbutton});
-	$kiriwrite_presmodule->addtext(" | ");
-	$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist} });
-	$kiriwrite_presmodule->endbox();
-	$kiriwrite_presmodule->endform();
+	$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
+	$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compilealldatabasesbutton});
+	$main::kiriwrite_presmodule->addtext(" | ");
+	$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
+	$main::kiriwrite_presmodule->endbox();
+	$main::kiriwrite_presmodule->endform();
 
-	return $kiriwrite_presmodule->grab();
+	return $main::kiriwrite_presmodule->grab();
 
 }
 
@@ -1780,31 +1610,31 @@ sub kiriwrite_compile_list{
 
 	# Connect to the database server.
 
-	$kiriwrite_dbmodule->connect();
+	$main::kiriwrite_dbmodule->connect();
 
 	# Check if any errors occured while connecting to the database server.
 
-	if ($kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
+	if ($main::kiriwrite_dbmodule->geterror eq "DatabaseConnectionError"){
 
 		# A database connection error has occured so return
 		# an error.
 
-		kiriwrite_error("databaseconnectionerror", $kiriwrite_dbmodule->geterror(1));
+		kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 	}
 
 	# Get the list of available databases and process any errors that
 	# might have occured.
 
-	my @database_list = $kiriwrite_dbmodule->getdblist();
+	my @database_list = $main::kiriwrite_dbmodule->getdblist();
 
-	if ($kiriwrite_dbmodule->geterror eq "DataDirMissing"){
+	if ($main::kiriwrite_dbmodule->geterror eq "DataDirMissing"){
 
 		# The database directory is missing so return an error.
 
 		kiriwrite_error("datadirectorymissing");
 
-	} elsif ($kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
+	} elsif ($main::kiriwrite_dbmodule->geterror eq "DataDirInvalidPermissions"){
 
 		# The database directory has invalid permissions set so return
 		# an error.
@@ -1819,18 +1649,18 @@ sub kiriwrite_compile_list{
 
 		# Select the database.
 
-		$kiriwrite_dbmodule->selectdb({ DatabaseName => $data_file });
+		$main::kiriwrite_dbmodule->selectdb({ DatabaseName => $data_file });
 
 		# Check if any error occured while selecting the database.
 
-		if ($kiriwrite_dbmodule->geterror eq "DoesNotExist"){
+		if ($main::kiriwrite_dbmodule->geterror eq "DoesNotExist"){
 
 			# The database does not exist, so process the next
 			# database.
 
 			next;
 
-		} elsif ($kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet") {
+		} elsif ($main::kiriwrite_dbmodule->geterror eq "InvalidPermissionsSet") {
 
 			# The database has invalid permissions settings, so
 			# add the database to the list of databases with
@@ -1844,18 +1674,18 @@ sub kiriwrite_compile_list{
 
 		# Get information about the database.
 
-		%database_info = $kiriwrite_dbmodule->getdatabaseinfo();
+		%database_info = $main::kiriwrite_dbmodule->getdatabaseinfo();
 
 		# Check if any error occured while getting information from the
 		# database.
 
-		if ($kiriwrite_dbmodule->geterror eq "DatabaseError"){
+		if ($main::kiriwrite_dbmodule->geterror eq "DatabaseError"){
 
 			# A database error has occured, add the database and specific
 			# error message to the list of databases with errors and
 			# process the next database.
 
-			push(@error_list, $data_file . ": " . $kiriwrite_dbmodule->geterror(1));
+			push(@error_list, $data_file . ": " . $main::kiriwrite_dbmodule->geterror(1));
 			next;
 
 		}
@@ -1881,41 +1711,41 @@ sub kiriwrite_compile_list{
 	# valid databases then write a message saying that no
 	# valid databases are available.
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{compilepages}, { Style => "pageheader" });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compilepages}, { Style => "pageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
 
 	if ($database_count eq 0){
 
 		# There are no databases available for compiling so
 		# write a message instead.
 
-		$kiriwrite_presmodule->startbox("errorbox");
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{nodatabasesavailable});
-		$kiriwrite_presmodule->endbox();
+		$main::kiriwrite_presmodule->startbox("errorbox");
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{nodatabasesavailable});
+		$main::kiriwrite_presmodule->endbox();
 
 	} else {
 
-		$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-		$kiriwrite_presmodule->startbox();
-		$kiriwrite_presmodule->addhiddendata("mode", "compile");
-		$kiriwrite_presmodule->addhiddendata("action", "compile");
-		$kiriwrite_presmodule->addhiddendata("type", "multiple");
+		$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+		$main::kiriwrite_presmodule->startbox();
+		$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+		$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+		$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
 
-		$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{selectnone});
-		$kiriwrite_presmodule->addtext(" | ");
-		$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{compile}->{compileselectedbutton});
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addhiddendata("count", $database_count);
-		$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+		$main::kiriwrite_presmodule->addreset($main::kiriwrite_lang{common}{selectnone});
+		$main::kiriwrite_presmodule->addtext(" | ");
+		$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compileselectedbutton});
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addhiddendata("count", $database_count);
+		$main::kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
 
-		$kiriwrite_presmodule->startheader();
-		$kiriwrite_presmodule->addheader("", { Style => "tablecellheader" });
-		$kiriwrite_presmodule->addheader($kiriwrite_lang->{database}->{databasename}, { Style => "tablecellheader" });
-		$kiriwrite_presmodule->addheader($kiriwrite_lang->{database}->{databasedescription}, { Style => "tablecellheader" });
-		$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{options}, { Style => "tablecellheader" });
-		$kiriwrite_presmodule->endheader();
+		$main::kiriwrite_presmodule->startheader();
+		$main::kiriwrite_presmodule->addheader("", { Style => "tablecellheader" });
+		$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{database}{databasename}, { Style => "tablecellheader" });
+		$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{database}{databasedescription}, { Style => "tablecellheader" });
+		$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{common}{options}, { Style => "tablecellheader" });
+		$main::kiriwrite_presmodule->endheader();
 
 		$database_count = 1;
 
@@ -1945,90 +1775,90 @@ sub kiriwrite_compile_list{
 			# Add the template to the list of available
 			# templates to compile.
 
-			$kiriwrite_presmodule->startrow();
-			$kiriwrite_presmodule->addcell($table_style_name);
-			$kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database_list{$database}{Filename});
-			$kiriwrite_presmodule->addcheckbox("name[" . $database_count . "]");
-			$kiriwrite_presmodule->endcell();
-			$kiriwrite_presmodule->addcell($table_style_name);
+			$main::kiriwrite_presmodule->startrow();
+			$main::kiriwrite_presmodule->addcell($table_style_name);
+			$main::kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database_list{$database}{Filename});
+			$main::kiriwrite_presmodule->addcheckbox("name[" . $database_count . "]");
+			$main::kiriwrite_presmodule->endcell();
+			$main::kiriwrite_presmodule->addcell($table_style_name);
 
 			if (!$database_list{$database}{Name}){
-				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile&action=compile&type=single&database=" . $database_list{$database}{Filename}, { Text => $kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{noname}) });
+				$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile&action=compile&type=single&database=" . $database_list{$database}{Filename}, { Text => $main::kiriwrite_presmodule->additalictext($main::kiriwrite_lang{blank}{noname}) });
 			} else {
-				$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database_list{$database}{Filename}, { Text => $database_list{$database}{Name} });
+				$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=page&action=view&database=" . $database_list{$database}{Filename}, { Text => $database_list{$database}{Name} });
 			}
 
-			$kiriwrite_presmodule->endcell();
-			$kiriwrite_presmodule->addcell($table_style_name);
+			$main::kiriwrite_presmodule->endcell();
+			$main::kiriwrite_presmodule->addcell($table_style_name);
 
 			if (!$database_list{$database}{Description}){
-				$kiriwrite_presmodule->additalictext($kiriwrite_lang->{blank}->{nodescription});
+				$main::kiriwrite_presmodule->additalictext($main::kiriwrite_lang{blank}{nodescription});
 			} else {
-				$kiriwrite_presmodule->addtext($database_list{$database}{Description});
+				$main::kiriwrite_presmodule->addtext($database_list{$database}{Description});
 			}
 
-			$kiriwrite_presmodule->endcell();
-			$kiriwrite_presmodule->addcell($table_style_name);
-			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile&action=compile&type=single&database=" . $database_list{$database}{Filename}, { Text => $kiriwrite_lang->{options}->{compile} });
-			$kiriwrite_presmodule->endcell();
-			$kiriwrite_presmodule->endrow();
+			$main::kiriwrite_presmodule->endcell();
+			$main::kiriwrite_presmodule->addcell($table_style_name);
+			$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile&action=compile&type=single&database=" . $database_list{$database}{Filename}, { Text => $main::kiriwrite_lang{options}{compile} });
+			$main::kiriwrite_presmodule->endcell();
+			$main::kiriwrite_presmodule->endrow();
 
 			$database_count++;
 
 		}
 
-		$kiriwrite_presmodule->endtable();
-		$kiriwrite_presmodule->endbox();
-		$kiriwrite_presmodule->endform();
+		$main::kiriwrite_presmodule->endtable();
+		$main::kiriwrite_presmodule->endbox();
+		$main::kiriwrite_presmodule->endform();
 
 	}
 
 	# Disconnect from the database server.
 
-	$kiriwrite_dbmodule->disconnect();
+	$main::kiriwrite_dbmodule->disconnect();
 
 	# Check if any databases with problems have appeared and if they
 	# have, print out a message saying which databases have problems.
 
 	if (@permissions_list){
 
- 		$kiriwrite_presmodule->addlinebreak();
+ 		$main::kiriwrite_presmodule->addlinebreak();
 
- 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databaseinvalidpermissions}, { Style => "smallpageheader" });
- 		$kiriwrite_presmodule->addlinebreak();
- 		$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databaseinvalidpermissionstext});
- 		$kiriwrite_presmodule->addlinebreak();
+ 		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{database}{databaseinvalidpermissions}, { Style => "smallpageheader" });
+ 		$main::kiriwrite_presmodule->addlinebreak();
+ 		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{database}{databaseinvalidpermissionstext});
+ 		$main::kiriwrite_presmodule->addlinebreak();
  
  		foreach $database (@permissions_list){
  
- 			$kiriwrite_presmodule->addlinebreak();
- 			$kiriwrite_presmodule->addtext($database);
+ 			$main::kiriwrite_presmodule->addlinebreak();
+ 			$main::kiriwrite_presmodule->addtext($database);
  
  		}
 
- 		$kiriwrite_presmodule->addlinebreak();
+ 		$main::kiriwrite_presmodule->addlinebreak();
  
 	}
 
 	if (@error_list){
 
- 		$kiriwrite_presmodule->addlinebreak();
+ 		$main::kiriwrite_presmodule->addlinebreak();
 
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databaseerrors}, { Style => "smallpageheader" });
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{database}->{databaseerrorstext});
-		$kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{database}{databaseerrors}, { Style => "smallpageheader" });
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{database}{databaseerrorstext});
+		$main::kiriwrite_presmodule->addlinebreak();
 
 		foreach $database (@error_list){
 
-			$kiriwrite_presmodule->addlinebreak();
-			$kiriwrite_presmodule->addtext($database);
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($database);
 
 		}
 
 	}
 
-	return $kiriwrite_presmodule->grab();
+	return $main::kiriwrite_presmodule->grab();
 
 }
 
@@ -2056,7 +1886,7 @@ sub kiriwrite_compile_clean{
 
 	# Check if the output directory exists.
 
-	$output_directory_exists	 = kiriwrite_fileexists($kiriwrite_config{"directory_data_output"});
+	$output_directory_exists	 = kiriwrite_fileexists($main::kiriwrite_config{"directory_data_output"});
 
 	if ($output_directory_exists eq 1){
 
@@ -2070,7 +1900,7 @@ sub kiriwrite_compile_clean{
 	# Check if the output directory has invalid
 	# permissions set.
 
-	$output_directory_permissions	= kiriwrite_filepermissions($kiriwrite_config{"directory_data_output"});
+	$output_directory_permissions	= kiriwrite_filepermissions($main::kiriwrite_config{"directory_data_output"});
 
 	if ($output_directory_permissions eq 1){
 
@@ -2091,31 +1921,31 @@ sub kiriwrite_compile_clean{
 			# Remove the list of files and directories from the
 			# output directory.
 
-			$file_permissions = kiriwrite_compile_clean_helper($kiriwrite_config{"directory_data_output"}, 1);
+			$file_permissions = kiriwrite_compile_clean_helper($main::kiriwrite_config{"directory_data_output"}, 1);
 
-			$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{cleanoutputdirectory}, { Style => "pageheader" });
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{cleanoutputdirectory}, { Style => "pageheader" });
 
 			if ($file_permissions eq 1){
 
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{somecontentnotremoved});
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{somecontentnotremoved});
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
 
 			} else {
 
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{contentremoved});
-				$kiriwrite_presmodule->addlinebreak();
-				$kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{contentremoved});
+				$main::kiriwrite_presmodule->addlinebreak();
+				$main::kiriwrite_presmodule->addlinebreak();
 
 			}
 
-			$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist} });
+			$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
 
-			return $kiriwrite_presmodule->grab();
+			return $main::kiriwrite_presmodule->grab();
 
 		} else {
 
@@ -2130,24 +1960,24 @@ sub kiriwrite_compile_clean{
 
 	# Print out a form for cleaning the output directory.
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{cleanoutputdirectory}, { Style => "pageheader" });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-	$kiriwrite_presmodule->startbox();
-	$kiriwrite_presmodule->addhiddendata("mode", "compile");
-	$kiriwrite_presmodule->addhiddendata("action", "clean");
-	$kiriwrite_presmodule->addhiddendata("confirm", 1);
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{compile}->{cleanoutputdirectorymessage});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{compile}->{cleanoutputdirectorybutton});
-	$kiriwrite_presmodule->addtext(" | ");
-	$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $kiriwrite_lang->{compile}->{returncompilelist}});
-	$kiriwrite_presmodule->endbox();
-	$kiriwrite_presmodule->endform();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{cleanoutputdirectory}, { Style => "pageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+	$main::kiriwrite_presmodule->startbox();
+	$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+	$main::kiriwrite_presmodule->addhiddendata("action", "clean");
+	$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{cleanoutputdirectorymessage});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{cleanoutputdirectorybutton});
+	$main::kiriwrite_presmodule->addtext(" | ");
+	$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist}});
+	$main::kiriwrite_presmodule->endbox();
+	$main::kiriwrite_presmodule->endform();
 
-	return $kiriwrite_presmodule->grab();
+	return $main::kiriwrite_presmodule->grab();
 
 }
 
@@ -2286,6 +2116,3 @@ sub kiriwrite_compile_clean_helper{
 	return $permissions;
 
 }
-
-
-1; 

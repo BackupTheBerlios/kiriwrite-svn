@@ -21,10 +21,11 @@
 
 # Define the package (perl module) name.
 
-package Kiriwrite::Database::SQLite;
+package Modules::Database::SQLite;
 
 # Enable strict and use warnings.
 
+use Modules::System::Common;
 use strict;
 use warnings;
 
@@ -1879,7 +1880,7 @@ sub connectfilter{
 
 	# Check if the template database exists.
 
-	my $filterdatabase_exists = main::kiriwrite_fileexists("filters.db.sqlite");
+	my $filterdatabase_exists = kiriwrite_fileexists("filters.db.sqlite");
 	
 	if ($filterdatabase_exists eq 1){
 
@@ -1896,7 +1897,7 @@ sub connectfilter{
 
 	# Check if the permission settings for the template database are valid.
 
-	my $filterdb_permissions = main::kiriwrite_filepermissions("filters.db.sqlite", 1, 0);
+	my $filterdb_permissions = kiriwrite_filepermissions("filters.db.sqlite", 1, 0);
 
 	if ($filterdb_permissions eq 1){
 
@@ -2143,8 +2144,8 @@ sub addfilter{
 
 	# Check if the filter database permissions are valid.
 
-	my $filterdb_exists = main::kiriwrite_fileexists("filters.db.sqlite", 1, 1);
-	my $filterdb_permissions = main::kiriwrite_filepermissions("filters.db.sqlite", 1, 1);
+	my $filterdb_exists = kiriwrite_fileexists("filters.db.sqlite", 1, 1);
+	my $filterdb_permissions = kiriwrite_filepermissions("filters.db.sqlite", 1, 1);
 
 	if ($filterdb_permissions eq 1){
 
@@ -2188,7 +2189,7 @@ sub addfilter{
 
 	}
 
-	my $directory_permissions = main::kiriwrite_filepermissions(".", 1, 1, 0);
+	my $directory_permissions = kiriwrite_filepermissions(".", 1, 1, 0);
 
 	if ($directory_permissions eq 1 && $filterdb_exists){
 
@@ -2342,8 +2343,8 @@ sub editfilter{
 
 	# Check if the filter database permissions are valid.
 
-	my $filterdb_exists = main::kiriwrite_fileexists("filters.db.sqlite", 1, 1);
-	my $filterdb_permissions = main::kiriwrite_filepermissions("filters.db.sqlite", 1, 1);
+	my $filterdb_exists = kiriwrite_fileexists("filters.db.sqlite", 1, 1);
+	my $filterdb_permissions = kiriwrite_filepermissions("filters.db.sqlite", 1, 1);
 
 	if ($filterdb_permissions eq 1){
 
@@ -2475,7 +2476,7 @@ sub connecttemplate{
 
 	# Check if the template database exists.
 
-	my $templatedatabase_exists = main::kiriwrite_fileexists("templates.db.sqlite");
+	my $templatedatabase_exists = kiriwrite_fileexists("templates.db.sqlite");
 	
 	if ($templatedatabase_exists eq 1){
 
@@ -2492,7 +2493,7 @@ sub connecttemplate{
 
 	# Check if the permission settings for the template database are valid.
 
-	my $templatedb_permissions = main::kiriwrite_filepermissions("templates.db.sqlite", 1, 0);
+	my $templatedb_permissions = kiriwrite_filepermissions("templates.db.sqlite", 1, 0);
 
 	if ($templatedb_permissions eq 1){
 
@@ -2742,8 +2743,8 @@ sub addtemplate{
 
 	# Check if the template database permissions are valid.
 
-	my $templatedb_exists = main::kiriwrite_fileexists("templates.db.sqlite", 1, 1);
-	my $templatedb_permissions = main::kiriwrite_filepermissions("templates.db.sqlite", 1, 1);
+	my $templatedb_exists = kiriwrite_fileexists("templates.db.sqlite", 1, 1);
+	my $templatedb_permissions = kiriwrite_filepermissions("templates.db.sqlite", 1, 1);
 
 	if ($templatedb_permissions eq 1){
 
@@ -2802,7 +2803,7 @@ sub addtemplate{
 
 	}
 
-	my $directory_permissions = main::kiriwrite_filepermissions(".", 1, 1, 0);
+	my $directory_permissions = kiriwrite_filepermissions(".", 1, 1, 0);
 
 	if ($directory_permissions eq 1 && $templatedb_exists){
 
@@ -2836,7 +2837,7 @@ sub addtemplate{
 
 		# Create a template table.
 
-		my $directory_permissions = main::kiriwrite_filepermissions(".", 1, 1, 0);
+		my $directory_permissions = kiriwrite_filepermissions(".", 1, 1, 0);
 
 		if ($directory_permissions eq 1){
 
@@ -2956,8 +2957,8 @@ sub edittemplate{
 
 	# Check if the template database permissions are valid.
 
-	my $templatedb_exists = main::kiriwrite_fileexists("templates.db.sqlite", 1, 1);
-	my $templatedb_permissions = main::kiriwrite_filepermissions("templates.db.sqlite", 1, 1);
+	my $templatedb_exists = kiriwrite_fileexists("templates.db.sqlite", 1, 1);
+	my $templatedb_permissions = kiriwrite_filepermissions("templates.db.sqlite", 1, 1);
 
 	if ($templatedb_permissions eq 1){
 

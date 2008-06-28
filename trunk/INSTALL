@@ -1,2 +1,5 @@
 For information on installing Kiriwrite, see Chapter 1: Installation in 
 the User Documentation in the Documentation directory. 
+
+mod_perl 2.x users please pay attention to the specific information for 
+installing Kiriwrite under mod_perl 2.x in this Chapter.

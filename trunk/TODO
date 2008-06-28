@@ -1,6 +1,17 @@
 TODO
 ====
 
+Changes for future releases
+===========================
+
+- Allow different encoding formats to be used when compiling instead of 
+  UTF-8 which will probably be implemented within the output modules.
+
+Changes for 0.5.0
+=================
+
+- Implement Output Module system.
+
 Changes implemented in 0.3.0
 ============================
 

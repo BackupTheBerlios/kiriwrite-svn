@@ -1,12 +1,13 @@
 #!/usr/bin/perl -Tw
 
 #################################################################################
-# Kiriwrite Installer Script (install.cgi)					#
+# Kiriwrite Installer Script (install.pl/install.cgi)				#
 # Installation script for Kiriwrite	     					#
 #										#
-# Version: 0.1.0								#
+# Version: 0.4.0								#
+# mod_perl 2.x compatabile version						#
 #										#
-# Copyright (C) 2005-2007 Steve Brokenshire <sbrokenshire@xestia.co.uk>		#
+# Copyright (C) 2005-2008 Steve Brokenshire <sbrokenshire@xestia.co.uk>		#
 #										#
 # This program is free software; you can redistribute it and/or modify it under #
 # the terms of the GNU General Public License as published by the Free		#
@@ -25,9 +26,35 @@ use strict;				# Throw errors if there's something wrong.
 use warnings;				# Write warnings to the HTTP Server Log file.
 
 use utf8;
-#use CGI qw(:standard *table *Tr *td);
 use CGI::Lite;
-#use CGI::Carp('fatalsToBrowser'); 	# Output errors to the browser.
+
+eval "use CGI::Lite";
+
+if ($@){
+	print "Content-type: text/html;\r\n\r\n";
+	print "The CGI::Lite Perl Module is not installed. Please install CGI::Lite and then run this installation script again.";
+	exit;
+}
+
+# Check if mod_perl is running and if it is then add a notice to say
+# that additional configuration has to be made.
+
+my $modperlenabled = 0;
+my $installscriptname = "install.cgi";
+my $kiriwritescriptname = "kiriwrite.cgi";
+
+if ($ENV{'MOD_PERL'}){
+
+	# MOD_PERL 2.X SPECIFIC SECTION.
+
+	use lib '';
+	chdir('');
+
+	$modperlenabled 	= 1;
+	$installscriptname 	= "install.pl";
+	$kiriwritescriptname 	= "kiriwrite.pl";
+
+}
 
 # Setup strings in specific languages. Style should be no spacing for
 # language title and one tabbed spacing for each string.
@@ -145,6 +172,7 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 
 	$kiriwrite_lang{"en-GB"}{"installertitle"}	= "Kiriwrite Installer";
 	$kiriwrite_lang{"en-GB"}{"installertext"}	= "This installer script will setup the configuration file used for Kiriwrite. The settings displayed here can be changed at a later date by selecting the Edit Settings link in the View Settings sub-menu.";
+	$kiriwrite_lang{"en-GB"}{"modperlnotice"}	= "mod_perl has been detected. Please ensure that you have setup this script and the main Kiriwrite script so that mod_perl can use Kiriwrite properly. Please read the mod_perl specific part of Chapter 1: Installation in the Kiriwrite documentation.";
 	$kiriwrite_lang{"en-GB"}{"dependencytitle"}	= "Dependency and file testing results";
 	$kiriwrite_lang{"en-GB"}{"requiredmodules"}	= "Required Modules";
 	$kiriwrite_lang{"en-GB"}{"perlmodules"}		= "These Perl modules are used internally by Kiriwrite.";
@@ -185,7 +213,7 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"installscriptremoved"}	= "The installer script was removed.";
 	$kiriwrite_lang{"en-GB"}{"installedmessage"}	= "The configuration file for Kiriwrite has been written. To change the settings in the configuration file at a later date use the Edit Settings link in the View Settings sub-menu at the top of the page when using Kiriwrite.";
 	$kiriwrite_lang{"en-GB"}{"cannotremovescript"}	= "Unable to remove the installer script: %s. The installer script will have to be deleted manually.";
-	$kiriwrite_lang{"en-GB"}{"usekiriwritetext"}	= "To use Kiriwrite click or select the link below (will not work if the Kiriwrite script is not called kiriwrite.cgi):";
+	$kiriwrite_lang{"en-GB"}{"usekiriwritetext"}	= "To use Kiriwrite click or select the link below (will not work if the Kiriwrite script is not called kiriwrite.cgi/kiriwrite.pl):";
 	$kiriwrite_lang{"en-GB"}{"usekiriwritelink"}	= "Start using Kiriwrite.";
 
 my $query_lite = new CGI::Lite;
@@ -998,28 +1026,28 @@ sub kiriwrite_writeconfig{
 	open (my $configfile, "> " . "kiriwrite.cfg");
 
 	print $configfile "[config]
-		directory_data_db = $passedsettings->{DatabaseDirectory}
-		directory_data_output = $passedsettings->{OutputDirectory}
-		directory_noncgi_images = $passedsettings->{ImagesURIPath}
+directory_data_db = $passedsettings->{DatabaseDirectory}
+directory_data_output = $passedsettings->{OutputDirectory}
+directory_noncgi_images = $passedsettings->{ImagesURIPath}
+
+system_language = $passedsettings->{Language}
+system_presmodule = $passedsettings->{PresentationModule}
+system_dbmodule = $passedsettings->{DatabaseModule}
+system_datetime = $passedsettings->{DateFormat}
 		
-		system_language = $passedsettings->{Language}
-		system_presmodule = $passedsettings->{PresentationModule}
-		system_dbmodule = $passedsettings->{DatabaseModule}
-		system_datetime = $passedsettings->{DateFormat}
+display_textareacols = $passedsettings->{TextAreaCols}
+display_textarearows = $passedsettings->{TextAreaRows}
+display_pagecount = 50
+display_filtercount = 50
+display_templatecount = 50
 		
-		display_textareacols = $passedsettings->{TextAreaCols}
-		display_textarearows = $passedsettings->{TextAreaRows}
-		display_pagecount = 50
-		display_filtercount = 50
-		display_templatecount = 50
-		
-		database_server = $passedsettings->{DatabaseServer}
-		database_port = $passedsettings->{DatabasePort}
-		database_protocol = $passedsettings->{DatabaseProtocol}
-		database_sqldatabase = $passedsettings->{DatabaseName}
-		database_username = $passedsettings->{DatabaseUsername}
-		database_password = $passedsettings->{DatabasePassword}
-		database_tableprefix = $passedsettings->{DatabaseTablePrefix}
+database_server = $passedsettings->{DatabaseServer}
+database_port = $passedsettings->{DatabasePort}
+database_protocol = $passedsettings->{DatabaseProtocol}
+database_sqldatabase = $passedsettings->{DatabaseName}
+database_username = $passedsettings->{DatabaseUsername}
+database_password = $passedsettings->{DatabasePassword}
+database_tableprefix = $passedsettings->{DatabaseTablePrefix}
 	";
 
 	close ($configfile);
@@ -1052,6 +1080,56 @@ sub kiriwrite_addtablerow{
 	print "<td class=\"$namestyle\">$name</td>\n";
 	print "<td class=\"$datastyle\">$data</td>\n";
 	print "</tr>\n";
+
+}
+
+sub kiriwrite_processconfig{
+#################################################################################
+# kiriwrite_processconfig: Processes an INI style configuration file.		#
+#										#
+# Usage:									#
+#										#
+# kiriwrite_processconfig(data);						#
+#										#
+# data	Specifies the data to process.						#
+#################################################################################
+
+	my (@settings) = @_;
+
+	my ($settings_line, %settings, $settings, $sectionname, $setting_name, $setting_value);
+
+	foreach $settings_line (@settings){
+
+		next if !$settings_line;
+
+		# Check if the first character is a bracket.
+
+		if (substr($settings_line, 0, 1) eq "["){
+			$settings_line =~ s/\[//;
+			$settings_line =~ s/\](.*)//;
+			$settings_line =~ s/\n//;
+			$sectionname = $settings_line;
+			next;
+		}
+
+		$setting_name  = $settings_line;
+		$setting_value = $settings_line;
+		$setting_name  =~ s/\=(.*)//;
+		$setting_name  =~ s/\n//;
+		$setting_value =~ s/(.*)\=//;
+		$setting_value =~ s/\n//;
+
+		# Remove the spacing before and after the '=' sign.
+
+		$setting_name =~ s/\s+$//;
+		$setting_value =~ s/^\s+//;
+		$setting_value =~ s/\r//;
+
+		$settings{$sectionname}{$setting_name} = $setting_value;
+
+	}
+
+ 	return %settings;
 
 }
 
@@ -1628,7 +1706,7 @@ if ($http_query_confirm eq 1){
 
 	if ($http_query_removeinstallscript eq "on"){
 
-		if (unlink("install.cgi")){
+		if (unlink($installscriptname)){
 
 			$installscriptmessage = $kiriwrite_lang{$language_selected}{installscriptremoved};
 
@@ -1654,12 +1732,12 @@ if ($http_query_confirm eq 1){
 		print "<br /><br />\n";
 		print $installscriptmessage;
 
-	}
+ 	}
 
 	print "<br /><br />\n";
 	print $kiriwrite_lang{$language_selected}{usekiriwritetext};
 	print "<br /><br />\n";
-	print "<a href=\"kiriwrite.cgi\">$kiriwrite_lang{$language_selected}{usekiriwritelink}</a>";
+	print "<a href=\"" . $kiriwritescriptname . "\">$kiriwrite_lang{$language_selected}{usekiriwritelink}</a>";
 	print "</body>\n</html>";
 
 	exit;
@@ -1702,10 +1780,6 @@ my $presentation_file_friendly;
 
 # Check to see if the needed Perl modules are installed.
 
-$test_list{CheckConfigAuto}{Name}	= "Config::Auto";
-$test_list{CheckConfigAuto}{Type}	= "dependency";
-$test_list{CheckConfigAuto}{Code}	= "Config::Auto";
-
 $test_list{CheckDBI}{Name} 		= "DBI";
 $test_list{CheckDBI}{Type} 		= "dependency";
 $test_list{CheckDBI}{Code} 		= "DBI";
@@ -1742,11 +1816,6 @@ $test_list{LanguageDirectory}{Type}		= "file";
 $test_list{LanguageDirectory}{Code}		= "lang";
 $test_list{LanguageDirectory}{Writeable}	= "0";
 
-$test_list{LibraryDirectory}{Name}		= "Library Directory (lib)";
-$test_list{LibraryDirectory}{Type}		= "file";
-$test_list{LibraryDirectory}{Code}		= "lib";
-$test_list{LibraryDirectory}{Writeable}		= "0";
-
 $test_list{ModulesDirectory}{Name}		= "Modules Directory (Modules)";
 $test_list{ModulesDirectory}{Type}		= "file";
 $test_list{ModulesDirectory}{Code}		= "Modules";
@@ -1761,6 +1830,11 @@ $test_list{PresModulesDirectory}{Name}		= "Presentation Modules Directory (Modul
 $test_list{PresModulesDirectory}{Type}		= "file";
 $test_list{PresModulesDirectory}{Code}		= "Modules/Presentation";
 $test_list{PresModulesDirectory}{Writeable}	= "0";
+
+$test_list{SystemModulesDirectory}{Name}		= "System Modules Directory (Modules/System)";
+$test_list{SystemModulesDirectory}{Type}		= "file";
+$test_list{SystemModulesDirectory}{Code}		= "Modules/System";
+$test_list{SystemModulesDirectory}{Writeable}		= "0";
 
 # Preform those tests.
 
@@ -1888,11 +1962,17 @@ foreach $language_name_short (@language_list_short){
 
 $installlanguage_out = $installlanguage_out . "</select>\n";
 
-kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{installertitle}, "languagebar", "<form action=\"install.cgi\" method=\"POST\">\n$installlanguage_out\n<input type=\"submit\" value=\"$kiriwrite_lang{$language_selected}{switch}\">\n</form>\n", "languagebarselect");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{installertitle}, "languagebar", "<form action=\"" . $installscriptname . "\" method=\"POST\">\n$installlanguage_out\n<input type=\"submit\" value=\"$kiriwrite_lang{$language_selected}{switch}\">\n</form>\n", "languagebarselect");
 print "</table>";
 
 print "<h2>$kiriwrite_lang{$language_selected}{installertitle}</h2>\n";
 print $kiriwrite_lang{$language_selected}{installertext};
+
+if ($modperlenabled eq 1){
+	print "<br /><br />";
+	print $kiriwrite_lang{$language_selected}{modperlnotice};
+}
+
 print "<h3>$kiriwrite_lang{$language_selected}{dependencytitle}</h3>\n";
 print "<h4>$kiriwrite_lang{$language_selected}{requiredmodules}</h4>\n";
 print $kiriwrite_lang{$language_selected}{perlmodules};
@@ -1921,6 +2001,8 @@ print "</table>";
 print "<h4>$kiriwrite_lang{$language_selected}{databasemodules}</h4>\n";
 print $kiriwrite_lang{$language_selected}{databasemodulestext};
 print "<br /><br />\n";
+
+print "<table>\n";
 
 if ($database_error eq 1){
 
@@ -2000,7 +2082,9 @@ my (%available_languages, $available_languages);
 my @presentation_modules;
 my @database_modules;
 my $select_data = "";
-my $language_data;
+my (%language_data, $language_data);
+my @lang_data;
+my $kiriwrite_languagefilehandle;
 my $language_out = "";
 my ($presmodule_name, $presmodule_out) = "";
 my ($dbmodule_name, $dbmodule_out) = "";
@@ -2017,17 +2101,17 @@ foreach my $language_file (@language_directory){
 
 	# Load the language file.
 
-	$language_data = Config::Auto::parse("lang/" . $language_file, format => "ini");
-
-	# Load the XML data.
-	#$language_xml_data = $xsl->XMLin("lang/" . $language_file);
+	open ($kiriwrite_languagefilehandle, "lang/" . $language_file);
+	@lang_data = <$kiriwrite_languagefilehandle>;
+	%language_data = kiriwrite_processconfig(@lang_data);
+	close ($kiriwrite_languagefilehandle);
 
 	# Get the friendly name for the language file.
 
 	$language_file_friendly = $language_file;
 	$language_file_friendly =~ s/.lang$//g;
 
-	$language_name = $language_data->{about}->{name};
+	$language_name = $language_data{about}{name};
 
 	$available_languages{$language_file_friendly} = $language_name . " (" . $language_file_friendly . ")";
 
@@ -2067,13 +2151,13 @@ print "<h3>$kiriwrite_lang{$language_selected}{settingstitle}</h3>";
 print $kiriwrite_lang{$language_selected}{settingstext};
 print "<br /><br />\n";
 
-print "<form action=\"install.cgi\" method=\"POST\">";
+print "<form action=\"" . $installscriptname . "\" method=\"POST\">";
 print "<input type=\"hidden\" name=\"confirm\" value=\"1\">\n<input type=\"hidden\" name=\"installlanguage\" value=\"$language_selected\">\n";
 
 print "<table width=\"100%\">";
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{setting}, "tablecellheader", $kiriwrite_lang{$language_selected}{value}, "tablecellheader");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{directories}, "tablecellheader", "", "tablecellheader");
-kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasedirectory}, "tablname", "<input type=\"text\" name=\"dbdirectory\" size=\"32\" maxlength=\"64\" value=\"$default_dbdirectory\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasedirectory}, "tablename", "<input type=\"text\" name=\"dbdirectory\" size=\"32\" maxlength=\"64\" value=\"$default_dbdirectory\">", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{outputdirectory}, "tablename", "<input type=\"text\" name=\"outputdirectory\" size=\"32\" maxlength=\"64\" value=\"$default_outputdirectory\">", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{imagesuripath}, "tablename", "<input type=\"text\" name=\"imagesuripath\" size=\"32\" maxlength=\"64\" value=\"$default_imagesuri\">", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{display}, "tablecellheader", "", "tablecellheader");
@@ -2085,7 +2169,7 @@ foreach my $select_name (@datetime_formats){
  	$select_data = $select_data . "<option value=\"$select_name\">" . $select_name . "</option>\n";
 }
 
-kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{dateformat}, "tablename", "<select>$select_data</select>\n<input type=\"text\" size=\"32\" maxlength=\"64\" name=\"customdateformat\">", "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{dateformat}, "tablename", "<select name=\"dateformat\">$select_data</select>\n<input type=\"text\" size=\"32\" maxlength=\"64\" name=\"customdateformat\">", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{language}, "tablecellheader", "", "tablecellheader");
 
 foreach my $language (keys %available_languages){
@@ -2096,7 +2180,7 @@ foreach my $language (keys %available_languages){
 	}
 }
 
-kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{systemlanguage}, "tablename", $language_out, "tabledata");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{systemlanguage}, "tablename", "<select name=\"language\">\r\n$language_out\r\n</select>", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{modules}, "tablecellheader", "", "tablecellheader");
 foreach $presmodule_name (@presentation_modules){
 	$presmodule_out = $presmodule_out . "<option value=\"$presmodule_name\">$presmodule_name</option>";

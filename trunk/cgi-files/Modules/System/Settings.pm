@@ -1,98 +1,12 @@
-#################################################################################
-# settings.lib: Kiriwrite Settings Library					#
-#										#
-# This library is under the same license as the main Kiriwrite script.		#
-#################################################################################
+package Modules::System::Settings;
 
-# This section of the file is for when the library is called from the main
-# Kiriwrite script.
+use Modules::System::Common;
+use strict;
+use warnings;
+use Exporter;
 
-# If the action value has been left blank, then view the list of
-# current settings.
-
-if ($form_data->{'action'}){
-	my $http_query_action = $form_data->{'action'};
-
-	if ($http_query_action eq "edit"){
-
-		# The action specified is to edit the settings. Check if the action
-		# to edit the settings has been confirmed.
-
-		my $http_query_confirm = $form_data->{'confirm'};
-
-		if (!$http_query_confirm){
-
-			# The confirm value is blank, so set it to 0.
-
-			$http_query_confirm = 0;
-
-		}
-
-		if ($http_query_confirm eq 1){
-
-			# The action to edit the settings has been confirmed. Get the
-			# required settings from the HTTP query.
-
-			my $http_query_database		= $form_data->{'databasedir'};
-			my $http_query_output		= $form_data->{'outputdir'};
-			my $http_query_imagesuri	= $form_data->{'imagesuripath'};
-			my $http_query_datetimeformat	= $form_data->{'datetime'};
-			my $http_query_systemlanguage	= $form_data->{'language'};
-			my $http_query_presmodule	= $form_data->{'presmodule'};
-			my $http_query_dbmodule		= $form_data->{'dbmodule'};
-			my $http_query_textareacols	= $form_data->{'textareacols'};
-			my $http_query_textarearows	= $form_data->{'textarearows'};
-			my $http_query_pagecount	= $form_data->{'pagecount'};
-			my $http_query_filtercount	= $form_data->{'filtercount'};
-			my $http_query_templatecount	= $form_data->{'templatecount'};
-
-			my $http_query_database_server		= $form_data->{'database_server'};
-			my $http_query_database_port		= $form_data->{'database_port'};
-			my $http_query_database_protocol	= $form_data->{'database_protocol'};
-			my $http_query_database_sqldatabase	= $form_data->{'database_sqldatabase'};
-			my $http_query_database_username	= $form_data->{'database_username'};
-			my $http_query_database_passwordkeep	= $form_data->{'database_password_keep'};
-			my $http_query_database_password	= $form_data->{'database_password'};
-			my $http_query_database_tableprefix	= $form_data->{'database_tableprefix'};
-
-			my $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => $http_query_database, OutputDirectory => $http_query_output, ImagesURIPath => $http_query_imagesuri, DateTimeFormat => $http_query_datetimeformat, SystemLanguage => $http_query_systemlanguage, PresentationModule => $http_query_presmodule, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, PageCount => $http_query_pagecount, FilterCount => $http_query_filtercount, TemplateCount => $http_query_templatecount, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_database_server, DatabasePort => $http_query_database_port, DatabaseProtocol => $http_query_database_protocol, DatabaseSQLDatabase => $http_query_database_sqldatabase, DatabaseUsername => $http_query_database_username, DatabasePasswordKeep => $http_query_database_passwordkeep, DatabasePassword => $http_query_database_password, DatabaseTablePrefix => $http_query_database_tableprefix, Confirm => 1 });
-
-			kiriwrite_output_header;	# Output the header to browser/console/stdout.
-			kiriwrite_output_page($kiriwrite_lang->{setting}->{editsettings}, $pagedata, "settings");	# Output the page to browser/console/stdout.
-			exit;				# End the script.
-
-		}
-
-		# The action to edit the settings has not been confirmed.
-
-		my $pagedata = kiriwrite_settings_edit();
-
-		kiriwrite_output_header;	# Output the header to browser/console/stdout.
-		kiriwrite_output_page($kiriwrite_lang->{setting}->{editsettings}, $pagedata, "settings");	# Output the page to browser/console/stdout.
-		exit;				# End the script.
-
-	} else {
-
-		# The action specified was something else other than those
-		# above, so return an error.
-
-		kiriwrite_error("invalidaction");
-
-	}
-
-}
-
-# No action has been specified, so print out the list of settings currently being used.
-
-my $pagedata = kiriwrite_settings_view();
-
-kiriwrite_output_header;		# Output the header to browser/console/stdout.
-kiriwrite_output_page($kiriwrite_lang->{setting}->{viewsettings}, $pagedata, "settings");	# Output the page to browser/console/stdout.
-exit;					# End the script.
-
-#################################################################################
-# Begin list of relevant subroutines.						#
-#################################################################################
+our @ISA = qw(Exporter);
+our @EXPORT = qw(kiriwrite_settings_view kiriwrite_settings_edit kiriwrite_output_config); 
 
 sub kiriwrite_settings_view{
 #################################################################################
@@ -105,186 +19,186 @@ sub kiriwrite_settings_view{
 
 	# Get the settings.
 
-	my $settings_directory_db		= $kiriwrite_config{"directory_data_db"};
-	my $settings_directory_output		= $kiriwrite_config{"directory_data_output"};
-	my $settings_noncgi_images		= $kiriwrite_config{"directory_noncgi_images"};
-	my $settings_display_textareacols	= $kiriwrite_config{"display_textareacols"};
-	my $settings_display_textarearows	= $kiriwrite_config{"display_textarearows"};
-	my $settings_display_pagecount		= $kiriwrite_config{"display_pagecount"};
-	my $settings_display_templatecount	= $kiriwrite_config{"display_templatecount"};
-	my $settings_display_filtercount	= $kiriwrite_config{"display_filtercount"};
-	my $settings_system_datetime		= $kiriwrite_config{"system_datetime"};
-	my $settings_system_language		= $kiriwrite_config{"system_language"};
-	my $settings_system_presentation	= $kiriwrite_config{"system_presmodule"};
-	my $settings_system_database		= $kiriwrite_config{"system_dbmodule"};
+	my $settings_directory_db		= $main::kiriwrite_config{"directory_data_db"};
+	my $settings_directory_output		= $main::kiriwrite_config{"directory_data_output"};
+	my $settings_noncgi_images		= $main::kiriwrite_config{"directory_noncgi_images"};
+	my $settings_display_textareacols	= $main::kiriwrite_config{"display_textareacols"};
+	my $settings_display_textarearows	= $main::kiriwrite_config{"display_textarearows"};
+	my $settings_display_pagecount		= $main::kiriwrite_config{"display_pagecount"};
+	my $settings_display_templatecount	= $main::kiriwrite_config{"display_templatecount"};
+	my $settings_display_filtercount	= $main::kiriwrite_config{"display_filtercount"};
+	my $settings_system_datetime		= $main::kiriwrite_config{"system_datetime"};
+	my $settings_system_language		= $main::kiriwrite_config{"system_language"};
+	my $settings_system_presentation	= $main::kiriwrite_config{"system_presmodule"};
+	my $settings_system_database		= $main::kiriwrite_config{"system_dbmodule"};
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{viewsettings}, { Style => "pageheader" });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{currentsettings});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{viewsettings}, { Style => "pageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{currentsettings});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
 
-	$kiriwrite_presmodule->startheader();
-	$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
-	$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
-	$kiriwrite_presmodule->endheader();
+	$main::kiriwrite_presmodule->startheader();
+	$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{common}{setting}, { Style => "tablecellheader" });
+	$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{common}{value}, { Style => "tablecellheader" });
+	$main::kiriwrite_presmodule->endheader();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{directories});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{directories});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasedirectory});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_directory_db);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasedirectory});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_directory_db);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{outputdirectory});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_directory_output);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{outputdirectory});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_directory_output);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{imagesuripath});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_noncgi_images);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{imagesuripath});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_noncgi_images);
+	$main::kiriwrite_presmodule->endcell();
+	$main::main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{display});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{display});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{textareacols});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_display_textareacols);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{textareacols});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_display_textareacols);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{textarearows});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_display_textarearows);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{textarearows});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_display_textarearows);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{pagecount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_display_pagecount);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{pagecount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_display_pagecount);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{templatecount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_display_templatecount);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{templatecount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_display_templatecount);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{filtercount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_display_filtercount);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{filtercount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_display_filtercount);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{date});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{date});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{dateformat});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_system_datetime);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{dateformat});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_system_datetime);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{language});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{language});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{systemlanguage});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_system_language);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{systemlanguage});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_system_language);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{modules});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{modules});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{presentationmodule});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_system_presentation);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{presentationmodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_system_presentation);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasemodule});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addtext($settings_system_database);
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasemodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_system_database);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->endtable();
+	$main::kiriwrite_presmodule->endtable();
 
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{altersettings});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{altersettings});
 
-	return $kiriwrite_presmodule->grab();
+	return $main::kiriwrite_presmodule->grab();
 
 }
 
@@ -767,7 +681,7 @@ sub kiriwrite_settings_edit{
 
 			# The current password in the configuration file should be used.
 
-			$settings_database_password 	= $kiriwrite_config{"database_password"};
+			$settings_database_password 	= $main::kiriwrite_config{"database_password"};
 
 		}
 
@@ -777,15 +691,15 @@ sub kiriwrite_settings_edit{
 
 		# Write a confirmation message.
 
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{settingsedited}, { Style => "pageheader" });
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{settingseditedmessage});
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlinebreak();
-		$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=settings", { Text => $kiriwrite_lang->{setting}->{returnsettingslist} });
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{settingsedited}, { Style => "pageheader" });
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{settingseditedmessage});
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlinebreak();
+		$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=settings", { Text => $main::kiriwrite_lang{setting}{returnsettingslist} });
 
-		return $kiriwrite_presmodule->grab();
+		return $main::kiriwrite_presmodule->grab();
 
 	}
 
@@ -794,6 +708,7 @@ sub kiriwrite_settings_edit{
 	my %language_list;
 	my @language_directory 		= "";
 	my $language;
+	my ($language_file, %language_file);
 	my $language_filename 		= "";
 	my $language_file_xml 		= "";
 	my $language_file_systemname 	= "";
@@ -804,7 +719,9 @@ sub kiriwrite_settings_edit{
 	my $language_file_count		= 0;
 	my $language_file_char		= "";
 	my $language_file_friendly 	= "";
-	my $language_config		= $kiriwrite_config{"system_language"};
+	my $language_config		= $main::kiriwrite_config{"system_language"};
+	my @lang_data;
+	my $kiriwrite_languagefilehandle;
 
 	tie(%language_list, 'Tie::IxHash');
 
@@ -820,11 +737,14 @@ sub kiriwrite_settings_edit{
 
 		# Load the language file currently selected.
 
-		$language_file = Config::Auto::parse("lang/" . $kiriwrite_config{"system_language"} . ".lang");
+		open($kiriwrite_languagefilehandle, "lang/" . $main::kiriwrite_config{"system_language"} . ".lang");
+		@lang_data = <$kiriwrite_languagefilehandle>;
+		%language_file = kiriwrite_processconfig(@lang_data);
+		close($kiriwrite_languagefilehandle);
 
 		# Get the system name and the local name of the language.
 
-		$language_file_localname = $language_file -> {about} -> {name};
+		$language_file_localname = $language_file{about}{name};
 
 		# Check if either the system name or the local name of the language
 		# is blank and if it is, then don't add the language to the list.
@@ -928,7 +848,7 @@ sub kiriwrite_settings_edit{
 	my $presmodule_count		= 0;
 	my $presmodule_friendly 	= "";
 	my $presmodule_selectlist 	= "";
-	my $presmodule_config		= $kiriwrite_config{"system_presmodule"};
+	my $presmodule_config		= $main::kiriwrite_config{"system_presmodule"};
 
 	# Open and get the list of presentation modules (perl modules) by filtering
 	# out the 
@@ -1022,7 +942,7 @@ sub kiriwrite_settings_edit{
 	my $dbmodule_count		= 0;
 	my $dbmodule_friendly 		= "";
 	my $dbmodule_selectlist 	= "";
-	my $dbmodule_config		= $kiriwrite_config{"system_dbmodule"};
+	my $dbmodule_config		= $main::kiriwrite_config{"system_dbmodule"};
 
 	# Open and get the list of presentation modules (perl modules) by filtering
 	# out the 
@@ -1103,196 +1023,196 @@ sub kiriwrite_settings_edit{
 
 	# Get the directory settings.
 
-	my $directory_settings_database 	= $kiriwrite_config{"directory_data_db"};
-	my $directory_settings_output	 	= $kiriwrite_config{"directory_data_output"};
-	my $directory_settings_imagesuri 	= $kiriwrite_config{"directory_noncgi_images"};
-	my $datetime_setting			= $kiriwrite_config{"system_datetime"};
+	my $directory_settings_database 	= $main::kiriwrite_config{"directory_data_db"};
+	my $directory_settings_output	 	= $main::kiriwrite_config{"directory_data_output"};
+	my $directory_settings_imagesuri 	= $main::kiriwrite_config{"directory_noncgi_images"};
+	my $datetime_setting			= $main::kiriwrite_config{"system_datetime"};
 
-	my $display_textareacols		= $kiriwrite_config{"display_textareacols"};
-	my $display_textarearows		= $kiriwrite_config{"display_textarearows"};
-	my $display_pagecount			= $kiriwrite_config{"display_pagecount"};
-	my $display_templatecount		= $kiriwrite_config{"display_templatecount"};
-	my $display_filtercount			= $kiriwrite_config{"display_filtercount"};
+	my $display_textareacols		= $main::kiriwrite_config{"display_textareacols"};
+	my $display_textarearows		= $main::kiriwrite_config{"display_textarearows"};
+	my $display_pagecount			= $main::kiriwrite_config{"display_pagecount"};
+	my $display_templatecount		= $main::kiriwrite_config{"display_templatecount"};
+	my $display_filtercount			= $main::kiriwrite_config{"display_filtercount"};
 
-	my $database_server			= $kiriwrite_config{"database_server"};
-	my $database_port			= $kiriwrite_config{"database_port"};
-	my $database_protocol			= $kiriwrite_config{"database_protocol"};
-	my $database_sqldatabase		= $kiriwrite_config{"database_sqldatabase"};
-	my $database_username			= $kiriwrite_config{"database_username"};
-	my $database_passwordhash		= $kiriwrite_config{"database_passwordhash"};
-	my $database_password			= $kiriwrite_config{"database_password"};
-	my $database_prefix			= $kiriwrite_config{"database_tableprefix"};
+	my $database_server			= $main::kiriwrite_config{"database_server"};
+	my $database_port			= $main::kiriwrite_config{"database_port"};
+	my $database_protocol			= $main::kiriwrite_config{"database_protocol"};
+	my $database_sqldatabase		= $main::kiriwrite_config{"database_sqldatabase"};
+	my $database_username			= $main::kiriwrite_config{"database_username"};
+	my $database_passwordhash		= $main::kiriwrite_config{"database_passwordhash"};
+	my $database_password			= $main::kiriwrite_config{"database_password"};
+	my $database_prefix			= $main::kiriwrite_config{"database_tableprefix"};
 
 	# Print out a form for editing the settings.
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{editsettings}, { Style => "pageheader" });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addboldtext($kiriwrite_lang->{setting}->{warning});
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{warningmessage});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{editsettings}, { Style => "pageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addboldtext($main::kiriwrite_lang{setting}{warning});
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{warningmessage});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
 
-	$kiriwrite_presmodule->startform($kiriwrite_env{"script_filename"}, "POST");
-	$kiriwrite_presmodule->startbox();
-	$kiriwrite_presmodule->addhiddendata("mode", "settings");
-	$kiriwrite_presmodule->addhiddendata("action", "edit");
-	$kiriwrite_presmodule->addhiddendata("confirm", 1);
+	$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+	$main::kiriwrite_presmodule->startbox();
+	$main::kiriwrite_presmodule->addhiddendata("mode", "settings");
+	$main::kiriwrite_presmodule->addhiddendata("action", "edit");
+	$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
 
-	$kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
+	$main::kiriwrite_presmodule->starttable("", { CellPadding => 5, CellSpacing => 0 });
 
-	$kiriwrite_presmodule->startheader();
-	$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{setting}, { Style => "tablecellheader" });
-	$kiriwrite_presmodule->addheader($kiriwrite_lang->{common}->{value}, { Style => "tablecellheader" });
-	$kiriwrite_presmodule->endheader();
+	$main::kiriwrite_presmodule->startheader();
+	$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{common}{setting}, { Style => "tablecellheader" });
+	$main::kiriwrite_presmodule->addheader($main::kiriwrite_lang{common}{value}, { Style => "tablecellheader" });
+	$main::kiriwrite_presmodule->endheader();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{directories});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{directories});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasedirectory});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("databasedir", { Size => 32, MaxLength => 64, Value => $directory_settings_database });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasedirectory});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("databasedir", { Size => 32, MaxLength => 64, Value => $directory_settings_database });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{outputdirectory});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("outputdir", { Size => 32, MaxLength => 64, Value => $directory_settings_output });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{outputdirectory});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("outputdir", { Size => 32, MaxLength => 64, Value => $directory_settings_output });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{imagesuripath});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("imagesuripath", { Size => 32, MaxLength => 64, Value => $directory_settings_imagesuri });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{imagesuripath});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("imagesuripath", { Size => 32, MaxLength => 512, Value => $directory_settings_imagesuri });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{display});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{display});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{textareacols});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("textareacols", { Size => 3, MaxLength => 3, Value => $display_textareacols });
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{textareacols});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("textareacols", { Size => 3, MaxLength => 3, Value => $display_textareacols });
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{textarearows});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("textarearows", { Size => 3, MaxLength => 3, Value => $display_textarearows });
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{textarearows});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("textarearows", { Size => 3, MaxLength => 3, Value => $display_textarearows });
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{pagecount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("pagecount", { Size => 4, MaxLength => 4, Value => $display_pagecount });
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{pagecount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("pagecount", { Size => 4, MaxLength => 4, Value => $display_pagecount });
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{filtercount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("filtercount", { Size => 4, MaxLength => 4, Value => $display_filtercount });
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{filtercount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("filtercount", { Size => 4, MaxLength => 4, Value => $display_filtercount });
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{templatecount});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("templatecount", { Size => 4, MaxLength => 4, Value => $display_templatecount });
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{templatecount});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("templatecount", { Size => 4, MaxLength => 4, Value => $display_templatecount });
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{date});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{date});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{dateformat});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("datetime", { Size => 32, MaxLength => 64, Value => $datetime_setting });
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->startbox("datalist");
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{dateformat});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("datetime", { Size => 32, MaxLength => 64, Value => $datetime_setting });
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->startbox("datalist");
 
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singleday});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doubleday});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singlemonth});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doublemonth});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singleyear});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doubleyear});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singlehour});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doublehour});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singleminute});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doubleminute});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{singlesecond});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{doublesecond});
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{othercharacters});
-	$kiriwrite_presmodule->endbox();
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singleday});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doubleday});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singlemonth});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doublemonth});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singleyear});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doubleyear});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singlehour});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doublehour});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singleminute});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doubleminute});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{singlesecond});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{doublesecond});
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{othercharacters});
+	$main::kiriwrite_presmodule->endbox();
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{language});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{language});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{systemlanguage});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{systemlanguage});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
 
-	$kiriwrite_presmodule->addselectbox("language");
+	$main::kiriwrite_presmodule->addselectbox("language");
 
 	# Process the list of available languages.
 
@@ -1303,33 +1223,33 @@ sub kiriwrite_settings_edit{
 
 		if ($language_list{$language}{Filename} eq $language_config){
 
-			$kiriwrite_presmodule->addoption($language_list{$language}{Name}, { Value => $language_list{$language}{Filename} , Selected => 1 });
+			$main::kiriwrite_presmodule->addoption($language_list{$language}{Name}, { Value => $language_list{$language}{Filename} , Selected => 1 });
 
 		} else {
 
-			$kiriwrite_presmodule->addoption($language_list{$language}{Name}, { Value => $language_list{$language}{Filename} });
+			$main::kiriwrite_presmodule->addoption($language_list{$language}{Name}, { Value => $language_list{$language}{Filename} });
 
 		}
 
 	}
 
-	$kiriwrite_presmodule->endselectbox();
+	$main::kiriwrite_presmodule->endselectbox();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{modules});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecellheader");
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{modules});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecellheader");
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{presentationmodule});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{presentationmodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
 
-	$kiriwrite_presmodule->addselectbox("presmodule");
+	$main::kiriwrite_presmodule->addselectbox("presmodule");
 
 	# Process the list of available presentation modules.
 
@@ -1340,30 +1260,30 @@ sub kiriwrite_settings_edit{
 
 		if ($presmodule_list{$presmodule}{Filename} eq $presmodule_config){
 
-			$kiriwrite_presmodule->addoption($presmodule_list{$presmodule}{Filename}, { Value => $presmodule_list{$presmodule}{Filename} , Selected => 1 });
+			$main::kiriwrite_presmodule->addoption($presmodule_list{$presmodule}{Filename}, { Value => $presmodule_list{$presmodule}{Filename} , Selected => 1 });
 
 		} else {
 
- 			$kiriwrite_presmodule->addoption($presmodule_list{$presmodule}{Filename}, { Value => $presmodule_list{$presmodule}{Filename} });
+ 			$main::kiriwrite_presmodule->addoption($presmodule_list{$presmodule}{Filename}, { Value => $presmodule_list{$presmodule}{Filename} });
 
 		}
 
 	}
 
-	$kiriwrite_presmodule->endselectbox();
+	$main::kiriwrite_presmodule->endselectbox();
 
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasemodule});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasemodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
 
 	# Process the list of available database modules.
 
-	$kiriwrite_presmodule->addselectbox("dbmodule");
+	$main::kiriwrite_presmodule->addselectbox("dbmodule");
 
 	foreach $dbmodule (keys %dbmodule_list){
 
@@ -1372,61 +1292,61 @@ sub kiriwrite_settings_edit{
 
 		if ($dbmodule_list{$dbmodule}{Filename} eq $dbmodule_config){
 
-			$kiriwrite_presmodule->addoption($dbmodule_list{$dbmodule}{Filename}, { Value => $dbmodule_list{$dbmodule}{Filename} , Selected => 1 });
+			$main::kiriwrite_presmodule->addoption($dbmodule_list{$dbmodule}{Filename}, { Value => $dbmodule_list{$dbmodule}{Filename} , Selected => 1 });
 
 		} else {
 
- 			$kiriwrite_presmodule->addoption($dbmodule_list{$dbmodule}{Filename}, { Value => $dbmodule_list{$dbmodule}{Filename} });
+ 			$main::kiriwrite_presmodule->addoption($dbmodule_list{$dbmodule}{Filename}, { Value => $dbmodule_list{$dbmodule}{Filename} });
 
 		}
 
 
 	}
 
-	$kiriwrite_presmodule->endselectbox();
+	$main::kiriwrite_presmodule->endselectbox();
 
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databaseserver});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_server", { Size => 32, MaxLength => 128, Value => $database_server });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databaseserver});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_server", { Size => 32, MaxLength => 128, Value => $database_server });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databaseport});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_port", { Size => 5, MaxLength => 5, Value => $database_port });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databaseport});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_port", { Size => 5, MaxLength => 5, Value => $database_port });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databaseprotocol});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databaseprotocol});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
 
 	# Check if TCP is being used.
 
-	$kiriwrite_presmodule->addselectbox("database_protocol");
+	$main::kiriwrite_presmodule->addselectbox("database_protocol");
 
 	if ($database_protocol eq "tcp"){
 
 		# The TCP protocol is selected so have the TCP option selected.
 
-		$kiriwrite_presmodule->addoption("TCP", { Value => "tcp", Selected => 1});
+		$main::kiriwrite_presmodule->addoption("TCP", { Value => "tcp", Selected => 1});
 
 	} else {
 
 		# The TCP protocol is not selected.
 
-		$kiriwrite_presmodule->addoption("TCP", { Value => "tcp"});
+		$main::kiriwrite_presmodule->addoption("TCP", { Value => "tcp"});
 
 	} 
 
@@ -1436,71 +1356,71 @@ sub kiriwrite_settings_edit{
 
 		# The UDP protocol is selected so have the UDP option selected.
 
-		$kiriwrite_presmodule->addoption("UDP", { Value => "udp", Selected => 1});
+		$main::kiriwrite_presmodule->addoption("UDP", { Value => "udp", Selected => 1});
 
 	} else {
 
 		# The UDP protocol is not selected.
 
-		$kiriwrite_presmodule->addoption("UDP", { Value => "udp"});
+		$main::kiriwrite_presmodule->addoption("UDP", { Value => "udp"});
 
 	}
 
-	$kiriwrite_presmodule->endselectbox();
+	$main::kiriwrite_presmodule->endselectbox();
 
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasename});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_sqldatabase", { Size => 32, MaxLength => 32, Value => $database_sqldatabase });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasename});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_sqldatabase", { Size => 32, MaxLength => 32, Value => $database_sqldatabase });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databaseusername});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_username", { Size => 16, MaxLength => 16, Value => $database_username });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databaseusername});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_username", { Size => 16, MaxLength => 16, Value => $database_username });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{databasepassword});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_password", { Size => 16, MaxLength => 64, Password => 1 });
-	$kiriwrite_presmodule->addtext(" ");
-	$kiriwrite_presmodule->addcheckbox("database_password_keep", { OptionDescription => "Keep the current password", Checked => 1 });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasepassword});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_password", { Size => 16, MaxLength => 64, Password => 1 });
+	$main::kiriwrite_presmodule->addtext(" ");
+	$main::kiriwrite_presmodule->addcheckbox("database_password_keep", { OptionDescription => "Keep the current password", Checked => 1 });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->startrow();
-	$kiriwrite_presmodule->addcell("tablecell1");
-	$kiriwrite_presmodule->addtext($kiriwrite_lang->{setting}->{tableprefix});
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->addcell("tablecell2");
-	$kiriwrite_presmodule->addinputbox("database_tableprefix", { Size => 16, MaxLength => 16, Value => $database_prefix });
-	$kiriwrite_presmodule->endcell();
-	$kiriwrite_presmodule->endrow();
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{tableprefix});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addinputbox("database_tableprefix", { Size => 16, MaxLength => 16, Value => $database_prefix });
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
 
-	$kiriwrite_presmodule->endtable();
+	$main::kiriwrite_presmodule->endtable();
 
-	$kiriwrite_presmodule->addlinebreak();
-	$kiriwrite_presmodule->addsubmit($kiriwrite_lang->{setting}->{changesettingsbutton});
-	$kiriwrite_presmodule->addtext(" | ");
-	$kiriwrite_presmodule->addreset($kiriwrite_lang->{common}->{restorecurrent});
-	$kiriwrite_presmodule->addtext(" | ");
-	$kiriwrite_presmodule->addlink($kiriwrite_env{"script_filename"} . "?mode=settings", { Text => $kiriwrite_lang->{setting}->{returnsettingslist} });
-	$kiriwrite_presmodule->endbox();
-	$kiriwrite_presmodule->endform();
+	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{setting}{changesettingsbutton});
+	$main::kiriwrite_presmodule->addtext(" | ");
+	$main::kiriwrite_presmodule->addreset($main::kiriwrite_lang{common}{restorecurrent});
+	$main::kiriwrite_presmodule->addtext(" | ");
+	$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=settings", { Text => $main::kiriwrite_lang{setting}->{returnsettingslist} });
+	$main::kiriwrite_presmodule->endbox();
+	$main::kiriwrite_presmodule->endform();
 
-	return $kiriwrite_presmodule->grab();
+	return $main::kiriwrite_presmodule->grab();
 
 } 
 
@@ -1583,6 +1503,8 @@ sub kiriwrite_output_config{
 
 		$settings_imagesuri =~ s/</&lt;/g;
 		$settings_imagesuri =~ s/>/&gt;/g;
+		$settings_imagesuri =~ s/\r//g;
+		$settings_imagesuri =~ s/\n//g;
 
 	}
 

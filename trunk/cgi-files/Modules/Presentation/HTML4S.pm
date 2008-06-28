@@ -21,7 +21,7 @@
 
 # Define the package (perl module) name.
 
-package Kiriwrite::Presentation::HTML4S;
+package Modules::Presentation::HTML4S;
 
 # Enable strict and use warnings.
 

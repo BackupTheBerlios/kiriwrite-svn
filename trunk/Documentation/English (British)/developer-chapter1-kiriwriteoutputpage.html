@@ -22,7 +22,7 @@ kiriwrite_output_page outputs the page to a browser, standard output or a consol
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    kiriwrite_output_page(pagetitle, pagedata, menutype);
+    kiriwrite_output_page(pagetitle, pagedata, menutype, database);
 </div>
 
 <br>
@@ -30,7 +30,7 @@ kiriwrite_output_page outputs the page to a browser, standard output or a consol
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    kiriwrite_output_page(“Page Title”, “This is the page data.”, “database”);
+    kiriwrite_output_page(&quot;Page Title&quot;, &quot;This is the page data.&quot;, &quot;database&quot;);
 </div>
 
 <br>
@@ -74,6 +74,10 @@ Specifies the menu type to use.<br><br>
         <td class="tabledata">Writes the compile sub-menu.</td>
     </tr>
 </table>
+<br>
+
+database<br>
+Specifies the name of the database to be used in the database sub-menu.
 		</div>
 	</body>
 </html>

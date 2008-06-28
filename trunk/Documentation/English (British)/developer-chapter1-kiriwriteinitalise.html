@@ -3,7 +3,7 @@
 	<head>
 		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-		<title>Kiriwrite Documentation - Developer Documentation - 1.1: BEGIN</title>
+		<title>Kiriwrite Documentation - Developer Documentation - 1.1: kiriwrite_initalise</title>
 	</head>
 	<body>
 		<div class="menubarback">
@@ -15,9 +15,19 @@ Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> |
 			</div>
 		</div>
 		<div class="pageinformation">
-			<span class="pagetitle">1.1 BEGIN</span><br><br>
+			<span class="pagetitle">1.1 kiriwrite_initalise</span><br><br>
 
-BEGIN is a subroutine that is used by the Perl interpreter to do things before running a script (Kiriwrite being the case). For Kiriwrite, it will process the script filename (as it's the full path name and only the last part which is the filename is needed). This allows Kiriwrite to be used with a different script filename.
+kiriwrite_initalise loads some variables before they are used throughout Kiriwrite (such as the script filename). This subroutine does not need to be called anywhere else.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+<div class="code">
+  kiriwrite_initalise();
+</div><br><br>
+
+<span class="heading">Usage:</span><br><br>
+<div class="code">
+  kiriwrite_initalise();
+</div>
 		</div>
 	</body>
 </html>

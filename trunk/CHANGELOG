@@ -1,3 +1,13 @@
+Changes since version 0.3.0
+===========================
+
+- Added mod_perl support.
+- Config::Auto is no longer required as Kiriwrite uses it's own 
+  mechanism for loading configuration and language files.
+- Fixed problem in Documentation where quotation marks were not showing
+  properly. This was prevalant in the Developer Documentation when
+  giving examples for subroutines.
+
 Changes since version 0.2.0
 ===========================
 
