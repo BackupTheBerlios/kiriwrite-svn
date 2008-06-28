@@ -1,0 +1,12 @@
+/*
+Kiriwrite Template Database Format
+Version 1.0
+*/
+
+create table kiriwrite_templates(
+	filename varchar(256) primary key,
+	templatename varchar(512),
+	templatedescription varchar(512),
+	templatelayout text,
+	datemodified datetime
+);

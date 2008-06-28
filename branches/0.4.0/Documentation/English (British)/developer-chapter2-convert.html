@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.5: convert</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.5 convert</span><br><br>
+
+Converts the data passed into data that is compliant with the format used by the presentation module. All parameters in the subroutine will be used.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->convert(data, type);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->convert(&quot;http://link/%7Epage%quot;, &quot;link&quot;);
+</div>
+
+<br>
+
+data<br>
+Specifies the data to convert.<br><br>
+
+type<br>
+Specifies the type of data to convert.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">content</td>
+        <td class="tabledata">Specifies the data to convert is for content.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">link</td>
+        <td class="tabledata">Specifies the data to convert is for a link.</td>
+    </tr>
+</table>
+
+<br>
+
+Bear in mind that while convert is not used by the main Kiriwrite script it can be used internally to convert text to be used in links and forms.
+		</div>
+	</body>
+</html>

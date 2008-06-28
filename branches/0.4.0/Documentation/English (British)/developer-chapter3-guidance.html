@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.1: Guidance</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.1 Guidance</span><br><br>
+
+When creating a new database module to be used in Kiriwrite, the following is required.<br><br>
+
+When creating a new database module, at the top of the page the following should be inserted:<br><br>
+
+<div class="code">
+    package Kiriwrite::Database::(modulename);<br><br>
+
+    use strict;<br>
+    use warnings;<br><br>
+
+    our $VERSION = &quot;(version)&quot;;<br>
+    my ($options, %options);<br>
+    my $database_handle;<br>
+    my $string_handle;<br>
+    my $error;<br>
+    my $errorext;<br>
+    my $database_filename;<br>
+    my $second_database_filename;
+</div>
+
+<br>
+
+Replace (modulename) with the name of the module like MySQL5 (which means MySQL database server version 5.x). When specifying the module name it should be the name of the format (MySQL) and version (5 as in 6.x).<br><br>
+
+'use strict' and 'use warnings' isn't required but it is generally accepted that Perl scripts and modules should have 'use strict' and 'use warnings' lines written.<br><br>
+
+Replace (version) with the internal version number of the module.<br><br>
+
+If you're writing a file-based database module, additional code will need to be added for handling a second database, template database and filter database. An example of this is in the SQLite.pm source code.<br><br>
+
+The file-based database module should end with the filename .db.(modulename) such as .db.sqlite when using the SQLite module.<br><br>
+
+Database modules are stored in the Modules/Database directory. For an example of a written database module look at the MySQL5.pm/SQLite.pm files.<br><br>
+
+If a database error occurs while preforming a database operation then the error string from the database handle scalar ($database_handle) should be placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

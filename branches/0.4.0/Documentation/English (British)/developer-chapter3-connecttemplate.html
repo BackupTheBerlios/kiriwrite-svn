@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.19: connecttemplate</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.19 connecttemplate</span><br><br>
+
+Connects to the template database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->connecttemplate(missingignore);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->connecttemplate(1);
+</div>
+
+<br>
+
+missingignore<br>
+Specifies that an error should not be returned if the template database does not exist.<br><br>
+
+If the template database does not exist then the error returned should be 'TemplateDatabaseDoesNotExist' in the $error scalar.<br><br>
+
+If (when using a file-based database module) the template database has invalid permissions set then the error returned should be 'TemplateDatabaseInvalidPermissionsSet' in the $error scalar.<br><br>
+
+If a database error occurs while connecting to the template database, the error returned should be 'TemplateDatabaseError' in the $error scalar and the information about the error should be placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

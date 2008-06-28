@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.33: kiriwrite_language</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.33 kiriwrite_language</span><br><br>
+
+kiriwrite_language processes language strings that need to have certain pieces of text inserted. This subroutine should be used only if the language string does need to have text to be inserted.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_language(string, text1, (text2, text3...));
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $string = kiriwrite_language(&quot;%s, %s, %s, %s and %s!&quot;, &quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;);
+</div>
+
+<br>
+
+string<br>
+Specifies the string to insert text into.<br><br>
+
+text1, text2, text3<br>
+Specifies the text to insert into the string and the amount of parameters to pass to depends on how many '%s'es there are in the language string.
+		</div>
+	</body>
+</html>

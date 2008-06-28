@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.31: kiriwrite_variablecheck</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.31 kiriwrite_variablecheck</span><br><br>
+
+kiriwrite_variablecheck checkes variables that are passed to it to see if the content of that variable is valid and returns an error if it isn't. All the parameters are needed each time the subroutine is called and If the noerror parameter is set to 1 then a value is returned when an error occurs otherwise a standard error message will be given.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_variablecheck(variable, type, option, noerror);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    kiriwrite_variablecheck(&quot;Test 123&quot;, &quot;lettersnumbers&quot;, &quot;&quot;, 0);<br>
+    $letters_letnum_check = kiriwrite_variablecheck(&quot;Test 123&quot;, &quot;lettersnumbers&quot;, &quot;&quot;, 1);
+</div>
+
+<br>
+
+variable<br>
+Specifies the variable to check.<br><br>
+
+type<br>
+Specifies the test to check the variable with.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">numbers</td>
+        <td class="tabledata">Check if the variable given only contains numbers.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">lettersnumbers</td>
+        <td class="tabledata">Check if the variable given only contains letters and numbers.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">maxlength</td>
+        <td class="tabledata">Check if the variable given does not exceed the specific length given.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">blank</td>
+        <td class="tabledata">Check if the variable given is blank.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">filename</td>
+        <td class="tabledata">Check if the variable given is a valid filename.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">filenameindir</td>
+        <td class="tabledata">Check if the variable given is a valid filename in a directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">datetime</td>
+        <td class="tabledata">Check if the variable given is a valid date and time format.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">directory</td>
+        <td class="tabledata">Check if the variable given is a valid directory name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">language_filename</td>
+        <td class="tabledata">Check if the variable given is a valid language filename.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">page_filename</td>
+        <td class="tabledata">Check if the variable given is a valid page filename.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">module</td>
+        <td class="tabledata">Check if the variable given is a valid module name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">utf8</td>
+        <td class="tabledata">Check if the variable given is a correctly formatted UTF-8 string.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">serverprotocol</td>
+        <td class="tabledata">Check if the variable given is a valid server protocol.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">port</td>
+        <td class="tabledata">Check if the variable given is a valid server port number.</td>
+    </tr>
+</table>
+
+<br>
+
+option<br>
+Specifies the setting to be used with the test.<br><br>
+
+noerror<br>
+Specifies if noerror message should be returned but a value should be returned so that a more specific error message can be created.<br><br>
+
+For more information on what values are returned, please look at the kiriwrite_error subroutine in the Kiriwrite source code.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.5: kiriwrite_page_delete</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.5 kiriwrite_page_delete</span><br><br>
+
+kirirwite_page_delete will delete a page from the selected database. If the confirm value is not supplied then it will write a form asking if the selected page should be deleted. If the database and page filename values are not given together than an error is returned.<br><br>
+
+kiriwrite_page_delete will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_page_delete(database, page, confirm);
+</div>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+$pagedata = kiriwrite_page_delete(&quot;database&quot;, &quot;filename.html&quot;;<br>
+$pagedata = kiriwrite_page_delete(&quot;database&quot;, &quot;filename.html&quot;, 1);
+</div>
+
+<br>
+
+database<br>
+Specifies the database to delete the selected page from.<br><br>
+
+page<br>
+Specifies the page with the filename given to delete.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to edit the page should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

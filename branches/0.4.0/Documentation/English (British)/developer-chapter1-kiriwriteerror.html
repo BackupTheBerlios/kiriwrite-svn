@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.34: kiriwrite_error</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.34 kiriwrite_error</span><br><br>
+
+kiriwrite_error processes errors that occur when using Kiriwrite.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_error(errortype, errorext);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    kiriwrite_error(&quot;generic&quot;);<br>
+    kiriwrite_error(&quot;databaseerror&quot;, &quot;Extended Error Information&quot;);
+</div>
+
+<br>
+
+errortype<br>
+Specifies the error message to return. If the errortype returned is blank then the generic error type is used. This is required when each time the subroutine is called.<br><br>
+For more information about the error messages used look at the kiriwrite_error subroutine in the Kiriwrite source code and the language file where each error type should match with the error type given in the language file.<br><br>
+
+errorext<br>
+Specifies the extended error information.
+		</div>
+	</body>
+</html>

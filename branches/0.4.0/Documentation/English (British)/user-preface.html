@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - Preface</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">Preface</span><br><br>
+Kiriwrite originally came into existence in 2003 when I was designing a new layout for my personal website (Kirinji's Pad) and found that I had so many pages to edit, I had to find an easier way of editing the website layout as I needed to and apply those changes to all of the pages on the website very quickly.<br><br>
+As I was designing my website using an advanced free ware text-editor (at it's time) which allowed me to create a template and create pages as I needed which was great, until I wanted to redesign the website. At that point I had around 50 pages which had to be changed and became somewhat time consuming.<br><br>
+That was when I wrote the original Kiriwrite script which was coded pretty much to my own needs and wasn't really well organised and was coded in Perl (although not that brilliantly as strict and warnings weren't used since I was learning Perl at the time) and by the time I finished coding it, I was able to do what I needed to do with Kiriwrite.<br><br>
+Around the end of 2005 (and after a two-year spell at St. Austell College which is now Cornwall College St. Austell) I decided to rewrite the Kiriwrite code because the original Kiriwrite did not do any input validation and so little of the code was commented which meant I forgot what everything did and I wanted to add some new features which would become useful in the future.<br><br>
+The rewritten Kiriwrite version was pretty much done in October 2006, following a suggestion from a good friend I decided to replace the flat-file based system which I used since the original Kiriwrite with a file-based database system called SQLite. Once that was done pretty much around the end of January 2007, I then separated the database code, presentation code and language strings into separate modules and files which meant that a MySQL 5.x server-based database could be used instead of file-based SQLite. The presentation code used to render internal output from Kiriwrite was separated and placed in the HTML4S (HTML 4.01 Strict) presentation module. The language strings that was hard-coded were separated and placed in the English (British) language file.<br><br>
+After some minor tweaks, the rewritten Kiriwrite code was pretty much ready and once the documentation was written Kiriwrite was ready for release. What I would like to see in the future for Kiriwrite is to make it work with mod_perl and add some extra customisable features as some settings are currently hard-coded when they could very well not be hard-coded. Support for mod_perl 2.x has been available since version 0.4.0.<br><br>
+I leave you with some advice, if you are going to design a website which uses a white background don't assume everyone will use a white background by default if no colour is specified and actually declare it as white background in the Cascading Style Sheet markup. You'd be amazed at how many commercial websites and some personal websites (that expect you to have) assume you have a white background when really you have a teal coloured background.
+		</div>
+	</body>
+</html>

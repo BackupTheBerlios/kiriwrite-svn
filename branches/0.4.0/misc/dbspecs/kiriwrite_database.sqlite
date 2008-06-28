@@ -1,0 +1,31 @@
+/*
+Kiriwrite Page Database Format Specifications
+Version 1.0
+*/
+
+/*
+Specification for SQLite.
+*/
+
+create table kiriwrite_database_info(
+	name varchar(256) primary key,
+	description varchar(512),
+	notes text,
+	categories varchar(512),
+	kiriwrite_version_major int(4),
+	kiriwrite_version_minor int(4),
+	kiriwrite_version_revision int(4)
+);
+
+create table kiriwrite_database_pages(
+	filename varchar(256) primary key,
+	pagename varchar(512),
+	pagedescription varchar(512),
+	pagesection varchar(256),
+	pagetemplate varchar(64),
+	pagedata text,
+	pagesettings int(1),
+	lastmodified datetime
+);
+
+

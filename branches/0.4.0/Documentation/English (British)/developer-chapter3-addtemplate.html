@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.23: addtemplate</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.23 addtemplate</span><br><br>
+
+Add a template to the template database. If the template database doesn't exist then it should be created in this subroutine.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->addtemplate(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->addtemplate({ TemplateFilename => &quot;template.html&quot;, TemplateName => &quot;Template Name&quot;, TemplateDescription => &quot;Template Description&quot;, TemplateLayout => &quot;This is the template layout.&quot; });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TemplateFilename</td>
+        <td class="tabledata">Specifies the template filename to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TemplateName</td>
+        <td class="tabledata">Specifies the template name to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TemplateDescription</td>
+        <td class="tabledata">Specifies the template description to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">TemplateLayout</td>
+        <td class="tabledata">Specifies the template layout to use.</td>
+    </tr>
+</table>
+
+<br>
+
+If the template filename already exists when adding the template then the error returned should be 'TemplatePageExists' in the $error scalar.<br><br>
+
+If the template database cannot be created when adding a template and the template database doesn't already exist then the error returned should be 'TemplateDatabaseFileUncreatable' in the $error scalar.<br><br>
+
+If (when using a file-based database module) the template database has invalid permissions set then the error returned should be 'TemplateDatabaseInvalidPermissionsSet' in the $error scalar.<br><br>
+
+If a database error occurs while adding a template to the template database then the error returned should be 'TemplateDatabaseError' in the $error scalar and information about the error should be placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.4: kiriwrite_page_edit</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.4 kiriwrite_page_edit</span><br><br>
+
+kiriwrite_page_edit will edit a page from the selected database. If the confirm value is not supplied then it will write a form for editing a page and if no database and page filename is specified then an error is returned saying no database was specified.<br><br>
+
+kiriwrite_page_edit will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+kiriwrite_page_edit(database, filename, newfilename, newname, newdescription, newsection, newtemplate, newsettings, newcontent, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+$pagedata = kiriwrite_page_edit(&quot;database&quot;, &quot;oldfilename.html&quot;);<br>
+$pagedata = kiriwrite_page_edit(&quot;database&quot;, &quot;oldfilename.html&quot;, &quot;newfilename.html&quot;, &quot;New Page Filename&quot;, &quot;New Page Description&quot;, &quot;New Page Section&quot;, &quot;newtemplate.html&quot;, 0, &quot;New Page Content, blah, blah, blah, blah&quot;, 1);
+</div>
+
+<br>
+
+database<br>
+Specifies the database to edit the page from. This is required every time the subroutine is called.<br><br>
+
+filename<br>
+Specifies the page with the filename to edit. This is required every time the subroutine is called.<br><br>
+
+<i>newfilename</i><br>
+Specifies the new page filename to use when editing a page. If you specify the same filename as the one given in the filename parameter then the filename of the page is not changed. This is required when actually editing a page and cannot be blank.<br><br>
+
+<i>newname</i><br>
+Specifies the new page name to use when editing a page. This is required when actually editing a page.<br><br>
+
+<i>newdescription</i><br>
+Specifies the new description to use when editing a page. This is required when actually editing a page.<br><br>
+
+<i>newsection</i><br>
+Specifies the new section to use when editing a page. This is required when actually editing a page.<br><br>
+
+<i>newtemplate</i><br>
+Specifies the new template filename to use when editing a page. This is required when actually editing a page and cannot be blank.<br><br>
+
+<i>newsettings</i><br>
+Specifies the new settings to use when editing a page. This is required when actually editing a page and cannot be blank. The following values specify what should be done to the page when using the &lt;kiriwrite:pagetitle&gt; and &lt;kiriwrite:autosection&gt; tags.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">0</td>
+        <td class="tabledata">Don't use the page name or section name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">1</td>
+        <td class="tabledata">Use the page name and section name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">2</td>
+        <td class="tabledata">Use the page name only.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">3</td>
+        <td class="tabledata">Use the section name only.</td>
+    </tr>
+</table>
+
+<br>
+
+<i>newcontent</i><br>
+Specifies the new content to use when editing a page. This is required when actually editing a page.<br><br>
+
+<i>confirm</i><br>
+Specifies if the action to edit the page should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

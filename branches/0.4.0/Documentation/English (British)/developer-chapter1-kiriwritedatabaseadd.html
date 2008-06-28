@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.11: kiriwrite_database_add</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.11 kiriwrite_database_add</span><br><br>
+
+kiriwrite_database_add adds a database. If the confirm value is not given then it will write a form for adding a database.<br><br>
+
+kiriwrite_database_add will return data that is intended for kiriwrite_output_page.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_database_add(filename, name, description, notes, categories, confirm);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+$pagedata = kiriwrite_database_add();<br>
+$pagedata = kiriwrite_database_add(&quot;database&quot;, &quot;New Database&quot;, &quot;New Database Description&quot;, &quot;New Database Notes&quot;, &quot;new, database, categories&quot;, 1);
+</div>
+
+<br>
+
+filename<br>
+Specifies the filename of the database to add. This is required when actually adding a database.<br><br>
+
+name<br>
+Specifies the name of the database to add. This is required when actually adding a database.<br><br>
+
+description<br>
+Specifies the description of the database to add. This is required when actually adding a database.<br><br>
+
+notes<br>
+Specifies the notes of the database to add. This is required when actually adding a database.<br><br>
+
+categories<br>
+Specifies the categories to the database to add. This is required when actually adding a database.<br><br>
+
+confirm<br>
+Specifies if the action to add a database should be confirmed by passing a '1'.
+		</div>
+	</body>
+</html>

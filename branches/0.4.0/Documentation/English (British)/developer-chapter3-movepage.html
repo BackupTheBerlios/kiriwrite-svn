@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.31: movepage</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.31 movepage</span><br><br>
+
+Moves pages from one database to another database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->movepage(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->selectdb(&quot;olddatabase&quot;);<br>    $kiriwrite_dbmodule->selectseconddb(&quot;newdatabase&quot;);<br>
+    $kiriwrite_dbmodule->movepage({ PageFilename => &quot;page.html&quot; });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">PageFilename</td>
+        <td class="tabledata">Specifies the page with the filename to move to the new database.</td>
+    </tr>
+</table>
+
+<br>
+
+If the page does not exist in the database the page is moving from then the error returned should be 'PageDoesNotExist' in the $error scalar.<br><br>
+
+If the page already exists in the database the page is moving to then the error returned should be 'PageAlreadyExists' in the $error scalar.<br><br>
+
+If a database error occurs in the database the page is moving from then the error returned should be 'OldDatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.<br><br>
+
+If a database error occurs in the database the page is moving to then the error returned should be 'NewDatabaseError' in the $error scalar and information about the error should be in the $errorext scalar.
+		</div>
+	</body>
+</html>
