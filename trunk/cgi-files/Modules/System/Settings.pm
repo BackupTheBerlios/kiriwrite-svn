@@ -31,6 +31,8 @@ sub kiriwrite_settings_view{
 	my $settings_system_language		= $main::kiriwrite_config{"system_language"};
 	my $settings_system_presentation	= $main::kiriwrite_config{"system_presmodule"};
 	my $settings_system_database		= $main::kiriwrite_config{"system_dbmodule"};
+	my $settings_system_output		= $main::kiriwrite_config{"system_outputmodule"};
+
 
 	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{viewsettings}, { Style => "pageheader" });
 	$main::kiriwrite_presmodule->addlinebreak();
@@ -186,6 +188,15 @@ sub kiriwrite_settings_view{
 
 	$main::kiriwrite_presmodule->startrow();
 	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{outputmodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+	$main::kiriwrite_presmodule->addtext($settings_system_output);
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
+
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
 	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasemodule});
 	$main::kiriwrite_presmodule->endcell();
 	$main::kiriwrite_presmodule->addcell("tablecell2");
@@ -220,6 +231,7 @@ sub kiriwrite_settings_edit{
 # PrsentationModule	Specifies the new presentation module to use for	#
 #			Kiriwrite.						#
 # DatabaseModule	Specifies the new database module to use for Kiriwrite.	#
+# OutputModule		Specifies the new output module to use for Kiriwrite.	#
 # TextAreaCols		Specifies the width of the text area.			#
 # TextAreaRows		Specifies the height of the text area.			#
 # PageCount		Specifies the amount of pages that should be viewed.	#
@@ -250,6 +262,7 @@ sub kiriwrite_settings_edit{
 	my $settings_datetimeformat		= $passedoptions->{"DateTimeFormat"};
 	my $settings_languagesystem		= $passedoptions->{"SystemLanguage"};
 	my $settings_presmodule			= $passedoptions->{"PresentationModule"};
+	my $settings_outputmodule		= $passedoptions->{"OutputModule"};
 	my $settings_dbmodule			= $passedoptions->{"DatabaseModule"};
 	my $settings_textareacols		= $passedoptions->{"TextAreaCols"};
 	my $settings_textarearows		= $passedoptions->{"TextAreaRows"};
@@ -300,6 +313,7 @@ sub kiriwrite_settings_edit{
 
 		my $kiriwrite_presmodule_modulename_check 	= kiriwrite_variablecheck($settings_presmodule, "module", 0, 1);
 		my $kiriwrite_dbmodule_modulename_check		= kiriwrite_variablecheck($settings_dbmodule, "module", 0, 1);
+		my $kiriwrite_outputmodule_modulename_check	= kiriwrite_variablecheck($settings_outputmodule, "module", 0, 1);
 
 		if ($kiriwrite_presmodule_modulename_check eq 1){
 
@@ -334,6 +348,24 @@ sub kiriwrite_settings_edit{
 			# an error.
 
 			kiriwrite_error("dbmoduleinvalid");
+
+		}
+
+		if ($kiriwrite_outputmodule_modulename_check eq 1){
+
+			# The output module name is blank, so return
+			# an error.
+
+			kiriwrite_error("outputmoduleblank");
+
+		}
+
+		if ($kiriwrite_outputmodule_modulename_check eq 2){
+
+			# The output module name is invalid, so return
+			# an error.
+
+			kiriwrite_error("outputmoduleinvalid");
 
 		}
 
@@ -687,7 +719,7 @@ sub kiriwrite_settings_edit{
 
 		# Write the new settings to the configuration file.
 
-		kiriwrite_output_config({ DatabaseDirectory => $settings_dbdirectory, OutputDirectory => $settings_outputdirectory, ImagesURIPath => $settings_imagesuri, DateTimeFormat => $settings_datetimeformat, SystemLanguage => $settings_languagesystem, PresentationModule => $settings_presmodule, TextAreaCols => $settings_textareacols, TextAreaRows => $settings_textarearows, PageCount => $settings_pagecount, FilterCount => $settings_filtercount, TemplateCount => $settings_templatecount, DatabaseModule => $settings_dbmodule, DatabaseServer => $settings_database_server, DatabasePort => $settings_database_port, DatabaseProtocol => $settings_database_protocol, DatabaseSQLDatabase => $settings_database_sqldatabase, DatabaseUsername => $settings_database_username, DatabasePassword => $settings_database_password, DatabaseTablePrefix => $settings_database_tableprefix });
+		kiriwrite_output_config({ DatabaseDirectory => $settings_dbdirectory, OutputDirectory => $settings_outputdirectory, ImagesURIPath => $settings_imagesuri, DateTimeFormat => $settings_datetimeformat, SystemLanguage => $settings_languagesystem, PresentationModule => $settings_presmodule, OutputModule => $settings_outputmodule, TextAreaCols => $settings_textareacols, TextAreaRows => $settings_textarearows, PageCount => $settings_pagecount, FilterCount => $settings_filtercount, TemplateCount => $settings_templatecount, DatabaseModule => $settings_dbmodule, DatabaseServer => $settings_database_server, DatabasePort => $settings_database_port, DatabaseProtocol => $settings_database_protocol, DatabaseSQLDatabase => $settings_database_sqldatabase, DatabaseUsername => $settings_database_username, DatabasePassword => $settings_database_password, DatabaseTablePrefix => $settings_database_tableprefix });
 
 		# Write a confirmation message.
 
@@ -839,90 +871,22 @@ sub kiriwrite_settings_edit{
 	my @presmodule_directory;
 	my $presmodule;
 	my $presmodule_file 		= "";
-	my $presmodule_char 		= "";
-	my $presmodule_dot 		= 0;
-	my $presmodule_firstdot		= 0;
-	my $presmodule_firstdotfound	= "";
-	my $presmodule_seek 		= 0;
-	my $presmodule_length 		= 0;
 	my $presmodule_count		= 0;
-	my $presmodule_friendly 	= "";
-	my $presmodule_selectlist 	= "";
 	my $presmodule_config		= $main::kiriwrite_config{"system_presmodule"};
 
-	# Open and get the list of presentation modules (perl modules) by filtering
-	# out the 
+	# Open and get the list of presentation modules (perl modules) by getting
+	# only files which end in .pm.
 
 	opendir(OUTPUTSYSTEMDIR, "Modules/Presentation");
 	@presmodule_directory = grep /m*\.pm$/, readdir(OUTPUTSYSTEMDIR);
 	closedir(OUTPUTSYSTEMDIR);
 
-	# Process each presentation module and add them to the list of available
-	# presentation modules.
-
 	foreach $presmodule_file (@presmodule_directory){
 
-		# Get the length of the presentation module (perl module) filename.
+		# Remove the .pm suffix.
 
-		$presmodule_length = length($presmodule_file);
-
-		# Get the friendly name of the Perl module (by getting rid of the
-		# .pm part of the filename).
-
-		do {
-
-			$presmodule_char = substr($presmodule_file, $presmodule_seek, 1);
-
-			# Check if the current character is a dot and if it is then
-			# set the last dot found number to the current seek number.
-
-			if ($presmodule_char eq "."){
-
-				# Put the seek value as the last dot found number.
-
-				$presmodule_dot = $presmodule_seek;
-
-			}
-
-			# Increment the seek counter.
-
-			$presmodule_seek++;
-
-		} until ($presmodule_seek eq $presmodule_length);
-
-		# Reset the seek counter as it is going to be used again.
-
-		$presmodule_seek = 0;
-
-		# Get the friendly name of the Perl module by the processing the file
-		# name to the last dot the previous 'do' tried to find.
-
-		do {
-
-			# Get the character the seek counter is currently set at.
-
-			$presmodule_char = substr($presmodule_file, $presmodule_seek, 1);
-
-			# Append the character to the friendly name of the presentation module.
-
-			$presmodule_friendly = $presmodule_friendly . $presmodule_char;
-
-			# Increment the seek counter.
-
-			$presmodule_seek++;
-
-		} until ($presmodule_seek eq $presmodule_dot);
-
-		# Append the option to tbe list of available presentation modules.
-
-		$presmodule_list{$presmodule_count}{Filename} = $presmodule_friendly;
-
-		# Reset the following values.
-
-		$presmodule_seek 	= 0;
-		$presmodule_length	= 0;
-		$presmodule_char	= "";
-		$presmodule_friendly	= "";
+		$presmodule_file =~ s/.pm$//;
+		$presmodule_list{$presmodule_count}{Filename} = $presmodule_file;
 		$presmodule_count++;
 
 	}
@@ -933,91 +897,47 @@ sub kiriwrite_settings_edit{
 	my @dbmodule_directory;
 	my $dbmodule;
 	my $dbmodule_file 		= "";
-	my $dbmodule_char 		= "";
-	my $dbmodule_dot 		= 0;
-	my $dbmodule_firstdot		= 0;
-	my $dbmodule_firstdotfound	= "";
-	my $dbmodule_seek 		= 0;
-	my $dbmodule_length 		= 0;
 	my $dbmodule_count		= 0;
-	my $dbmodule_friendly 		= "";
-	my $dbmodule_selectlist 	= "";
 	my $dbmodule_config		= $main::kiriwrite_config{"system_dbmodule"};
 
-	# Open and get the list of presentation modules (perl modules) by filtering
-	# out the 
+	# Open and get the list of database modules (perl modules) by getting
+	# only files which end in .pm.
 
 	opendir(DATABASEDIR, "Modules/Database");
 	@dbmodule_directory = grep /m*\.pm$/, readdir(DATABASEDIR);
 	closedir(DATABASEDIR);
 
-	# Process each presentation module and add them to the list of available
-	# presentation modules.
-
 	foreach $dbmodule_file (@dbmodule_directory){
 
-		# Get the length of the database module (perl module) filename.
+		# Remove the .pm suffix.
 
-		$dbmodule_length = length($dbmodule_file);
-
-		# Get the friendly name of the Perl module (by getting rid of the
-		# .pm part of the filename).
-
-		do {
-
-			$dbmodule_char = substr($dbmodule_file, $dbmodule_seek, 1);
-
-			# Check if the current character is a dot and if it is then
-			# set the last dot found number to the current seek number.
-
-			if ($dbmodule_char eq "."){
-
-				# Put the seek value as the last dot found number.
-
-				$dbmodule_dot = $dbmodule_seek;
-
-			}
-
-			# Increment the seek counter.
-
-			$dbmodule_seek++;
-
-		} until ($dbmodule_seek eq $dbmodule_length);
-
-		# Reset the seek counter as it is going to be used again.
-
-		$dbmodule_seek = 0;
-
-		# Get the friendly name of the Perl module by the processing the file
-		# name to the last dot the previous 'do' tried to find.
-
-		do {
-
-			# Get the character the seek counter is currently set at.
-
-			$dbmodule_char = substr($dbmodule_file, $dbmodule_seek, 1);
-
-			# Append the character to the friendly name of the presentation module.
-
-			$dbmodule_friendly = $dbmodule_friendly . $dbmodule_char;
-
-			# Increment the seek counter.
-
-			$dbmodule_seek++;
-
-		} until ($dbmodule_seek eq $dbmodule_dot);
-
-		# Append the option to tbe list of available database modules.
-
-		$dbmodule_list{$dbmodule_count}{Filename} = $dbmodule_friendly;
-
-		# Reset the following values.
-
-		$dbmodule_seek 	= 0;
-		$dbmodule_length	= 0;
-		$dbmodule_char		= "";
-		$dbmodule_friendly	= "";
+		$dbmodule_file =~ s/.pm$//;
+		$dbmodule_list{$dbmodule_count}{Filename} = $dbmodule_file;
 		$dbmodule_count++;
+
+	}
+
+	my %outputmodule_list;
+	my @outputmodule_directory;
+	my $outputmodule;
+	my $outputmodule_file 		= "";
+	my $outputmodule_count		= 0;
+	my $outputmodule_config		= $main::kiriwrite_config{"system_outputmodule"};
+
+	# Open and get the list of output modules (perl modules) by getting
+	# only files which end in .pm.
+
+	opendir(DATABASEDIR, "Modules/Output");
+	@outputmodule_directory = grep /m*\.pm$/, readdir(DATABASEDIR);
+	closedir(DATABASEDIR);
+
+	foreach $outputmodule_file (@outputmodule_directory){
+
+		# Remove the .pm suffix.
+
+		$outputmodule_file =~ s/.pm$//;
+		$outputmodule_list{$outputmodule_count}{Filename} = $outputmodule_file;
+		$outputmodule_count++;
 
 	}
 
@@ -1277,6 +1197,39 @@ sub kiriwrite_settings_edit{
 
 	$main::kiriwrite_presmodule->startrow();
 	$main::kiriwrite_presmodule->addcell("tablecell1");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{outputmodule});
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->addcell("tablecell2");
+
+	# Process the list of available output modules.
+
+	$main::kiriwrite_presmodule->addselectbox("outputmodule");
+
+	foreach $outputmodule (keys %outputmodule_list){
+
+		# Check if the output module fileanme matches the filename in the 
+		# configuration file.
+
+		if ($outputmodule_list{$outputmodule}{Filename} eq $outputmodule_config){
+
+			$main::kiriwrite_presmodule->addoption($outputmodule_list{$outputmodule}{Filename}, { Value => $outputmodule_list{$outputmodule}{Filename} , Selected => 1 });
+
+		} else {
+
+ 			$main::kiriwrite_presmodule->addoption($outputmodule_list{$outputmodule}{Filename}, { Value => $outputmodule_list{$outputmodule}{Filename} });
+
+		}
+
+
+	}
+
+	$main::kiriwrite_presmodule->endselectbox();
+
+	$main::kiriwrite_presmodule->endcell();
+	$main::kiriwrite_presmodule->endrow();
+
+	$main::kiriwrite_presmodule->startrow();
+	$main::kiriwrite_presmodule->addcell("tablecell1");
 	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{setting}{databasemodule});
 	$main::kiriwrite_presmodule->endcell();
 	$main::kiriwrite_presmodule->addcell("tablecell2");
@@ -1443,6 +1396,7 @@ sub kiriwrite_output_config{
 # SystemLanguage	Specifies the new language to use for Kiriwrite.	#
 # PrsentationModule	Specifies the new presentation module to use for	#
 #			Kiriwrite.						#
+# OutputModule		Specifies the new output module to use for Kiriwrite.	#
 # TextAreaCols		Specifies the width of the text area.			#
 # TextAreaRows		Specifies the height of the text area.			#
 # PageCount		Specifies the amount of pages to view.			#
@@ -1470,6 +1424,7 @@ sub kiriwrite_output_config{
 	my $settings_datetime			= $passedsettings->{"DateTimeFormat"};
 	my $settings_systemlanguage		= $passedsettings->{"SystemLanguage"};
 	my $settings_presmodule			= $passedsettings->{"PresentationModule"};
+	my $settings_outputmodule		= $passedsettings->{"OutputModule"};
 	my $settings_dbmodule			= $passedsettings->{"DatabaseModule"};
 
 	my $settings_textareacols		= $passedsettings->{"TextAreaCols"};
@@ -1528,6 +1483,7 @@ sub kiriwrite_output_config{
 	$configdata = $configdata . "system_language = "  . $settings_systemlanguage . "\r\n";
 	$configdata = $configdata . "system_presmodule = "  . $settings_presmodule . "\r\n";
 	$configdata = $configdata . "system_dbmodule = "  . $settings_dbmodule . "\r\n";
+	$configdata = $configdata . "system_outputmodule = "  . $settings_outputmodule . "\r\n";
 	$configdata = $configdata . "system_datetime = "  . $settings_datetime . "\r\n\r\n";
 
 	$configdata = $configdata . "display_textareacols = "  . $settings_textareacols . "\r\n";

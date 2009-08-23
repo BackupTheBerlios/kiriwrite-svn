@@ -6,16 +6,18 @@ Changes for future releases
 
 - Allow different encoding formats to be used when compiling instead of 
   UTF-8 which will probably be implemented within the output modules.
+- Code optimisation where the if statements are condensed into one line so
+  that less space is used among other improvements.
 
-Changes for 0.5.0
-=================
+Changes implemented in 0.5.0
+============================
 
-- Implement Output Module system.
+- Implemented Output Module system.
 
 Changes implemented in 0.3.0
 ============================
 
-- Add the ability to switch off and on a filter.
+- Added the ability to switch off and on a filter.
 - Removed CGI.pm from the installer script.
 - Added ability to change the amount of pages, templates and filters that
   can be viewed.

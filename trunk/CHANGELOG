@@ -1,3 +1,17 @@
+Changes since version 0.4.0
+===========================
+- Added Output module system. You can now do whatever you need with the
+  pages once they have been compiled through the Output module system.
+  The original functionality of writing pages to the output directory is
+  in the Normal.pm file in the Modules/System directory.
+- Fixed problem in installer script which wouldn't show a more helpful
+  error message when trying to load CGI::Lite.
+- Fixed problem where pages that are compiled when there is no template 
+  database are not written to the output directory even though a file 
+  with the page filename given is created.
+- Optimise the code using for getting the list of database, presentation
+  and output modules.
+
 Changes since version 0.3.0
 ===========================
 

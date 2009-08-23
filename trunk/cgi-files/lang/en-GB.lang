@@ -272,6 +272,10 @@ compiledatabase = Compile Database
 compiledatabasemessage = Do you want to compile the '%s' database?
 compiledatabasebutton = Compile Database
 
+selectoutputmodule = Select Output Module:
+outputmodulesettings = Output Module Settings
+selectbutton = Select
+
 overridetemplate = Override the template being used.
 replacecurrenttemplate = Replace current template with:
 templatedbmissing = The template database does not exist so the template being used cannot be overridden.
@@ -304,6 +308,7 @@ invalidpagefilename = The page '%s' has an invalid filename. Page skipped.
 templatefilemissing = The template with the filename '%s' for '%s' (%s) does not exist.
 pageinvalidpermissions = The page with the filename '%s' has invalid permissions set. Page not written.
 pagenotwritten = An error occured while writing the page with the filename '%s': %s
+outputallerror = An error occured while outputting all of the pages: %s
 compiledpageblankname =  (%s) was compiled.
 compiledpage = '%s' (%s) was compiled.
 databasefinish = Finished compiling pages in the '%s' database...
@@ -338,6 +343,7 @@ language = Language
 systemlanguage = System Language
 modules = Modules
 presentationmodule = Presentation Module
+outputmodule = Output Module
 databasemodule = Database Module
 altersettings = To alter the current settings, select the Edit Settings option at the top of the page.
 
@@ -452,6 +458,10 @@ oldcopydatabasefileinvalidpermissions = The database that the selected pages are
 oldmovedatabasedatabaseerror = A database error has occurred in the database that the selected pages are being moved from.
 oldmovedatabasedoesnotexist = The database that the selected pages are moving from does not exist.
 oldmovedatabasefileinvalidpermissions = The database that the selected pages are moving from has invalid permissions set.
+outputmoduleblank = The output module name given is blank.
+outputmoduleinvalid = The output module name given is invalid.
+outputmodulenametoolong = The output module name given is too long.
+outputmodulenameinvalid = The output module name is invalid.
 outputdirectoryblank = The output directory name given was blank.
 outputdirectoryinvalid = The output directory name given was invalid.
 outputdirectorymissing = The output directory is missing

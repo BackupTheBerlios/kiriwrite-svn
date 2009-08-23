@@ -6,7 +6,34 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(kiriwrite_compile_makepages kiriwrite_compile_all kiriwrite_compile_list kiriwrite_compile_clean kiriwrite_compile_clean_helper);
+our @EXPORT = qw(kiriwrite_compile_getoutputmodules kiriwrite_compile_makepages kiriwrite_compile_all kiriwrite_compile_list kiriwrite_compile_clean kiriwrite_compile_clean_helper kiriwrite_compile_loadhash);
+
+my %formdata = ();
+
+sub kiriwrite_compile_getoutputmodules{
+#################################################################################
+# kiriwrite_compile_getoutputmodules: Gets the list of available output modules.#
+#										#
+# Usage:									#
+#										#
+# @outputmodules = kiriwrite_compile_getoutputmodules;				#
+#################################################################################
+
+	my (@outputmoduleslist, @outputmoduleslist_final);
+	my $outputmodulefile;
+
+	opendir(OUTPUTMODULEDIR, "Modules/Output");
+	@outputmoduleslist = grep /m*\.pm$/, readdir(OUTPUTMODULEDIR);
+	closedir(OUTPUTMODULEDIR);
+
+	foreach $outputmodulefile (@outputmoduleslist){
+		$outputmodulefile =~ s/.pm$//;
+		push(@outputmoduleslist_final, $outputmodulefile);
+	}
+
+	return @outputmoduleslist_final;
+
+}
 
 sub kiriwrite_compile_makepages{
 #################################################################################
@@ -24,12 +51,20 @@ sub kiriwrite_compile_makepages{
 #			really be done.						#
 # override		Specifies if the template should be overriden.		#
 # overridetemplate	Specifies the name of the template to override with.	#
+# outputmodule		Specifies the output module.				#
 # selectedlist		Specifies the databases to compile from as an array.	#
 #################################################################################
 
 	# Get the values that have been passed to the subroutine.
 
-	my ($type, $confirm, $override, $override_template, @selectedlist) = @_;
+	my ($type, $confirm, $override, $override_template, $outputmodule, @selectedlist) = @_;
+	#my $type = shift;
+	#my $confirm = shift;
+	#my $override = shift;
+	#my $override_template = shift;
+	#my $outputmodule = shift;
+	#my @selectedlist = shift;
+	#my %formdata = shift;
 
 	# Check if the confirm value is more than one
 	# character long.
@@ -120,12 +155,51 @@ sub kiriwrite_compile_makepages{
 
 	}
 
+	if (!$outputmodule){
+		$outputmodule = $main::kiriwrite_config{'system_outputmodule'};
+	}
+
+	# Check if the output module name is valid.
+
+	my $outputmodule_maxlength_check = kiriwrite_variablecheck($outputmodule, "maxlength", 64, 1);
+
+	if ($outputmodule_maxlength_check eq 1){
+
+		# The length of the output module name is too
+		# long so return an error.
+
+		kiriwrite_error("outputmodulenametoolong");
+
+	}
+
+	my $outputmodule_filename_check = kiriwrite_variablecheck($outputmodule, "filename", "", 1);
+
+	if ($outputmodule_maxlength_check eq 1){
+
+		# The length of the output module name is too
+		# long so return an error.
+
+		kiriwrite_error("outputmodulenameinvalid");
+
+	}
+
+	# Set up the output module.
+
+	($outputmodule) = $outputmodule =~ m/^(.*)$/g;
+	my $outputmodulename = "Modules::Output::" . $outputmodule;
+ 	eval "use " . $outputmodulename;
+	my $kiriwrite_outputmodule = $outputmodulename->new();
+	my ($outputmodule_options, %outputmodule_options);
+	tie(%outputmodule_options, "Tie::IxHash");
+	$kiriwrite_outputmodule->initialise();
+	%outputmodule_options = $kiriwrite_outputmodule->getoptions();
+
 	# Check if the action to compile the databases
 	# has been confirmed.
 
 	if ($confirm eq 1){
 
-		# The action to compile the datavases has
+		# The action to compile the databases has
 		# been confirmed.
 
 		# Define some variables for later.
@@ -142,11 +216,11 @@ sub kiriwrite_compile_makepages{
 		my @findfilter;
 		my @replacefilter;
 		my @templateslist;
-		my @pagedirectories;
 		my @database_filters;
 		my $warning_count 		= 0;
 		my $error_count 		= 0;
 		my $pages_count			= 0;
+		my $page_compile_errorflag	= 0;
 		my $filter;
 		my $filters_count		= 0;
 		my $filters_find_blank_warning	= 0;
@@ -156,15 +230,6 @@ sub kiriwrite_compile_makepages{
 		my $database_name;
 		my $page_filename;
 		my $page_filename_check;
-		my $page_filename_char		= "";
-		my $page_filename_directory;
- 		my $page_filename_length	= 0;
- 		my $page_filename_seek 		= 0;
- 		my $page_filename_dircount	= 0;
-		my $page_filename_exists	= 0;
-		my $page_filename_permissions	= 0;
- 		my $page_directory_name;
- 		my $page_directory_path;
 		my $page_name;
 		my $page_description;
 		my $page_section;
@@ -189,7 +254,34 @@ sub kiriwrite_compile_makepages{
 		my $information_prefix		= $main::kiriwrite_lang{compile}{informationprefix};
 		my $error_prefix		= $main::kiriwrite_lang{compile}{errorprefix};
 		my $warning_prefix		= $main::kiriwrite_lang{compile}{warningprefix};
-		my $filehandle_page;
+
+		# Get the settings for the output module and load them into the
+		# output module.
+
+		use Hash::Search;
+		my $hs = new Hash::Search;
+
+		$hs->hash_search("^outputmodule_", %formdata);
+
+		my %outputmodulesettings = $hs->hash_search_resultdata;
+		my $language_name = $main::kiriwrite_config{'system_language'};
+
+		$kiriwrite_outputmodule->loadsettings($language_name, %outputmodulesettings);
+
+		# Check if the settings for the output module were loaded correctly.
+
+		if ($kiriwrite_outputmodule->errorflag eq 1){
+
+			# The settings for the output module were not loaded correctly
+			# so return an error.
+
+			kiriwrite_error("outputmodulesettingerror", $kiriwrite_outputmodule->errormessage);		
+
+		}
+
+		$kiriwrite_outputmodule->clearflag;
+
+		# Write a page title and start the box for the data list.
 
 		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compiledatabases}, { Style => "pageheader" });
 		$main::kiriwrite_presmodule->addlinebreak();
@@ -464,6 +556,10 @@ sub kiriwrite_compile_makepages{
 
 		foreach $database (@selectedlist){
 
+			# Clear the error flag for the output module.
+
+			$kiriwrite_outputmodule->clearflag;
+
 			# Check if the database filename and length
 			# are valid.
 
@@ -567,6 +663,15 @@ sub kiriwrite_compile_makepages{
 
 			foreach $page (@databasepages) {
 
+				# Clear the error flag for the output module..
+
+				$kiriwrite_outputmodule->clearflag;
+
+				# Reset certain values.
+
+				$page_autotitle = "";
+				$page_autosection = "";
+
 				# Get information about the page.
 
 				%page_info = $main::kiriwrite_dbmodule->getpageinfo({ PageFilename => $page });
@@ -615,7 +720,7 @@ sub kiriwrite_compile_makepages{
 
 					$page_final = $page_content;
 
-				} elsif ($page_template eq "!none"){
+				} elsif ($templates_skip eq 1 || $page_template eq "!none"){
 
 					$page_final = $page_content;
 
@@ -702,129 +807,33 @@ sub kiriwrite_compile_makepages{
 
 				}
 
-				# Process the page filename and check what directories
-				# need to be created.
+				# Convert the date into a format that can be used by Kiriwrite.
 
-				$page_filename_length = int(length($page_filename));
+				# PUT SOME CODE HERE! XO
 
-				do {
+				$kiriwrite_outputmodule->addpage({ Page => $page_filename, Data => $page_final, Title => $page_name, Section => $page_section, LastModified => $page_lastmodified, Database => $database });
 
-					$page_filename_char = substr($page_filename, $page_filename_seek, 1);
+				# Check if any errors occured while adding the page.
 
-					# Check if a forward slash appears and add it to
-					# the list of directories array.
+				if ($kiriwrite_outputmodule->errorflag eq 1){
 
-					if ($page_filename_char eq '/'){
-
-						# Append the directory name to the list of
-						# directories array.
-
-						$pagedirectories[$page_filename_dircount] = $page_filename_directory;
-						$page_filename_directory 	= "";
-						$page_filename_char		= "";
-						$page_filename_dircount++;
-
-					} else {
-
-						# Append the character to the directory/filename.
-
-						$page_filename_directory = $page_filename_directory . $page_filename_char;
-
-					}
-
-					$page_filename_seek++;
-
-				} until ($page_filename_length eq $page_filename_seek);
-
-				foreach $page_directory_name (@pagedirectories){
-
-					# Check if the directory name is undefined and if it
-					# is then set it blank.
-
-					if (!$page_directory_name){
-						$page_directory_name = "";
-					}
-
-					if (!$page_directory_path){
-						$page_directory_path = "";
-					}
-
-					# Check if the directory exists and create 
-					# the directory if it doesn't exist.
-
-					$page_directory_path = $page_directory_path . '/' . $page_directory_name;
-
-					mkdir($main::kiriwrite_config{"directory_data_output"} . '/' . $page_directory_path);
+					$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pagenotwritten}, $page_filename, $kiriwrite_outputmodule->errormessage));
+					$main::kiriwrite_presmodule->addlinebreak();
+					$error_count++;
+					next;
 
 				}
 
-				# Check if the file already exists and if it does then check
-				# the permissions of the file and return an error if the
-				# permissions set are invalid.
+				$kiriwrite_outputmodule->outputpage({ Page => $page_filename, Data => $page_final, Title => $page_name, Section => $page_section, LastModified => $page_lastmodified, Database => $database });
 
-				$page_filename_exists = kiriwrite_fileexists($main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename);	
+				if ($kiriwrite_outputmodule->errorflag eq 1){
 
-				if ($page_filename_exists eq 0){
-
-					# The page filename exists, so check if the permissions given are
-					# valid.
-
-					$page_filename_permissions = kiriwrite_filepermissions($main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename, 1, 1);
-
-					if ($page_filename_permissions eq 1){
-
-						# The file has invalid permissions set.
-
-						$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pageinvalidpermissions}, $page_filename));
-						$main::kiriwrite_presmodule->addlinebreak();
-						$error_count++;
-
-						# Reset certain values.
-
-						$page_autotitle = "";
-						$page_autosection = "";
-						$page_filename_seek = 0;
-						$page_filename_dircount = 0;
-
-						$page_filename_directory = "";
-						$page_directory_path = "";
-						$page_directory_name = "";
-						@pagedirectories = ();
-						
-						next;
-
-					}
+					$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pagenotwritten}, $page_filename, $kiriwrite_outputmodule->errormessage));
+					$main::kiriwrite_presmodule->addlinebreak();
+					$error_count++;
+					next;
 
 				}
-
-				# Reset certain values.
-
-				$page_autotitle = "";
-				$page_autosection = "";
-				$page_filename_seek = 0;
-				$page_filename_dircount = 0;
-
-				$page_filename_directory = "";
-				$page_directory_path = "";
-				$page_directory_name = "";
-				@pagedirectories = ();
-
-				# Write the file to the output directory.
-
-				($page_filename) = $page_filename =~ m/^(.*)$/g;
-				($main::kiriwrite_config{"directory_data_output"}) = $main::kiriwrite_config{"directory_data_output"} =~ m/^(.*)$/g;
-
-				open($filehandle_page, "> ",  $main::kiriwrite_config{"directory_data_output"} . '/' . $page_filename) or ($main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{pagenotwritten}, $page_filename, $!)), $main::kiriwrite_presmodule->addlinebreak(), $error_count++, next);
-
-				if (!$page_final){
-
-					$page_final = "";
-
-				}
-
-				binmode $filehandle_page, ':utf8';
-				print $filehandle_page $page_final;
-				close($filehandle_page);
 
 				# Write a message saying the page has been compiled. Check
 				# to see if the page name is blank and write a message
@@ -844,6 +853,19 @@ sub kiriwrite_compile_makepages{
 
 			}
 
+			# Output all the pages (if required).
+
+			$kiriwrite_outputmodule->outputall();
+
+			if ($kiriwrite_outputmodule->errorflag eq 1){
+
+				$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{outputallerror}, $page_filename, $kiriwrite_outputmodule->errormessage));
+				$main::kiriwrite_presmodule->addlinebreak();
+				$error_count++;
+				next;
+
+			}
+
 			# Write a message saying that the database has
 			# been processed.
 
@@ -852,9 +874,26 @@ sub kiriwrite_compile_makepages{
 
 		}
 
+		# This is the last time outputall is going to be called.
+
+		$kiriwrite_outputmodule->outputall({ FinishedProcessing => 1 });
+
+		if ($kiriwrite_outputmodule->errorflag eq 1){
+
+			$main::kiriwrite_presmodule->addtext($error_prefix . kiriwrite_language($main::kiriwrite_lang{compile}{outputallerror}, $page_filename, $kiriwrite_outputmodule->errormessage));
+			$main::kiriwrite_presmodule->addlinebreak();
+			$error_count++;
+			next;
+
+		}
+
 		# Disconnect from the database server.
 
-		$main::kiriwrite_dbmodule->disconnect();
+		$main::kiriwrite_dbmodule->disconnect;
+
+		# Run the finish subroutine for the output module.
+
+		$kiriwrite_outputmodule->finish;
 
 		$main::kiriwrite_presmodule->addhorizontalline();
 		$main::kiriwrite_presmodule->addtext(kiriwrite_language($main::kiriwrite_lang{compile}{compileresults}, $pages_count, $error_count, $warning_count));
@@ -878,6 +917,14 @@ sub kiriwrite_compile_makepages{
 		my @template_list;
 		my $template_filename;
 		my $template_file;
+		my @outputmodule_comboboxnames;
+		my @outputmodule_comboboxvalues;
+		my $outputmodule_comboboxname;
+		my $outputmodule_comboboxvalue;
+		my $outputmodule_selected	= 0;
+		my $combobox_count		= 0;
+		my $outputmoduleslist_name;
+		my $option_name;
 		my %template_info;
 		my %template_dblist;
 		tie(%template_dblist, "Tie::IxHash");
@@ -1025,17 +1072,60 @@ sub kiriwrite_compile_makepages{
 			$main::kiriwrite_dbmodule->disconnecttemplate();
 			$main::kiriwrite_dbmodule->disconnect();
 
+			# Get the list of output modules.
+
+			my @outputmoduleslist = kiriwrite_compile_getoutputmodules;
+
 			# Write out a form asking the user to confirm if the
 			# user wants to compile the selected database.
 
 			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compiledatabase}, { Style => "pageheader" });
+
+			# Write out a form selecting the output module.
+
+			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("type", "single");
+			$main::kiriwrite_presmodule->addhiddendata("database", $databasefilename);
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{selectoutputmodule});
+			$main::kiriwrite_presmodule->addselectbox("outputmodule");
+
+			# Process the output modules found.
+
+			foreach $outputmoduleslist_name (@outputmoduleslist){
+
+				# Print each option and check if the module name is the selected module.
+
+				if ($outputmodule eq $outputmoduleslist_name){
+
+					$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name, Selected => 1 });
+
+				} else {
+
+					$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name });
+
+				}
+
+			}
+
+			$main::kiriwrite_presmodule->endselectbox();
+			$main::kiriwrite_presmodule->addtext(" | ");
+			$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{selectbutton});
+			$main::kiriwrite_presmodule->endform();
+
+			# Write out another form for compiling the pages.
+
 			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
 			$main::kiriwrite_presmodule->startbox();
 			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
 			$main::kiriwrite_presmodule->addhiddendata("action", "compile");
 			$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
+			$main::kiriwrite_presmodule->addhiddendata("outputmodule", $outputmodule);
 			$main::kiriwrite_presmodule->addhiddendata("id[1]", $databasefilename);
 			$main::kiriwrite_presmodule->addhiddendata("name[1]", "on");
+			$main::kiriwrite_presmodule->addhiddendata("count", 1);
 			$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
 			$main::kiriwrite_presmodule->addlinebreak();
 			$main::kiriwrite_presmodule->addtext(kiriwrite_language($main::kiriwrite_lang{compile}{compiledatabasemessage}, $database_name));
@@ -1062,6 +1152,80 @@ sub kiriwrite_compile_makepages{
 
 				$main::kiriwrite_presmodule->addoption($main::kiriwrite_lang{compile}{dontusetemplate}, { Value => "!none" });
 				$main::kiriwrite_presmodule->endselectbox();
+
+			}
+
+			# Print out the list of options for the output module.
+
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{outputmodulesettings}, { Style => "smallpageheader" });
+			$main::kiriwrite_presmodule->addlinebreak();
+
+			foreach $option_name (keys %outputmodule_options){
+
+				$main::kiriwrite_presmodule->addlinebreak();
+
+				# Check if the option is a checkbox option.
+
+				if ($outputmodule_options{$option_name}{type} eq "checkbox"){
+
+					$main::kiriwrite_presmodule->addcheckbox("outputmodule_" . $option_name, { OptionDescription => $outputmodule_options{$option_name}{string} });
+
+				}
+
+				# Check if the option is a string option.
+
+				if ($outputmodule_options{$option_name}{type} eq "textbox"){
+
+					if (!$outputmodule_options{$option_name}{password}){
+						$outputmodule_options{$option_name}{password} = 0;
+					}
+
+					$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+					$main::kiriwrite_presmodule->addinputbox("outputmodule_" . $option_name, { Size => $outputmodule_options{$option_name}{size}, MaxLength => $outputmodule_options->{$option_name}{maxlength}, Value => $outputmodule_options{$option_name}{value}, Password => $outputmodule_options{$option_name}{password} });
+
+				}
+
+				# Check if the option is a combobox option.
+
+				if ($outputmodule_options{$option_name}{type} eq "combobox"){
+
+					$combobox_count		= 0;
+
+					@outputmodule_comboboxnames = split(/\|/, $outputmodule_options{$option_name}{optionnames});
+					@outputmodule_comboboxvalues = split(/\|/, $outputmodule_options{$option_name}{optionvalues});
+
+					$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+					$main::kiriwrite_presmodule->addselectbox("outputmodule_" . $option_name);
+
+					foreach $outputmodule_comboboxname (@outputmodule_comboboxnames){
+
+						$main::kiriwrite_presmodule->addoption($outputmodule_comboboxname, { Value => $outputmodule_comboboxvalues[$combobox_count] });
+						$combobox_count++;
+
+					}
+
+					$main::kiriwrite_presmodule->endselectbox;
+
+				}
+
+				# Check if the option is a radio option.
+
+				if ($outputmodule_options{$option_name}{type} eq "radio"){
+
+					# Check if the selected value is blank and if it is then
+					# set it to 0.
+
+					if (!$outputmodule_options{$option_name}{selected}){
+						$outputmodule_selected = 0;
+					} else {
+						$outputmodule_selected = 1;
+					}
+
+					$main::kiriwrite_presmodule->addradiobox("outputmodule_" . $outputmodule_options{$option_name}{name}, { Description => $outputmodule_options{$option_name}{string}, Value => $outputmodule_options{$option_name}{value}, Selected => $outputmodule_selected });
+
+				}
 
 			}
 
@@ -1176,11 +1340,64 @@ sub kiriwrite_compile_makepages{
 
 			}
 
+			# Get the list of output modules.
+
+			my @outputmoduleslist = kiriwrite_compile_getoutputmodules;
+
 			# Write out the form for compiling the database.
 
 			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compileselecteddatabases}, { Style => "pageheader" });
+
+			# Write out a form selecting the output module.
+
+			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
 			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("action", "compile");
+			$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
+
+			$database_count = 0;
+
+			# Write out the list of databases to compile.
+
+			foreach $database (keys %database_list){
+
+				$database_count++;
+
+				$main::kiriwrite_presmodule->addhiddendata("id[" . $database_count . "]", $database_list{$database}{Filename});
+				$main::kiriwrite_presmodule->addhiddendata("name[" . $database_count . "]", "on");
+
+			}
+
+			$main::kiriwrite_presmodule->addhiddendata("count", $database_count);
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{selectoutputmodule});
+			$main::kiriwrite_presmodule->addselectbox("outputmodule");
+
+			# Process the output modules found.
+
+			foreach $outputmoduleslist_name (@outputmoduleslist){
+
+				# Print each option and check if the module name is the selected module.
+
+				if ($outputmodule eq $outputmoduleslist_name){
+
+					$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name, Selected => 1 });
+
+				} else {
+
+					$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name });
+
+				}
+
+			}
+
+			$main::kiriwrite_presmodule->endselectbox();
+			$main::kiriwrite_presmodule->addtext(" | ");
+			$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{selectbutton});
+			$main::kiriwrite_presmodule->endform();
+
 			$main::kiriwrite_presmodule->addlinebreak();
+
 			$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
 			$main::kiriwrite_presmodule->startbox();
 			$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
@@ -1195,7 +1412,7 @@ sub kiriwrite_compile_makepages{
 
 			$database_count = 0;
 
-			# write out the list of databases to compile.
+			# Write out the list of databases to compile.
 
 			foreach $database (keys %database_list){
 
@@ -1316,6 +1533,81 @@ sub kiriwrite_compile_makepages{
 			$main::kiriwrite_dbmodule->disconnecttemplate();
 			$main::kiriwrite_dbmodule->disconnect();
 
+			# Print out the list of options for the output module.
+
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addlinebreak();
+			$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{outputmodulesettings}, { Style => "smallpageheader" });
+			$main::kiriwrite_presmodule->addlinebreak();
+
+			foreach $option_name (keys %outputmodule_options){
+
+				$main::kiriwrite_presmodule->addlinebreak();
+
+				# Check if the option is a checkbox option.
+
+				if ($outputmodule_options{$option_name}{type} eq "checkbox"){
+
+					$main::kiriwrite_presmodule->addcheckbox("outputmodule_" . $option_name, { OptionDescription => $outputmodule_options{$option_name}{string} });
+
+				}
+
+				# Check if the option is a string option.
+
+				if ($outputmodule_options{$option_name}{type} eq "string"){
+
+					if (!$outputmodule_options{$option_name}{password}){
+						$outputmodule_options{$option_name}{password} = 0;
+					}
+
+					$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+					$main::kiriwrite_presmodule->addinputbox("outputmodule_" . $option_name, { Size => $outputmodule_options{$option_name}{size}, MaxLength => $outputmodule_options->{$option_name}{maxlength}, Value => $outputmodule_options{$option_name}{value}, Password => $outputmodule_options{$option_name}{password} });
+
+				}
+
+				# Check if the option is a combobox option.
+
+				if ($outputmodule_options{$option_name}{type} eq "combobox"){
+
+					$combobox_count		= 0;
+
+					@outputmodule_comboboxnames = split(/\|/, $outputmodule_options{$option_name}{optionnames});
+					@outputmodule_comboboxvalues = split(/\|/, $outputmodule_options{$option_name}{optionvalues});
+
+					$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+					$main::kiriwrite_presmodule->addselectbox("outputmodule_" . $option_name);
+
+					foreach $outputmodule_comboboxname (@outputmodule_comboboxnames){
+
+						$main::kiriwrite_presmodule->addoption($outputmodule_comboboxname, { Value => $outputmodule_comboboxvalues[$combobox_count] });
+						$combobox_count++;
+
+					}
+
+					$main::kiriwrite_presmodule->endselectbox;
+
+				}
+
+				# Check if the option is a radio option.
+
+				if ($outputmodule_options{$option_name}{type} eq "radio"){
+
+					# Check if the selected value is blank and if it is then
+					# set it to 0.
+
+					if (!$outputmodule_options{$option_name}{selected}){
+						$outputmodule_selected = 0;
+					} else {
+						$outputmodule_selected = 1;
+					}
+
+					$main::kiriwrite_presmodule->addradiobox("outputmodule_" . $outputmodule_options{$option_name}{name}, { Description => $outputmodule_options{$option_name}{string}, Value => $outputmodule_options{$option_name}{value}, Selected => $outputmodule_selected });
+
+				}
+
+			}
+
+
 			$main::kiriwrite_presmodule->addlinebreak();
 			$main::kiriwrite_presmodule->addlinebreak();
 			$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compileselecteddatabasesbutton});
@@ -1353,8 +1645,61 @@ sub kiriwrite_compile_all{
 #										#
 # Usage:									#
 # 										#
-# kiriwrite_compile_all();							#
+# kiriwrite_compile_all(outputmodule);						#
+#										#
+# outputmodule		Specifies the output module to use.			#
 #################################################################################
+
+	# Get the parameters passed to this subroutine.
+
+	my $outputmodule = shift;
+
+	if (!$outputmodule){
+		$outputmodule = $main::kiriwrite_config{'system_outputmodule'};
+	}
+
+	# Check if the output module name is valid.
+
+	my $outputmodule_maxlength_check = kiriwrite_variablecheck($outputmodule, "maxlength", 64, 1);
+
+	if ($outputmodule_maxlength_check eq 1){
+
+		# The length of the output module name is too
+		# long so return an error.
+
+		kiriwrite_error("outputmodulenametoolong");
+
+	}
+
+	my $outputmodule_filename_check = kiriwrite_variablecheck($outputmodule, "filename", "", 1);
+
+	if ($outputmodule_maxlength_check eq 1){
+
+		# The length of the output module name is too
+		# long so return an error.
+
+		kiriwrite_error("outputmodulenameinvalid");
+
+	}
+
+	# Set up the output module.
+
+	($outputmodule) = $outputmodule =~ m/^(.*)$/g;
+	my $outputmodulename = "Modules::Output::" . $outputmodule;
+ 	eval "use " . $outputmodulename;
+	my $kiriwrite_outputmodule = $outputmodulename->new();
+	my ($outputmodule_options, %outputmodule_options);
+	tie(%outputmodule_options, "Tie::IxHash");
+	$kiriwrite_outputmodule->initialise();
+	%outputmodule_options = $kiriwrite_outputmodule->getoptions();
+	my @outputmodule_comboboxnames;
+	my @outputmodule_comboboxvalues;
+	my $outputmodule_comboboxname;
+	my $outputmodule_comboboxvalue;
+	my $outputmodule_selected	= 0;
+	my $combobox_count		= 0;
+	my $outputmoduleslist_name;
+	my $option_name;
 
 	# Connect to the database server.
 
@@ -1370,6 +1715,8 @@ sub kiriwrite_compile_all{
 		kiriwrite_error("databaseconnectionerror", $main::kiriwrite_dbmodule->geterror(1));
 
 	}
+
+	my @outputmoduleslist = kiriwrite_compile_getoutputmodules;
 
 	# Get the list of available databases.
 
@@ -1416,11 +1763,40 @@ sub kiriwrite_compile_all{
 	$main::kiriwrite_presmodule->addlinebreak();
 
 	$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
-	$main::kiriwrite_presmodule->startbox();
+	$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
+	$main::kiriwrite_presmodule->addhiddendata("action", "all");
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{selectoutputmodule});
+	$main::kiriwrite_presmodule->addselectbox("outputmodule");
+
+	# Process the output modules found.
+
+	foreach $outputmoduleslist_name (@outputmoduleslist){
+
+		# Print each option and check if the module name is the selected module.
+
+		if ($outputmodule eq $outputmoduleslist_name){
+
+			$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name, Selected => 1 });
+
+		} else {
+
+			$main::kiriwrite_presmodule->addoption($outputmoduleslist_name, { Value => $outputmoduleslist_name });
+
+		}
+
+	}
+
+	$main::kiriwrite_presmodule->endselectbox();
+	$main::kiriwrite_presmodule->addtext(" | ");
+	$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{selectbutton});
+	$main::kiriwrite_presmodule->endform();
+
+	$main::kiriwrite_presmodule->addlinebreak();
+
+	$main::kiriwrite_presmodule->startform($main::kiriwrite_env{"script_filename"}, "POST");
 	$main::kiriwrite_presmodule->addhiddendata("mode", "compile");
 	$main::kiriwrite_presmodule->addhiddendata("action", "compile");
 	$main::kiriwrite_presmodule->addhiddendata("type", "multiple");
-
 	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{compilealldatabasesmessage});
 	$main::kiriwrite_presmodule->addlinebreak();
 	$main::kiriwrite_presmodule->addlinebreak();
@@ -1545,7 +1921,7 @@ sub kiriwrite_compile_all{
 
 		# Add overwrite template data.
 		$main::kiriwrite_presmodule->addcheckbox("enableoverride", { OptionDescription => $main::kiriwrite_lang{compile}{overridetemplate}, LineBreak => 1 });
-		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{replacecurrenttemplate});
+		$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{replacecurrenttemplate} . " ");
 		$main::kiriwrite_presmodule->addselectbox("overridetemplate");
 
 		foreach $template_file (keys %template_dblist){
@@ -1564,14 +1940,87 @@ sub kiriwrite_compile_all{
 	$main::kiriwrite_dbmodule->disconnecttemplate();
 	$main::kiriwrite_dbmodule->disconnect();
 
+	# Print out the list of options for the output module.
+
 	$main::kiriwrite_presmodule->addlinebreak();
 	$main::kiriwrite_presmodule->addlinebreak();
+	$main::kiriwrite_presmodule->addtext($main::kiriwrite_lang{compile}{outputmodulesettings}, { Style => "smallpageheader" });
+	$main::kiriwrite_presmodule->addlinebreak();
+
+	foreach $option_name (keys %outputmodule_options){
+
+		$main::kiriwrite_presmodule->addlinebreak();
+
+		# Check if the option is a checkbox option.
+
+		if ($outputmodule_options{$option_name}{type} eq "checkbox"){
+
+			$main::kiriwrite_presmodule->addcheckbox("outputmodule_" . $option_name, { OptionDescription => $outputmodule_options{$option_name}{string} });
+
+		}
+
+		# Check if the option is a string option.
+
+		if ($outputmodule_options{$option_name}{type} eq "string"){
+
+			if (!$outputmodule_options{$option_name}{password}){
+				$outputmodule_options{$option_name}{password} = 0;
+			}
+
+			$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+			$main::kiriwrite_presmodule->addinputbox("outputmodule_" . $option_name, { Size => $outputmodule_options{$option_name}{size}, MaxLength => $outputmodule_options->{$option_name}{maxlength}, Value => $outputmodule_options{$option_name}{value}, Password => $outputmodule_options{$option_name}{password} });
+
+		}
+
+		# Check if the option is a combobox option.
+
+		if ($outputmodule_options{$option_name}{type} eq "combobox"){
+
+			$combobox_count		= 0;
+
+			@outputmodule_comboboxnames = split(/\|/, $outputmodule_options{$option_name}{optionnames});
+			@outputmodule_comboboxvalues = split(/\|/, $outputmodule_options{$option_name}{optionvalues});
+
+			$main::kiriwrite_presmodule->addtext($outputmodule_options{$option_name}{string} . " ");
+			$main::kiriwrite_presmodule->addselectbox("outputmodule_" . $option_name);
+
+			foreach $outputmodule_comboboxname (@outputmodule_comboboxnames){
+
+				$main::kiriwrite_presmodule->addoption($outputmodule_comboboxname, { Value => $outputmodule_comboboxvalues[$combobox_count] });
+				$combobox_count++;
+
+			}
+
+			$main::kiriwrite_presmodule->endselectbox;
+
+		}
+
+		# Check if the option is a radio option.
+
+		if ($outputmodule_options{$option_name}{type} eq "radio"){
+
+			# Check if the selected value is blank and if it is then
+			# set it to 0.
+
+			if (!$outputmodule_options{$option_name}{selected}){
+				$outputmodule_selected = 0;
+			} else {
+				$outputmodule_selected = 1;
+			}
+
+			$main::kiriwrite_presmodule->addradiobox("outputmodule_" . $outputmodule_options{$option_name}{name}, { Description => $outputmodule_options{$option_name}{string}, Value => $outputmodule_options{$option_name}{value}, Selected => $outputmodule_selected });
+
+		}
+
+	}
+
+	$main::kiriwrite_presmodule->addlinebreak;
+	$main::kiriwrite_presmodule->addlinebreak;
 
 	$main::kiriwrite_presmodule->addhiddendata("confirm", 1);
 	$main::kiriwrite_presmodule->addsubmit($main::kiriwrite_lang{compile}{compilealldatabasesbutton});
 	$main::kiriwrite_presmodule->addtext(" | ");
 	$main::kiriwrite_presmodule->addlink($main::kiriwrite_env{"script_filename"} . "?mode=compile", { Text => $main::kiriwrite_lang{compile}{returncompilelist} });
-	$main::kiriwrite_presmodule->endbox();
 	$main::kiriwrite_presmodule->endform();
 
 	return $main::kiriwrite_presmodule->grab();
@@ -2116,3 +2565,22 @@ sub kiriwrite_compile_clean_helper{
 	return $permissions;
 
 }
+
+sub kiriwrite_compile_loadhash{
+#################################################################################
+# kiriwrite_compile_loadhash: Loads the hash used for the Output Module.	#
+#										#
+# Usage:									#
+# 										#
+# kiriwrite_compile_loadhash(hash);						#
+#										#
+# hash		The hash to be passed on for the output moudle.			#
+#################################################################################
+
+	my (%passedhash) = @_;
+
+	%formdata = %passedhash;
+
+}
+
+1;

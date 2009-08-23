@@ -4,7 +4,7 @@
 # Kiriwrite Installer Script (install.pl/install.cgi)				#
 # Installation script for Kiriwrite	     					#
 #										#
-# Version: 0.4.0								#
+# Version: 0.5.0								#
 # mod_perl 2.x compatabile version						#
 #										#
 # Copyright (C) 2005-2008 Steve Brokenshire <sbrokenshire@xestia.co.uk>		#
@@ -26,13 +26,12 @@ use strict;				# Throw errors if there's something wrong.
 use warnings;				# Write warnings to the HTTP Server Log file.
 
 use utf8;
-use CGI::Lite;
 
 eval "use CGI::Lite";
 
 if ($@){
 	print "Content-type: text/html;\r\n\r\n";
-	print "The CGI::Lite Perl Module is not installed. Please install CGI::Lite and then run this installation script again.";
+	print "The CGI::Lite Perl Module is not installed. Please install CGI::Lite and then run this installation script again. CGI::Lite can be installed through CPAN.";
 	exit;
 }
 
@@ -68,6 +67,8 @@ my $default_imagesuri		= "/images/kiriwrite";
 
 my $default_textarearows	= "10";
 my $default_textareacols	= "50";
+
+my $default_outputmodule	= "Normal";
 
 my $default_server		= "localhost";
 my $default_port		= "3306";
@@ -119,11 +120,15 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 
 	$kiriwrite_lang{"en-GB"}{"presmoduleblank"}		= "The presentation module name given is blank.";
 	$kiriwrite_lang{"en-GB"}{"presmoduleinvalid"}		= "The presentation module name given is invalid.";
- 
+
 	$kiriwrite_lang{"en-GB"}{"dbmoduleblank"}		= "The database module name given is blank.";
 	$kiriwrite_lang{"en-GB"}{"dbmoduleinvalid"}		= "The database module name given is invalid.";
  
+	$kiriwrite_lang{"en-GB"}{"outputmoduleblank"}		= "The output module name given is blank.";
+	$kiriwrite_lang{"en-GB"}{"outputmoduleinvalid"}		= "The output module name given is invalid.";
+ 
 	$kiriwrite_lang{"en-GB"}{"presmodulemissing"}		= "The presentation module with the filename given is missing.";
+	$kiriwrite_lang{"en-GB"}{"outputmodulemissing"}		= "The output module with the filename given is missing.";
 	$kiriwrite_lang{"en-GB"}{"dbmodulemissing"}		= "The database module with the filename given is missing.";
 	$kiriwrite_lang{"en-GB"}{"languagefilenamemissing"}	= "The language file with the filename given is missing.";
  
@@ -196,6 +201,7 @@ $kiriwrite_lang{"en-GB"}{"languagename"}	= "English (British)";
 	$kiriwrite_lang{"en-GB"}{"systemlanguage"}	= "System Language";
 	$kiriwrite_lang{"en-GB"}{"modules"}		= "Modules";
 	$kiriwrite_lang{"en-GB"}{"presentationmodule"}	= "Presentation Module";
+	$kiriwrite_lang{"en-GB"}{"outputmodule"}	= "Output Module";
 	$kiriwrite_lang{"en-GB"}{"databasemodule"}	= "Database Module";
 	$kiriwrite_lang{"en-GB"}{"databaseserver"}	= "Database Server";
 	$kiriwrite_lang{"en-GB"}{"databaseport"}	= "Database Port";
@@ -1032,6 +1038,7 @@ directory_noncgi_images = $passedsettings->{ImagesURIPath}
 
 system_language = $passedsettings->{Language}
 system_presmodule = $passedsettings->{PresentationModule}
+system_outputmodule = $passedsettings->{OutputModule}
 system_dbmodule = $passedsettings->{DatabaseModule}
 system_datetime = $passedsettings->{DateFormat}
 		
@@ -1160,6 +1167,7 @@ if ($http_query_confirm eq 1){
 	my $http_query_language			= $form_data->{'language'};
 
 	my $http_query_presmodule		= $form_data->{'presmodule'};
+	my $http_query_outputmodule		= $form_data->{'outputmodule'};
 	my $http_query_dbmodule			= $form_data->{'dbmodule'};
 
 	my $http_query_databaseserver		= $form_data->{'databaseserver'};
@@ -1427,6 +1435,7 @@ if ($http_query_confirm eq 1){
 	# Check the module names to see if they're valid.
 
 	my $kiriwrite_presmodule_modulename_check 	= kiriwrite_variablecheck($http_query_presmodule, "module", 0, 1);
+	my $kiriwrite_outputmodule_modulename_check	= kiriwrite_variablecheck($http_query_outputmodule, "module", 0, 1);
 	my $kiriwrite_dbmodule_modulename_check		= kiriwrite_variablecheck($http_query_dbmodule, "module", 0, 1);
 
 	if ($kiriwrite_presmodule_modulename_check eq 1){
@@ -1444,6 +1453,24 @@ if ($http_query_confirm eq 1){
 		# an error.
 
 		kiriwrite_error("presmoduleinvalid");
+
+	}
+
+	if ($kiriwrite_outputmodule_modulename_check eq 1){
+
+		# The output module name is blank, so return
+		# an error.
+
+		kiriwrite_error("outputmoduleblank");
+
+	}
+
+	if ($kiriwrite_outputmodule_modulename_check eq 2){
+
+		# The output module name is invalid, so return
+		# an error.
+
+		kiriwrite_error("outputmoduleinvalid");
 
 	}
 
@@ -1465,8 +1492,8 @@ if ($http_query_confirm eq 1){
 
 	}
 
-	# Check if the database module, presentation module and
-	# language file exists.
+	# Check if the database module, presentation module,
+	# output module and language file exists.
 
 	if (!-e "Modules/Presentation/" . $http_query_presmodule . ".pm"){
 
@@ -1474,6 +1501,15 @@ if ($http_query_confirm eq 1){
 		# error.
 
 		kiriwrite_error("presmodulemissing");
+
+	}
+
+	if (!-e "Modules/Output/" . $http_query_outputmodule . ".pm"){
+
+		# The database module is missing so return an
+		# error.
+
+		kiriwrite_error("outputmodulemissing");
 
 	}
 
@@ -1692,7 +1728,7 @@ if ($http_query_confirm eq 1){
 
 	# Write the new configuration file.
 
-	kiriwrite_writeconfig({ DatabaseDirectory => $http_query_dbdirectory, OutputDirectory => $http_query_outputdirectory, ImagesURIPath => $http_query_imagesuripath, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, DateFormat => $finaldateformat, Language => $http_query_language, PresentationModule => $http_query_presmodule, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_databaseserver, DatabasePort => $http_query_databaseport, DatabaseProtocol => $http_query_databaseprotocol, DatabaseName => $http_query_databasename, DatabaseUsername => $http_query_databaseusername, DatabasePassword => $http_query_databasepassword, DatabaseTablePrefix => $http_query_databasetableprefix });
+	kiriwrite_writeconfig({ DatabaseDirectory => $http_query_dbdirectory, OutputDirectory => $http_query_outputdirectory, ImagesURIPath => $http_query_imagesuripath, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, DateFormat => $finaldateformat, Language => $http_query_language, PresentationModule => $http_query_presmodule, OutputModule => $http_query_outputmodule, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_databaseserver, DatabasePort => $http_query_databaseport, DatabaseProtocol => $http_query_databaseprotocol, DatabaseName => $http_query_databasename, DatabaseUsername => $http_query_databaseusername, DatabasePassword => $http_query_databasepassword, DatabaseTablePrefix => $http_query_databasetableprefix });
 
 	my $installscriptmessage	= "";
 
@@ -1784,10 +1820,6 @@ $test_list{CheckDBI}{Name} 		= "DBI";
 $test_list{CheckDBI}{Type} 		= "dependency";
 $test_list{CheckDBI}{Code} 		= "DBI";
 
-$test_list{CheckTieHash}{Name}		= "Tie::IxHash";
-$test_list{CheckTieHash}{Type} 		= "dependency";
-$test_list{CheckTieHash}{Code} 		= "Tie::IxHash";
-
 $test_list{CheckCGILite}{Name}		= "CGI::Lite";
 $test_list{CheckCGILite}{Type}		= "dependency";
 $test_list{CheckCGILite}{Code}		= "CGI::Lite";
@@ -1795,6 +1827,14 @@ $test_list{CheckCGILite}{Code}		= "CGI::Lite";
 $test_list{Encode}{Name}		= "Encode";
 $test_list{Encode}{Type}		= "dependency";
 $test_list{Encode}{Code}		= "Encode";
+
+$test_list{HashSearch}{Name}		= "Hash::Search";
+$test_list{HashSearch}{Type}		= "dependency";
+$test_list{HashSearch}{Code}		= "Hash::Search";
+
+$test_list{CheckTieHash}{Name}		= "Tie::IxHash";
+$test_list{CheckTieHash}{Type} 		= "dependency";
+$test_list{CheckTieHash}{Code} 		= "Tie::IxHash";
 
 $test_list{DBDmysql}{Name}		= "DBD::mysql";
 $test_list{DBDmysql}{Type}		= "database";
@@ -2037,7 +2077,7 @@ if ($file_error eq 1){
 
 print "<table>";
 
-kiriwrite_addtablerow("Filename", "tablecellheader", "Result", "tablecellheader");
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{filename}, "tablecellheader", "Result", "tablecellheader");
 
 foreach $test (keys %file_results) {
 
@@ -2080,6 +2120,7 @@ if ($file_error eq 1){
 my @language_short;
 my (%available_languages, $available_languages);
 my @presentation_modules;
+my @output_modules;
 my @database_modules;
 my $select_data = "";
 my (%language_data, $language_data);
@@ -2088,6 +2129,7 @@ my $kiriwrite_languagefilehandle;
 my $language_out = "";
 my ($presmodule_name, $presmodule_out) = "";
 my ($dbmodule_name, $dbmodule_out) = "";
+my ($outputmodule_name, $outputmodule_out) = "";
 
 # Get the list of available languages.
 
@@ -2129,6 +2171,21 @@ foreach my $presmodule_file (@presmodule_directory){
 
 	$presmodule_file =~ s/.pm$//g;
 	push(@presentation_modules, $presmodule_file);
+
+}
+
+# Get the list of output modules.
+
+opendir(OUTPUTDIR, "Modules/Output");
+my @outputmodule_directory = grep /m*\.pm$/, readdir(OUTPUTDIR);
+closedir(OUTPUTDIR);
+
+foreach my $outputmodule_file (@outputmodule_directory){
+
+	# Get the friendly name for the database module.
+
+	$outputmodule_file =~ s/.pm$//g;
+	push(@output_modules, $outputmodule_file);
 
 }
 
@@ -2181,16 +2238,28 @@ foreach my $language (keys %available_languages){
 }
 
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{systemlanguage}, "tablename", "<select name=\"language\">\r\n$language_out\r\n</select>", "tabledata");
+
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{modules}, "tablecellheader", "", "tablecellheader");
+
 foreach $presmodule_name (@presentation_modules){
 	$presmodule_out = $presmodule_out . "<option value=\"$presmodule_name\">$presmodule_name</option>";
 }
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{presentationmodule}, "tablename", "<select name=\"presmodule\">$presmodule_out</select>", "tabledata");
+
 foreach $dbmodule_name (@database_modules){
 	$dbmodule_out = $dbmodule_out . "<option value=\"$dbmodule_name\">$dbmodule_name</option>";
 }
-
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databasemodule}, "tablename", "<select name=\"dbmodule\">$dbmodule_out</select>", "tabledata");
+
+foreach $outputmodule_name (@output_modules){
+	if ($default_outputmodule = $outputmodule_name){
+		$outputmodule_out = $outputmodule_out . "<option value=\"$outputmodule_name\" selected>$outputmodule_name</option>";		
+	} else {
+		$outputmodule_out = $outputmodule_out . "<option value=\"$outputmodule_name\">$outputmodule_name</option>";
+	}
+}
+kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{outputmodule}, "tablename", "<select name=\"outputmodule\">$outputmodule_out</select>", "tabledata");
+
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseserver}, "tablename", "<input type=\"text\" name=\"databaseserver\" size=\"32\" maxlength=\"128\" value=\"$default_server\">\n", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseport}, "tablename", "<input type=\"text\" name=\"databaseport\" maxlength=\"5\" size=\"5\" value=\"$default_port\">\n", "tabledata");
 kiriwrite_addtablerow($kiriwrite_lang{$language_selected}{databaseprotocol}, "tablename", "<select name=\"databaseprotocol\">\n<option value=\"tcp\">tcp</option>\n<option value=\"udp\">udp</option>\n</select>\n", "tabledata");

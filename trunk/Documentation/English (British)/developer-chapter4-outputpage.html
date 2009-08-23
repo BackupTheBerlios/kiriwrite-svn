@@ -3,7 +3,7 @@
 	<head>
 		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-		<title>Kiriwrite Documentation - Developer Documentation - 2.24: addinputbox</title>
+		<title>Kiriwrite Documentation - Developer Documentation - 4.7: outputpage</title>
 	</head>
 	<body>
 		<div class="menubarback">
@@ -15,14 +15,14 @@ Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> |
 			</div>
 		</div>
 		<div class="pageinformation">
-			<span class="pagetitle">2.24 addinputbox</span><br><br>
+			<span class="pagetitle">4.7 outputpage</span><br><br>
 
-Adds an input box.<br><br>
+Outputs a page.<br><br>
 
 <span class="heading">Parameters:</span><br><br>
 
 <div class="code">
-    $kiriwrite_presmodule->addinputbox(inputboxname, options);
+    $kiriwrite_outputmodule->outputpage(options);
 </div>
 
 <br>
@@ -30,15 +30,12 @@ Adds an input box.<br><br>
 <span class="heading">Usage:</span><br><br>
 
 <div class="code">
-    $kiriwrite_presmodule->addinputbox(&quot;inputbox&quot;, { Size => &quot;64&quot;, MaxLength => &quot;128&quot;, Style => &quot;inputbox&quot;, Value => &quot;Default&quot;, Password => 0 });
+    $kiriwrite_outputmodule->outputpage({ Page => &quot;Page Name&quot;, Data => &quot;Lots of Page Data Here&quot;, Title => &quot;Page Title&quot;, });
 </div>
 
 <br>
 
-inputboxname<br>
-Specifies the input box name to use.<br><br>
-
-<i>options</i><br>
+options<br>
 Specifies the following options as a hash in any order.<br><br>
 
 <table class="infotable">
@@ -47,24 +44,28 @@ Specifies the following options as a hash in any order.<br><br>
         <td class="tableheading">Description</td>
     </tr>
     <tr>
-        <td class="tabledata">Size</td>
-        <td class="tabledata">Specifies the size of the input box.</td>
+        <td class="tabledata">Page</td>
+        <td class="tabledata">Specifies the filename of the page.</td>
     </tr>
     <tr>
-        <td class="tabledata">MaxLength</td>
-        <td class="tabledata">Specifies the maximum length of the input box.</td>
+        <td class="tabledata">Data</td>
+        <td class="tabledata">Specifies the data for the page.</td>
     </tr>
     <tr>
-        <td class="tabledata">Style</td>
-        <td class="tabledata">Specifies the CSS style of the input box.</td>
+        <td class="tabledata">Title</td>
+        <td class="tabledata">Specifies the title of the page.</td>
     </tr>
     <tr>
-        <td class="tabledata">Value</td>
-        <td class="tabledata">Specifies the value of the input box.</td>
+        <td class="tabledata">Section</td>
+        <td class="tabledata">Specifies the section name of the page.</td>
     </tr>
     <tr>
-        <td class="tabledata">Password</td>
-        <td class="tabledata">Specifies if this input box is for a password.</td>
+        <td class="tabledata">LastModified</td>
+        <td class="tabledata">Specifies the date of when the page was last modified.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database</td>
+        <td class="tabledata">Specifies the name of the database for the page.</td>
     </tr>
 </table>
 		</div>

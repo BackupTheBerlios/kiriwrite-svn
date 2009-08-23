@@ -35,7 +35,7 @@ use DBI qw(:sql_types);
 
 # Set the following values.
 
-our $VERSION 	= "0.2.0";
+our $VERSION 	= "0.5.0";
 my ($options, %options);
 my $database_handle;
 my $statement_handle;
@@ -1313,14 +1313,14 @@ sub getpageinfo{
 			# Put the values into the page hash.
 	
 			%database_page = (
-				"PageFilename" 		=> $pagefilename,
-				"PageName"		=> $pagename,
-				"PageDescription"	=> $pagedescription,
-				"PageSection"		=> $pagesection,
-				"PageTemplate"		=> $pagetemplate,
-				"PageContent"		=> $pagedata,
-				"PageSettings"		=> $pagesettings,
-				"PageLastModified"	=> $class->dateconvert($pagelastmodified),
+				"PageFilename" 			=> $pagefilename,
+				"PageName"			=> $pagename,
+				"PageDescription"		=> $pagedescription,
+				"PageSection"			=> $pagesection,
+				"PageTemplate"			=> $pagetemplate,
+				"PageContent"			=> $pagedata,
+				"PageSettings"			=> $pagesettings,
+				"PageLastModified"		=> $class->dateconvert($pagelastmodified)
 			);
 	
 			$page_found = 1;

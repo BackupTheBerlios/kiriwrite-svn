@@ -113,6 +113,8 @@ body {
 
 .code {
 	background-image: url('images/messageback.png');
+	background-repeat: repeat-x;
+	background-position: top;
 	background-color: #307070;
 	border-color: #70D0D0;
 	border-style: solid;

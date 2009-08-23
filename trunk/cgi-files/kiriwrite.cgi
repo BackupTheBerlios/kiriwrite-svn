@@ -4,7 +4,7 @@
 # Kiriwrite (kiriwrite.pl/kiriwrite.cgi)					#
 # Main program script			     					#
 #										#
-# Version: 0.4.0								#
+# Version: 0.5.0								#
 # mod_perl 2.x compatabile version						#
 #										#
 # Copyright (C) 2005-2008 Steve Brokenshire <sbrokenshire@xestia.co.uk>		#
@@ -37,7 +37,8 @@ binmode STDOUT, ':utf8';
 
 # Declare global variables for Kiriwrite settings and languages.
 
-our ($kiriwrite_config, %kiriwrite_config, %kiriwrite_lang, $kiriwrite_lang, $kiriwrite_version, %kiriwrite_version, $kiriwrite_env, %kiriwrite_env, $kiriwrite_presmodule, $kiriwrite_dbmodule, $form_data, $kiriwrite_script_name, $kiriwrite_env_path);
+our ($kiriwrite_config, %kiriwrite_config, %kiriwrite_lang, $kiriwrite_lang, $kiriwrite_version, %kiriwrite_version, $kiriwrite_env, %kiriwrite_env, $kiriwrite_presmodule, $kiriwrite_dbmodule, $kiriwrite_script_name, $kiriwrite_env_path);
+our ($form_data, %form_data);
 
 # If you are using mod_perl please change these settings to the correct
 # directory where this script is being run from.
@@ -53,7 +54,7 @@ use Modules::System::Common;
 
 %kiriwrite_version = (
 	"major" 	=> 0,
-	"minor" 	=> 4,
+	"minor" 	=> 5,
 	"revision" 	=> 0
 );
 
@@ -65,7 +66,7 @@ my $query_lite = new CGI::Lite;
 # Check if a mode has been specified and if a mode has been specified, continue
 # and work out what mode has been specified.
 
-$form_data = $query_lite->parse_form_data;
+$form_data = $query_lite->parse_form_data();
 
 if ($form_data->{'mode'}){
 	my $http_query_mode = $form_data->{'mode'};
@@ -343,7 +344,6 @@ if ($form_data->{'mode'}){
 				kiriwrite_output_header;	# Output the header to browser/console/stdout.
 				kiriwrite_output_page($kiriwrite_lang{pages}{editpagetitle}, $pagedata, "pages");	# Output the page to browser/console/stdout.
 				exit;				# End the script.
-
 			
 			} elsif ($http_query_action eq "delete"){
 		
@@ -880,10 +880,13 @@ if ($form_data->{'mode'}){
 		
 						my $http_query_override		= $form_data->{'enableoverride'};
 						my $http_query_overridetemplate	= $form_data->{'overridetemplate'};
-		
+						my $http_query_outputmodule	= $form_data->{'outputmodule'};
+
 						my @selectedlist = kiriwrite_selectedlist($form_data);
-						my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, $http_query_override, $http_query_overridetemplate, @selectedlist);
-		
+						my %form_data_hash = $query_lite->parse_form_data;
+						kiriwrite_compile_loadhash(%form_data_hash);
+						my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, $http_query_override, $http_query_overridetemplate, $http_query_outputmodule, @selectedlist);
+
 						kiriwrite_output_header;	# Output the header to browser/console/stdout.
 						kiriwrite_output_page($kiriwrite_lang{compile}{compilepages}, $pagedata, "compile"); # Output the page to browser/console/stdout.
 						exit;				# End the script.
@@ -893,9 +896,11 @@ if ($form_data->{'mode'}){
 						# The action to compile the pages has not been confirmed
 						# so write a form asking the user to confirm the action
 						# of compiling the pages.
-		
+
+						my $http_query_outputmodule	= $form_data->{'outputmodule'};
+
 						my @selectedlist = kiriwrite_selectedlist($form_data);
-						my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", @selectedlist);
+						my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", $http_query_outputmodule, @selectedlist);
 		
 						kiriwrite_output_header;	# Output the header to browser/console/stdout.
 						kiriwrite_output_page($kiriwrite_lang{compile}{compileselecteddatabases}, $pagedata, "compile"); # Output the page to browser/console/stdout.
@@ -905,10 +910,11 @@ if ($form_data->{'mode'}){
 		
 				} elsif ($http_query_type eq "single"){
 		
-					my $http_query_database	= $form_data->{'database'};
+					my $http_query_database		= $form_data->{'database'};
+					my $http_query_outputmodule	= $form_data->{'outputmodule'};
 					my @selectedlist;
 					$selectedlist[0] = $http_query_database;
-					my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", @selectedlist);
+					my $pagedata = kiriwrite_compile_makepages($http_query_type, $http_query_confirm, "", "", $http_query_outputmodule, @selectedlist);
 		
 					kiriwrite_output_header;	# Output the header to browser/console/stdout.
 					kiriwrite_output_page($kiriwrite_lang{compile}{compiledatabase}, $pagedata, "compile");
@@ -926,7 +932,8 @@ if ($form_data->{'mode'}){
 				# in the database directory. Check if the action to
 				# compile all of the databases has been confirmed.
 		
-				my $http_query_confirm = $form_data->{'confirm'};
+				my $http_query_confirm 		= $form_data->{'confirm'};
+				my $http_query_outputmodule	= $form_data->{'outputmodule'};
 		
 				if (!$http_query_confirm){
 		
@@ -937,13 +944,7 @@ if ($form_data->{'mode'}){
 		
 				}
 		
-				if ($http_query_confirm eq 1){
-		
-					# The action to compile all the databases has been confirmed.
-		
-				}
-		
-				my $pagedata = kiriwrite_compile_all();
+				my $pagedata = kiriwrite_compile_all($http_query_outputmodule);
 		
 				kiriwrite_output_header;			# Output the header to browser/console/stdout.
 				kiriwrite_output_page($kiriwrite_lang{compile}{compilealldatabases}, $pagedata, "compile");
@@ -1038,6 +1039,7 @@ if ($form_data->{'mode'}){
 					my $http_query_systemlanguage	= $form_data->{'language'};
 					my $http_query_presmodule	= $form_data->{'presmodule'};
 					my $http_query_dbmodule		= $form_data->{'dbmodule'};
+					my $http_query_outputmodule	= $form_data->{'outputmodule'};
 					my $http_query_textareacols	= $form_data->{'textareacols'};
 					my $http_query_textarearows	= $form_data->{'textarearows'};
 					my $http_query_pagecount	= $form_data->{'pagecount'};
@@ -1053,7 +1055,7 @@ if ($form_data->{'mode'}){
 					my $http_query_database_password	= $form_data->{'database_password'};
 					my $http_query_database_tableprefix	= $form_data->{'database_tableprefix'};
 		
-					my $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => $http_query_database, OutputDirectory => $http_query_output, ImagesURIPath => $http_query_imagesuri, DateTimeFormat => $http_query_datetimeformat, SystemLanguage => $http_query_systemlanguage, PresentationModule => $http_query_presmodule, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, PageCount => $http_query_pagecount, FilterCount => $http_query_filtercount, TemplateCount => $http_query_templatecount, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_database_server, DatabasePort => $http_query_database_port, DatabaseProtocol => $http_query_database_protocol, DatabaseSQLDatabase => $http_query_database_sqldatabase, DatabaseUsername => $http_query_database_username, DatabasePasswordKeep => $http_query_database_passwordkeep, DatabasePassword => $http_query_database_password, DatabaseTablePrefix => $http_query_database_tableprefix, Confirm => 1 });
+					my $pagedata = kiriwrite_settings_edit({ DatabaseDirectory => $http_query_database, OutputDirectory => $http_query_output, ImagesURIPath => $http_query_imagesuri, DateTimeFormat => $http_query_datetimeformat, SystemLanguage => $http_query_systemlanguage, PresentationModule => $http_query_presmodule, OutputModule => $http_query_outputmodule, TextAreaCols => $http_query_textareacols, TextAreaRows => $http_query_textarearows, PageCount => $http_query_pagecount, FilterCount => $http_query_filtercount, TemplateCount => $http_query_templatecount, DatabaseModule => $http_query_dbmodule, DatabaseServer => $http_query_database_server, DatabasePort => $http_query_database_port, DatabaseProtocol => $http_query_database_protocol, DatabaseSQLDatabase => $http_query_database_sqldatabase, DatabaseUsername => $http_query_database_username, DatabasePasswordKeep => $http_query_database_passwordkeep, DatabasePassword => $http_query_database_password, DatabaseTablePrefix => $http_query_database_tableprefix, Confirm => 1 });
 		
 					kiriwrite_output_header;	# Output the header to browser/console/stdout.
 					kiriwrite_output_page($kiriwrite_lang{setting}{editsettings}, $pagedata, "settings");	# Output the page to browser/console/stdout.

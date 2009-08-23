@@ -30,7 +30,7 @@ use warnings;
 
 # Set the following values.
 
-our $VERSION = "0.1.0";
+our $VERSION = "0.5.0";
 my $pagedata = "";
 my $tablevel = 0;
 
@@ -1035,6 +1035,7 @@ sub addinputbox{
 # MaxLength	Specifies the maximum length of the input text box.		#
 # Style		Specifies the CSS style to use.					#
 # Value		Specifies a value for the input box.				#
+# Password	Specifies the input box is a password box.			#
 #################################################################################
 
 	# Get the options recieved.

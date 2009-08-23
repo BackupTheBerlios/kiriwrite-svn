@@ -35,7 +35,7 @@ use DBI qw(:sql_types);
 
 # Set the following values.
 
-our $VERSION 	= "0.1.0";
+our $VERSION 	= "0.5.0";
 my ($options, %options);
 my $database_handle;
 my $statement_handle;
@@ -1683,6 +1683,7 @@ sub getpageinfo{
 				"PageContent"		=> $pagedata,
 				"PageSettings"		=> $pagesettings,
 				"PageLastModified"	=> $class->dateconvert($pagelastmodified),
+				# ADD PageLastModifiedInternal
 			);
 
 			$page_found = 1;
