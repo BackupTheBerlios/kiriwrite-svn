@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.31: addlink</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.31 addlink</span><br><br>
+
+Adds a link.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addlink(link, options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addlink(&quot;kiriwrite.cgi?mode=db&quot;, { Text => &quot;View the database list.&quot; });
+</div>
+
+<br>
+
+link<br>
+Specifies the location the link should go to when it is clicked on.<br><br>
+
+<i>options</i><br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Target</td>
+        <td class="tabledata">Specifies the target window for the link.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text</td>
+        <td class="tabledata">Specifies the text to use.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - Chapter 5: Troubleshooting</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">Chapter 5: Troubleshooting</span><br><br>
+<span class="heading">5.1 Common Problems</span><br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Problem</td>
+        <td class="tableheading">Symptom</td>
+        <td class="tableheading">Solution</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, some of the needed Perl modules have the word 'Error' next to them.</td>
+        <td class="tabledata">The needed Perl modules are more than likely not installed.</td>
+        <td class="tabledata">Install the needed Perl modules from the CPAN archive using the CPAN command interface.<sup>1</sup></td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, an error message appears saying that none of the needed Perl modules for the database modules are installed.</td>
+        <td class="tabledata">The needed Perl module(s) (or the Perl module needed specifically for that certain database module) are more than likely not installed.</td>
+        <td class="tabledata">Install the needed Perl modules from the CPAN archive using the CPAN command interface.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, an error message appears saying that some of the directories and files have invalid permissions set.</td>
+        <td class="tabledata">The directories and/or files have invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the directories and/or files so that are the correct permissions needed.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, no database or presentation modules appear in the list of available database or presentation modules.</td>
+        <td class="tabledata">The modules weren't copied or were copied to the wrong directories.</td>
+        <td class="tabledata">Copy or move the database modules to the correct directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When installing, no languages appears in the languages selection list.</td>
+        <td class="tabledata">The language files weren't copied or were copied to the wrong location.</td>
+        <td class="tabledata">Copy or move the language files to the correct directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the configuration file does not exist.</td>
+        <td class="tabledata">The configuration file has been deleted or the installation script wasn't run.</td>
+        <td class="tabledata">Run the installer script (again).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the configuration file has invalid permissions set.</td>
+        <td class="tabledata">The configuration file has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the configuration file so that it can be read.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the database module does not exist.</td>
+        <td class="tabledata">The database module has been deleted or renamed.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the Modules and Modules/Database directory have the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the database module has invalid permissions set.</td>
+        <td class="tabledata">The database module has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the database module so that they can be read (execute permissions not usually needed).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the presentation module does not exist.</td>
+        <td class="tabledata">The presentation module has been deleted or renamed.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the Modules and Modules/Presentation directory have the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the presentation module has invalid permissions set.</td>
+        <td class="tabledata">The presentation module has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the presentation module so that they can be read (execute permissions not usually needed).</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the language file does not exist.</td>
+        <td class="tabledata">The language file does not exist.</td>
+        <td class="tabledata">Run the installer script (again).<br>
+            Check if the lang directory has the correct permissions set so that they can be read.
+        </td>
+    </tr>
+    <tr>
+        <td class="tabledata">When starting Kiriwrite, a critical error message appears saying that the language file has invalid permissions set.</td>
+        <td class="tabledata">The language file has invalid permissions set.</td>
+        <td class="tabledata">Change the permissions on the language file so that they can be read.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the list of databases, an error message appears saying that the permissions of the database directory is invalid.</td>
+        <td class="tabledata">The database directory has incorrect permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the database directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the template database, an error message appears saying the permissions of the template database is invalid.</td>
+        <td class="tabledata">The template database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When viewing the filter database, an error message appears saying that the permissions of the filter database is invalid.</td>
+        <td class="tabledata">The filter database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the filter database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, an error message appears saying that the output directory has invalid permissions set.</td>
+        <td class="tabledata">The output directory has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the output directory.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, certain pages do not change when the pages are edited.</td>
+        <td class="tabledata">The pages have invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on those pages which have invalid permissions set.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, the template database has invalid permissions set.</td>
+        <td class="tabledata">The template database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When compiling the pages, the filter database has invalid permissions set.</td>
+        <td class="tabledata">The filter database has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read) on the template database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">When saving the new settings, an error message appears saying that the configuration file has invalid permissions set.</td>
+        <td class="tabledata">The configuration file has invalid permissions set.</td>
+        <td class="tabledata">Set the correct permissions (read and write) on the configuration file and then change the permissions back to read-only after saving the new settings.</td>
+    </tr>
+</table>
+
+<br>
+
+<div class="footnote"></div>
+
+<sup>1</sup>The CPAN (Comprehensive Perl Archive Network) command interface is normally included with Perl installations and will normally require superuser (root) permissions.
+		</div>
+	</body>
+</html>

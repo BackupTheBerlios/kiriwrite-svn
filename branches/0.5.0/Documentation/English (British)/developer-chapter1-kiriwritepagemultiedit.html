@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.9: kiriwrite_page_multiedit</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.9 kiriwrite_page_multiedit</span><br><br>
+
+kiriwrite_page_multiedit will edit multiple pages from a database. If no confirm value is specified then it will write a form asking if the selected pages should be edited and which parts should be edited on all pages. If no database or pages were specified then an error is returned.<br><br>
+
+kiriwrite_page_multiedit will return data that is intended for kiriwrite_output_page. All parameters are required for this subroutine.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_page_multiedit(database, newsection, altersection, newtemplate, altertemplate, newsettings, altersettings, confirm, filelist);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $pagedata = kiriwrite_page_multiedit(&quot;database&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, 0, ['page1.html', 'page2.html', 'page3.html', 'page4.html']);<br>
+    $pagedata = kiriwrite_page_multiedit(&quot;database&quot;, &quot;New Section&quot;, &quot;on&quot;, &quot;newtemplate.html&quot;, &quot;on&quot;, 0, &quot;on&quot;, 1, ['page1.html', 'page2.html', 'page3.html', 'page4.html']);
+</div>
+
+<br>
+
+database<br>
+Specifies the database to edit the selected pages from.<br><br>
+
+newsection<br>
+Specifies the new section for the selected pages.<br><br>
+
+altersection<br>
+Specifies if a new section should be given for the selected pages.<br><br>
+
+newtemplate<br>
+Specifies the new template filename for the selected pages. Specify '!none' to not use a template.<br><br>
+
+altertemplate<br>
+Specifies if a new template filename should be given for the selected pages.<br><br>
+
+newsettings<br>
+Specifies the new page settings to use when editing the selected pages. The following values specify what should be done to the page when using the &lt;kiriwrite:pagetitle&gt; and &lt;kiriwrite:autosection&gt; tags.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">0</td>
+        <td class="tabledata">Don't use the page name or section name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">1</td>
+        <td class="tabledata">Use the page name and section name.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">2</td>
+        <td class="tabledata">Use the page name only.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">3</td>
+        <td class="tabledata">Use the section name only.</td>
+    </tr>
+</table>
+
+altersettings<br>
+Specifies if a new section name should be given for the selected pages.<br><br>
+
+confirm<br>
+Specifies if the action to edit multiple pages should be confirmed by passing a '1'.<br><br>
+
+filelist<br>
+Specifies an array giving the list of pages to edit.
+		</div>
+	</body>
+</html>

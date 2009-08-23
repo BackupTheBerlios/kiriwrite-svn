@@ -1,0 +1,558 @@
+[about]
+name = English (British)
+creator = Steve Brokenshire
+mailaddress = sbrokenshire|ao|xestia|dottie|co|dottie|uk
+
+[database]
+submenu_viewdatabases = View Databases
+submenu_adddatabase = Add Database
+
+databasename = Database Name
+databasedescription = Database Description
+databasecategories = Database Categories
+databasenotes = Database Notes
+databasefilename = Database Filename
+databaselistreturnlink = Return to the database list.
+
+databaselist = Database List
+databaseoptions = Database Options
+nodatabasesavailable = There are no databases that can be used. To create a database click on the Add Database link.
+databaseinvalidpermissions = Databases with invalid permissions
+databaseinvalidpermissionstext = The following databases have invalid permissions set:
+databaseerrors = Databases with errors
+databaseerrorstext = The following databases have errors:
+
+adddatabase = Add Database
+adddatabaseautogenerate = Leave the filename blank to automatically generate a filename.
+adddatabasenoextensions = Don't include any extensions as it will be done automatically.
+adddatabasecharacterlength = The filename cannot be any more than 32 characters long.
+adddatabasecharacters = The filename should only contain letters, numbers and no spaces.
+adddatabasebutton = Add Database
+clearvaluesbutton = Clear values
+databaseadded = Database '%s' has been created.
+
+editdatabasetitle = Edit Database
+editdatabase = Edit Database '%s'
+editeddatabase = Edit Database
+editdatabasebutton = Edit Database
+databaseupdated = Database '%s' updated.
+
+deletedatabase = Database Deletion
+deletedatabasemessage = Are you sure you want to delete '%s'?
+deletedatabasebutton = Yes, delete the database
+deletedatabasereturn = No, return to the database list.
+deleteddatabase = Database Deleted
+deleteddatabasemessage = Database '%s' was deleted.
+
+[pages]
+submenu_addpage = Add Page
+
+database = Database
+pagefilename = Page Filename
+pagename = Page Name
+pagedescription = Page Description
+pagesection = Page Section
+pagetemplate = Page Template
+pagecontent = Page Content
+pagesettings = Page Settings
+lastmodified = Last Modified
+
+returnpagelist = Return to the page list for the '%s' database.
+viewpagelist = View the page list for the '%s' database.
+
+databasepageerror = A database error occurred while getting the page information with the filename '%s': %s
+databasepagedoesnotexist = The page with the filename '%s' does not exist.
+databasecopyfrompageerror = The page with the filename '%s' does not exist in the database that the page is to be copied from.
+databasecopyfromdatabaseerror = A database error has occurred while copying the page with the filename '%s' from the old database: %s
+databasecopytodatabaseerror = A database error has occurred while copying the page with the filename '%s' to the new database: %s
+databasecopyfrompagenotexist = The page with the filename '%s' does not exist in the database that the page is to be copied from.
+databasecopytopageexists = The page with the filename '%s' already exists in the database that the page is to be copied to.
+databasemovefrompageerror = A database error has occurred while moving the page with the filename '%s' from the old database: %s
+databasemovetopageerror = A database error has occurred while moving the page with the filename '%s' to the new database: %s
+databasemovefrompagenotexist = The page with the filename '%s' does not exist in the database that the page is to be moved from.
+databasemovetopageexists = The page with the filename '%s' already exists in the database that the page is to be moved to.
+pagedoesnotexist = The page with the filename '%s' does not exist in the database that the page is to be moved from.
+
+usenotemplate = Don't use a template
+keeptemplatefilename = Keep current template filename (%s)
+	
+usepageandsection = Use page name and section name.
+usepagename = Use the page name only.
+usesectionname = Use the section name only.
+nopagesection = Don't use page name or section name.
+
+notemplatedatabase = Template database does not exist. No template will be used.
+notemplatedatabasekeep = Template database does not exist. Existing template settings can be kept.
+templatepermissionserror = Template database has invalid permissions set. No template will be used.
+templatepermissionserrorkeep = Template database has invalid permissions set. Existing template settings can be kept.
+templatedatabaseerror = A database error occurred while trying to get the list of templates: %s
+templatedatabaseerrorkeep = A database error occurred while trying to get the list of templates: '%s'. Existing template settings can be kept.
+notemplatesavailable = There are no templates in the template database. No template will be used.
+templatedatabasenotexistmultieditkeep = The template database does not exist. Existing template settings for selected pages kept.
+templatedatabasepermissionsinvalidmultieditkeep = The template database has invalid permissions set. Existing template settings for selected pages kept.
+templatedatabaseerrormultieditkeep = A database error occurred while trying to get the list of templates: %s. Existing template settings for selected pages kept.
+
+viewingdatabase = Viewing Database
+viewpages = View Pages
+databaseselecttitle = Database Selection
+nodatabaseselected = No database selected. Please select a database from the drop-down list below and then press the 'View' button to view the pages in the selected database.
+nopagesinpagebrowse = No pages with the page browse number given.
+returntofirstpagebrowse = Return to the start of the page list.
+showlistpage = Show list page:
+nextpage = Next page
+previouspage = Previous page
+show = Show
+viewbutton = View
+
+pagelist = Page list for '%s'
+nopagesindatabase = No pages exist in this database. To create a page for this database, click on Add Page link at the top of the page.
+deleteselectedbutton = Delete Selected
+moveselectedbutton = Move Selected
+copyselectedbutton = Copy Selected
+editselectedbutton = Edit Selected
+
+addpage = Add Page
+addpagebutton = Add Page
+pageaddedmessage = The page called '%s' was added to the '%s' database successfully.
+
+editpagetitle = Edit Page
+editpage = Editing Page '%s'
+editpagebutton = Edit Page
+editedpage = Page Edited
+editedpagemessage = The page '%s' has been edited.
+
+deletepagetitle = Delete Page
+deletepage = Delete page '%s'
+deletepagemessage = Are you sure you want to delete '%s' from the '%s' database?
+deletepagebutton = Yes, delete the page
+pagedeleted = Page Deleted
+pagedeletedmessage = The page named '%s' was deleted from the '%s' database.
+
+deletemultiplepages = Delete selected pages
+deletemultiplemessage = Are you sure you want to delete the selected pages below from the '%s' database?
+deletepagesbutton = Yes, delete the selected pages
+deletepagesreturnlink = No, return to the page list for the '%s' database.
+selectedpagesdeleted = Selected pages deleted
+selectedpagesdeletedmessage = The following pages were deleted from the '%s' database:
+
+movepages = Move selected pages
+movepagesmessage = Which database do you want to move the following pages from the '%s' database to?
+movepagesto = Move pages to: 
+movepagesbutton = Move selected pages
+movedpagesmessage = The following pages from the '%s' database were moved to the '%s' database:
+nopagesmoved = No pages were moved from the '%s' database to the '%s' database.
+errormessages = The following errors/warnings have occurred while moving the pages:
+
+copypages = Copy selected pages
+copypagesmessage = Which database do you want to copy the following pages from the '%s' database to?
+copypagesto = Copy pages to:
+copypagesbutton = Copy selected pages
+copypagesresultmessage = The following pages from the '%s' database were copied to the '%s' database:
+nopagescopied = No pages were copied from the '%s' database to the '%s' database.
+copypageswarnings = The following errors/warnings have occurred while copying the pages:
+
+multiedit = Edit selected pages
+multieditmessage = The following pages from the '%s' database will be altered:
+multieditmessagevalues = Using the values below (click on the checkbox for each value to be edited on the selected pages):
+editpagesbutton = Edit selected pages
+nopagesedited = No pages were edited in the '%s' database.
+pagesedited = The selected pages in the '%s' database have been edited:
+editedpageswarnings = The following errors/warnings occurred while editing the selected pages:
+
+[filter]
+
+submenu_showfilters = Show Filters
+submenu_addfilter = Add Filter
+
+priority = Priority
+findsetting = Find Setting
+replacesetting = Replace Setting
+
+noprioritygiven = If no filter priority is specified, the filter priority will be set to 1.
+returnfilterlist = Return to the filter list.
+
+viewfilters = View Filters
+showlistpage = Show list page:
+show = Show
+nextpage = Next page
+previouspage = Previous page
+nofiltersavailable = There are no filters available in the filter database. To add a filter, click on the Add Filter link.
+filterdatabasedoesnotexist = The filter database does not exist and will be created when a filter is added.
+warningtitle = Warning: 
+blankfindfilters = One (or more) of your filters has a blank find filter and needs to be fixed.
+blankfindsetting = Blank Find Setting
+blankreplacesetting = Blank Replace Setting
+
+nofiltersinpagebrowse = No filters with the page browse number given.
+returntofirstpagebrowse = Return to the start of the filter list.
+
+addfilter = Add Filter
+findfilter = Find...
+replacefilter = Replace with...
+notes = Notes
+enabled = Enable this filter.
+addfilterbutton = Add Filter
+filteradded = Filter Added
+filteraddedmessage = The filter was added successfully to the filters list.
+
+editfilter = Edit Filter
+editfilterbutton = Edit Filter
+editedfilter = Filter edited
+editedfiltermessage = The selected filter was edited.
+
+deletefilter = Delete Filter
+deletefiltermessage = Are you sure you want to delete the selected filter?
+deletefilterbutton = Yes, delete the selected filter.
+deletefilterreturn = No, return to the filter list.
+deletedfilter = Filter Deleted
+deletedfiltermessage = The selected filter was deleted from the filters list.
+	
+[template] 
+
+submenu_showtemplates = Show Templates
+submenu_addtemplate = Add Template
+
+templatefilename = Template Filename
+templatename = Template Name
+templatedescription = Template Description
+templatelayout = Template Layout
+
+showlistpage = Show list page:
+show = Show
+nextpage = Next page
+previouspage = Previous page
+
+notemplatesinpagebrowse = No templates with the page browse number given.
+returntofirstpagebrowse = Return to the start of the template list.
+
+returntemplatelist = Return to the template list.
+
+viewtemplates = View Templates
+templatedatabasedoesnotexist = The template database doesn't exist and will be created when a template is added.
+notemplatesavailable = There are no templates in the template database. To add a template click on the Add Template link.
+
+addtemplate = Add Template
+addtemplatebutton = Add Template
+addedtemplate = Template Added
+addedtemplatemessage = The template called '%s' was successfully created.
+
+edittemplate = Edit Template
+edittemplatebutton = Edit Template
+editedtemplate = Template Edited
+editedtemplatemessage = The selected template called '%s' was edited.
+
+deletetemplate = Delete Template
+deletetemplatemessage = Are you sure you want to delete the template called '%s' (%s)?
+deletetemplatebutton = Yes, delete the template.
+deletetemplatereturntolist = No, return to the template list.
+deletedtemplate = Template Deleted
+deletedtemplatemessage = The selected template called '%s' was deleted.
+
+[compile]
+
+submenu_listdatabases = List Databases
+submenu_compileall = Compile All
+submenu_cleanoutputdirectory = Clean Output Directory
+
+returncompilelist = Return to the compile database list.
+
+compilepages = Compile Pages
+nodatabasesavailable = There are no databases that can be used for compiling.
+compileselectedbutton = Compile Selected
+
+compilealldatabases = Compile All Databases
+compilealldatabasesmessage = Do you want to compile all of the databases in the database directory?
+compilealldatabasesbutton = Compile All Databases
+
+compileselecteddatabases = Compile Selected Databases
+compileselecteddatabasesmessage = Do you want to compile the following databases?
+compileselecteddatabasesbutton = Compile Selected Databases
+
+compiledatabase = Compile Database
+compiledatabasemessage = Do you want to compile the '%s' database?
+compiledatabasebutton = Compile Database
+
+selectoutputmodule = Select Output Module:
+outputmodulesettings = Output Module Settings
+selectbutton = Select
+
+overridetemplate = Override the template being used.
+replacecurrenttemplate = Replace current template with:
+templatedbmissing = The template database does not exist so the template being used cannot be overridden.
+templatedbinvalidpermissions = The template database has invalid permissions set so the template being used cannot be overridden.
+templatedberror	= An error occured while using the template database so the template being used cannot be overriden.
+dontusetemplate = Don't use a template
+
+informationprefix = [Information] 
+errorprefix = [Error] 
+warningprefix = [Warning] 
+
+compiledatabases = Compile Databases
+filterdatabasemissing = The filter database does not exist. No filters will be used.
+filterdatabasepermissions = The filter database has invalid permissions set. No filters will be used.
+filterdatabaseerror = A filter database error has occurred: %s. No filters will be used.
+findfilterblank = One (or more) of the find filters from the filter database is blank.
+finishfilterdatabase = Finished processing the filter database.
+templatedatabasemissing = The template database does not exist. Pages will be compiled without templates being used.
+templatedatabasepermissions = The template database has invalid permissions set. Pages will be compiled without templates being used.
+templatedatabaseerror = A database error occurred while trying to get the list of templates: %s
+finishtemplatedatabase = Finished processing the template database.
+databasefilenameinvalidcharacters = The database with the filename '%s' has invalid characters. Skipping this database...
+databasefilenametoolong = The database with the filename '%s' is too long. Skipping this database...
+databasemissing = The database with the filename '%s' does not exist. Skipping this database...
+databaseinvalidpermissions = The database with the filename '%s' has invalid permissions set. Skipping this database...
+databaseerror = A database error has occurred on the database with the filename '%s': %s
+compilingpages = Compiling pages in the '%s' database...
+databasepageerror = A database error has occurred on the database with the filename '%s' while getting the list of pages: %s
+invalidpagefilename = The page '%s' has an invalid filename. Page skipped.
+templatefilemissing = The template with the filename '%s' for '%s' (%s) does not exist.
+pageinvalidpermissions = The page with the filename '%s' has invalid permissions set. Page not written.
+pagenotwritten = An error occured while writing the page with the filename '%s': %s
+outputallerror = An error occured while outputting all of the pages: %s
+compiledpageblankname =  (%s) was compiled.
+compiledpage = '%s' (%s) was compiled.
+databasefinish = Finished compiling pages in the '%s' database...
+compileresults = %s pages compiled, %s errors, %s warnings.
+
+cleanoutputdirectory = Clean Output Directory
+cleanoutputdirectorymessage = Are you sure you want to clean the output directory?
+cleanoutputdirectorybutton = Yes, clean output directory
+somecontentnotremoved = Some of the contents of the directory were removed. However, not all of the files in the output directory were deleted due to invalid permissions.
+contentremoved = The contents of the output directory have been removed.
+
+[setting]
+
+submenu_viewsettings = View Settings
+submenu_editsettings = Edit Settings
+
+viewsettings = View Settings
+currentsettings = The current settings being used are the following:
+directories = Directories
+databasedirectory = Database Directory
+outputdirectory = Output Directory
+imagesuripath = Images (URI path)
+display = Display
+textareacols = Text Area Columns
+textarearows = Text Area Rows
+pagecount = Pages on browse
+templatecount = Templates on browse
+filtercount = Filters on browse
+date = Date
+dateformat = Date Format
+language = Language
+systemlanguage = System Language
+modules = Modules
+presentationmodule = Presentation Module
+outputmodule = Output Module
+databasemodule = Database Module
+altersettings = To alter the current settings, select the Edit Settings option at the top of the page.
+
+editsettings = Edit Settings
+warning = Warning: 
+warningmessage = Settings that have changed take effect after clicking on the 'Change Settings' button and viewing the confirmation message.
+singleday = D - Show single digit day if day value is less than 10.
+doubleday = DD - Show double digit day if day value is less than 10.
+singlemonth = M - Show single digit month if month value is less than 10.
+doublemonth = MM - Show double digit month if month value is less than 10.
+singleyear = Y - Show double digit year value.
+doubleyear = YY - Show four digit year value.
+singlehour = h - Show single digit hour if hour value is less than 10.
+doublehour = hh - Show double digit hour if hour value is less than 10.
+singleminute = m - Show single digit minute if minute value is less than 10.
+doubleminute = mm - Show double digit minute if minute value is less than 10.
+singlesecond = s - Show single digit second if second value is less than 10.
+doublesecond = ss - Show double digit second if second value is less than 10.
+othercharacters = Other Characters: / - < > ;
+databaseserver = Database Server
+databaseport = Database Port
+databaseprotocol = Database Protocol
+databasename = Database Name
+databaseusername = Database Username
+databasepassword = Database Password
+keepcurrentpassword = Keep the current password
+tableprefix = Table Prefix
+changesettingsbutton = Change Settings
+returnsettingslist = Return to the list of settings.
+settingsedited = Settings Edited
+settingseditedmessage = The page settings have been changed and will take effect on the next page load of Kiriwrite.
+
+[error]
+
+error = Error!
+extendederror = The extended information about the error is:
+generic = An error has occurred but not an error that is known to Kiriwrite.
+blankfilename = The filename specified was blank.
+blankvariable = A blank variable was specified.
+fileexists = A filename specified already exists.
+internalerror = An internal error has occurred within Kiriwrite.
+invalidoption = An invalid option was given.
+invalidaction = An invalid action was specified.
+invalidfilename = The filename given contains invalid characters.
+invalidmode = An invalid mode was specified.
+invalidutf8 = A UTF-8 string is invalid.
+invalidvariable = An variable with invalid data has been found.
+variabletoolong = A variable given is too long.
+blankcompiletype = The compile type specified was blank.
+blankdatabasepageadd = No database was specified when trying to add a page.
+blankdirectory = The directory name specified was blank.
+blankfindfilter = The find filter was blank.
+blankdatetimeformat = The date and time format given is blank.
+browsenumbertoolong = The page browse number given is too long.
+browsenumberinvalid = The page browse number given is invalid.
+databaseconnectionerror = A database connection error has occurred.
+databasecategoriestoolong = The database categories list is too long.
+databasecopysame = The database that the pages are being copied to is the same database that the pages are copied from.
+databasealreadyexists = A database with the filename given already exists.
+datadirectorymissing = The database directory is missing.
+datadirectoryinvalidpermissions = The database directory has invalid permission settings.
+databasedescriptiontoolong = The database description is too long.
+databasefilenameinvalid = The database filename is invalid.
+databasefilenametoolong = The database filename is too long.
+databaseerror = A database error has occurred.
+databaseinvalidpermissions = The database has invalid permission settings.
+databasenameinvalid = The database name contains invalid characters.
+databasenametoolong = The database name is too long.
+databasenameblank = The database name is blank.
+databasemissingfile = The database file is missing.
+databasemovemissingfile = The database that the pages are moving to is missing.
+databasenorename = The database cannot be renamed due to invalid permissions set.
+databasemovesame = The database that the pages are being moved to is the same database that the pages are moving from.
+dbmoduleblank = The database module name given is blank.
+dbmoduleinvalid = The database module name given is invalid.
+dbdirectoryblank = The database directory name given was blank.
+dbdirectoryinvalid = The database directory name given was invalid.
+dbmodulemissing = The database module with the filename given is missing.
+filtersdatabasenotcreated = The filter database was not created because of the invalid permissions set.
+filtersdbdatabaseerror = A database error has occurred while using the filter database.
+filtersdbpermissions = The filter database has invalid permission settings.
+filtersdbmissing = The filter database is missing.
+filteridblank = The filter identification number given is blank.
+filterdoesnotexist = The filter with the identification number given does not exist.
+filteridinvalid = The filter identification number given is invalid.
+filteridtoolong = The filter identification number given is too long.
+findfiltertoolong = The find filter given is too long.
+filterpriorityinvalid = The filter priority number given is invalid.
+filterpriorityinvalidchars = The filter priority given contains invalid characters.
+filterprioritytoolong = The filter priority given is too long.
+invalidcompiletype = The compile type given is invalid.
+invalidpagenumber = The page number specified is invalid.
+nopagesselected = No pages were selected.
+invaliddirectory = The directory name specified was invalid.
+invaliddatetimeformat = The date and time format given is invalid.
+invalidlanguagefilename = An invalid language filename was given.
+languagefilenamemissing = The language filename given does not exist.
+moduleblank = The module name given was blank.
+moduleinvalid = The module name given was invalid.
+newcopydatabasedatabaseerror = A database error has occurred in the database that the selected pages are being copied to.
+newcopydatabasedoesnotexist = The database that the selected pages are being copied to does not exist.
+newcopydatabasefileinvalidpermissions = The database that the selected pages are being copied to has invalid permissions set.
+newmovedatabasedatabaseerror = A database error has occurred in the database that the selected pages are being moved to.
+newmovedatabasedoesnotexist = The database that the selected pages are moving to does not exist.
+newmovedatabasefileinvalidpermissions = The database that the selected pages are moving to has invalid permissions set.
+nodatabasesavailable = No databases are available for compiling.
+nodatabaseselected = No databases were selected for compiling.
+noeditvaluesselected = No values will be changed on the selected pages as no values for changing were selected.
+oldcopydatabasedatabaseerror = A database error has occurred in the database that the selected pages are being copied from.
+oldcopydatabasedoesnotexist = The database that the selected pages are being copied from does not exist.
+oldcopydatabasefileinvalidpermissions = The database that the selected pages are being copied from has invalid permissions set.
+oldmovedatabasedatabaseerror = A database error has occurred in the database that the selected pages are being moved from.
+oldmovedatabasedoesnotexist = The database that the selected pages are moving from does not exist.
+oldmovedatabasefileinvalidpermissions = The database that the selected pages are moving from has invalid permissions set.
+outputmoduleblank = The output module name given is blank.
+outputmoduleinvalid = The output module name given is invalid.
+outputmodulenametoolong = The output module name given is too long.
+outputmodulenameinvalid = The output module name is invalid.
+outputdirectoryblank = The output directory name given was blank.
+outputdirectoryinvalid = The output directory name given was invalid.
+outputdirectorymissing = The output directory is missing
+outputdirectoryinvalidpermissions = The output directory has invalid permissions set.
+overridetemplatetoolong = The override template filename given is too long.
+overridetemplateinvalid = The override template filename given is invalid.
+overridetemplatevalueinvalid = The override template value given is invalid.
+presmoduleblank = The presentation module name given is blank.
+presmoduleinvalid = The presentation module name given is invalid.
+presmodulemissing = The presentation module with the filename given is missing.
+pagefilenamedoesnotexist = The page with the filename given does not exist.
+pagefilenameexists = The page filename given already exists.
+pagefilenameinvalid = The page filename given is invalid.
+pagefilenametoolong = The page filename given is too long.
+pagefilenameblank = The page filename given is blank.
+pagetitletoolong = The page title given is too long.
+pagedescriptiontoolong = The page description given is too long.
+pagesectiontoolong = The page section given is too long.
+pagedatabasefilenametoolong = The page database filename given is too long.
+pagesettingstoolong = The page settings given is too long.
+pagesettingsinvalid = The page settings given are invalid.
+pagetemplatefilenametoolong = The page template filename given was too long.
+replacefiltertoolong = The replace filter given is too long
+servernameinvalid = The database server name given is invalid.
+servernametoolong = The database server name given is too long.
+serverdatabasenameinvalid = The server database name given is invalid.
+serverdatabasenametoolong = The server database name given is too long.
+serverdatabaseusernameinvalid = The server database username given is invalid.
+serverdatabaseusernametoolong = The server database username given is too long.
+serverdatabasepasswordtoolong = The server database password given is too long.
+serverdatabasetableprefixinvalid = The server database table prefix given is invalid.
+serverdatabasetableprefixtoolong = The server database table prefix given is too long.
+serverportnumberinvalid = The database port number given is invalid.
+serverportnumberinvalidcharacters = The database port number given contains characters other than numbers.
+serverportnumbertoolong = The database port number given is too long.
+serverprotocolnametoolong = The database server protocol name given is too long.
+serverprotocolinvalid = An invalid database server protocol was specified.
+templatenameblank = The template name given is blank.
+templatefilenameexists = A template with the given filename already exists.
+templatefilenameinvalid = The template filename given is invalid.
+templatedatabaseerror = A database error has occurred while using the template database.
+templatedatabaseinvalidpermissions = The template database has invalid permissions.
+templatedatabaseinvalidformat = The template database is in a invalid format.
+templatedirectoryblank = The template directory name given was blank.
+templatedirectoryinvalid = The template directory name given was invalid.
+templatedatabasenotcreated = The template database was not created because of the invalid permissions set.
+templatefilenametoolong = The template filename given is too long
+templatenametoolong = The template name given is too long
+templatedescriptiontoolong = The template description given is too long
+templatedatabasemissing = The template database is missing.
+templatedoesnotexist = The template filename given does not exist in the template database.
+templatefilenameblank = The template filename given was blank.
+textarearowblank = The text area row value given is blank.
+textarearowtoolong = The text area row value given is too long.
+textarearowinvalid = The text area row value given is invalid.
+textareacolblank = The text area column value given is blank.
+textareacoltoolong = The text area column value given is too long.
+textareacolinvalid = The text area column value given is invalid.
+
+[options]
+edit = Edit
+delete = Delete
+compile = Compile
+
+[blank]
+noname = No Name
+nodescription = No Description
+blankdatabasename = Blank Database Name
+
+[common]
+alter = Alter
+setting = Setting
+value = Value
+restorecurrent = Restore current settings
+clearvalues = Clear values
+selectnone = Select None
+options = Options
+
+tags = Kiriwrite Tags:
+pagecontent = <kiriwrite:pagecontent> - Specifies the page content.
+pagetitle = <kiriwrite:pagetitle> - Specifies the page title (and page section depending on page settings).
+pagename = <kiriwrite:pagename> - Specifies the page name.
+pagedescription = <kiriwrite:pagedescription> - Specifies the page description.
+pagesection = <kiriwrite:pagesection> - Specifies the page section.
+pageautosection = <kiriwrite:autosection> - Automatic page section name.
+pageautotitle = <kiriwrite:autotitle> - Automatic page title (and page section depending on page settings).
+
+[menu]
+viewdatabases = View Databases
+viewpages = View Pages
+viewfilters = View Filters
+viewtemplates = View Templates
+compilepages = Compile Pages
+viewsettings = View Settings

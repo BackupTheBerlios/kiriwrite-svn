@@ -1,0 +1,52 @@
+Changes since version 0.4.0
+===========================
+- Added Output module system. You can now do whatever you need with the
+  pages once they have been compiled through the Output module system.
+  The original functionality of writing pages to the output directory is
+  in the Normal.pm file in the Modules/System directory.
+- Fixed problem in installer script which wouldn't show a more helpful
+  error message when trying to load CGI::Lite.
+- Fixed problem where pages that are compiled when there is no template 
+  database are not written to the output directory even though a file 
+  with the page filename given is created.
+- Optimise the code using for getting the list of database, presentation
+  and output modules.
+
+Changes since version 0.3.0
+===========================
+
+- Added mod_perl support.
+- Config::Auto is no longer required as Kiriwrite uses it's own 
+  mechanism for loading configuration and language files.
+- Fixed problem in Documentation where quotation marks were not showing
+  properly. This was prevalant in the Developer Documentation when
+  giving examples for subroutines.
+
+Changes since version 0.2.0
+===========================
+
+- Fixed problem where changing the width and height of the large text
+  boxes in the settings where they wouldn't take effect.
+- Removed CGI.pm from installer and replaced it with CGI::Lite.
+- Added ability to change the amount of pages, templates and filters
+  that can be shown.
+
+Changes since version 0.1.0
+===========================
+
+- Removed CGI.pm (except installer) and replaced it with CGI::Lite.
+- Optimised the speed of getting the filters and templates by only 
+  getting the information that is needed when listing the filters and
+  the templates.
+- Limit of 50 pages, filters and templates can be shown on each browse 
+  page. This number is currently not changeable but should be changeable
+  in version 0.3.0.
+- When compiling databases, the template being used can be overridden 
+  for another template so that a new layout can be tested.
+- Parts of Kiriwrite have been splitted into several seperate library 
+  files. Each library file consists of a section (such as the database, 
+  page, filter, template, compile and settings).
+- Added a setting for changing the width of the text area box.
+- Added a setting for changing the height of the text area box.
+- Replaced XML-based configuration files and language files with a basic 
+  'INI-style' format.

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 4.1: Guidance</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">4.1 Guidance</span><br><br>
+
+When creating a new output module to be used in Kiriwrite, the following below is required.<br><br>
+When creating a new output module, at the top of the page the following should be inserted at the very minimum using the Normal module as an example:<br><br>
+
+<div class="code">
+package Modules::Output::Normal;<br><br>
+use strict;<br>
+use warnings;<br>
+use Encode qw(decode_utf8);<br>
+use Tie::IxHash;<br><br>
+our $VERSION = "0.5.0";<br>
+my ($pages, %pages);<br>
+my $error_flag = 0;<br>
+my $error_message = "";<br>
+my $language_name = "";<br>
+my %optionshash = ();<br><br>
+tie(%pages, "Tie::IxHash");
+</div>
+<br><br>
+
+If a subroutine is not needed then create the subroutine which is not needed and insert the return command for that subroutine. 
+		</div>
+	</body>
+</html>

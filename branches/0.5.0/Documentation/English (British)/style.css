@@ -1,0 +1,162 @@
+a {
+	color: #FFFFFF;
+}
+
+a:hover {
+	color: #EEEEEE;
+}
+
+body {
+	background-repeat: repeat-x;
+	background-image: url('images/background.png');
+	background-color: #408080;
+	color: #FFFFFF;
+	margin: 0px;
+	padding: 0px;
+	font-family: sans-serif;
+	font-size: 13px;
+}
+
+.footnote {
+	height: 1px;
+	background-color: #FFFFFF;
+	width: 25%;
+}
+
+.apptitle {
+	position: absolute;
+	font-weight: bold;
+	text-align: left;
+	z-index: 1;
+	left: 0;
+	padding-left: 6px;
+	font-size: 16px;
+}
+
+.menubarback {
+	background-image: url('images/menutop.png');
+	background-repeat: repeat-x;
+	background-position: bottom;
+}
+
+.menubar {
+	border-bottom-width: 1px;
+	border-bottom-color: #AAFFFF;
+	border-bottom-style: solid;
+	text-align: right;
+	padding: 4px;
+	padding-right: 6px;
+}
+			
+.pageinformation {
+	padding: 8px;
+}
+
+.message {
+	background-color: #transparent;
+	padding: 5px;
+	border-color: #70D0D0;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.warning {
+	background-image: url('images/warning.png');
+	background-repeat: no-repeat;
+	border-color: #FF1010;
+	background-color: transparent;
+	padding-left: 50px;
+	background-position: 9 7;
+}
+
+.messagebox {
+	background-image: url('images/messageback.png');
+	background-repeat: repeat-x;
+	background-color: #307070;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;				
+}
+
+.warningbox {
+	background-image: url('images/warningback.png');
+	background-repeat: repeat-x;
+	background-color: #701010;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.note {
+	background-image: url('images/note.png');
+	background-repeat: no-repeat;
+	padding-left: 50px;
+	background-position: 9 7;
+}
+
+.hint {
+	background-image: url('images/hint.png');
+	background-repeat: no-repeat;
+	padding-left: 50px;
+	background-position: 8 7;
+}
+
+.specific {
+	min-height:64px;				
+}
+
+.apache132x {
+	background-image: url('images/apache132x.png');
+	background-repeat: no-repeat;
+	padding-left: 70px;
+}
+
+.code {
+	background-image: url('images/messageback.png');
+	background-repeat: repeat-x;
+	background-position: top;
+	background-color: #307070;
+	border-color: #70D0D0;
+	border-style: solid;
+	border-width: 1px;
+	font-family: fixed;
+	padding: 5px;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.pagetitle {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.heading {
+	font-weight: bold;
+	font-size: 14px;
+} 
+
+.infotable {
+	margin-left: auto;
+	margin-right: auto;
+	cell-padding: 0px;
+	border-collapse: collapse;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #70D0D0;
+}
+
+.tableheading {
+	background-image: url('images/messageback.png');
+	padding: 5px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-color: #60B0B0;
+        font-size: 13px;
+}
+
+.tabledata {
+	padding: 5px;
+	background-color: #204040;
+        font-size: 13px;
+}

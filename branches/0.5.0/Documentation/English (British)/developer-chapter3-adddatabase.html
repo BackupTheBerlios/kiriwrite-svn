@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 3.16: adddatabase</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">3.16 adddatabase</span><br><br>
+
+Adds a database.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->adddatabase(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_dbmodule->adddatabase({ DatabaseFilename => &quot;database&quot;, DatabaseName => &quot;Database Name&quot;, DatabaseDescription => &quot;Database Description&quot;, DatabaseNotes => &quot;Some notes about the database&quot;, DatabaseCategories => &quot;database, new, categories&quot;, VersionMajor => 0, VersionMinor => 4, VersionRevision => 0 });
+</div>
+
+<br>
+
+options<br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseFilename</td>
+        <td class="tabledata">Specifies the filename of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseName</td>
+        <td class="tabledata">Specifies the name of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseDescription</td>
+        <td class="tabledata">Specifies the description of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseNotes</td>
+        <td class="tabledata">Specifies the notes of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">DatabaseCategories</td>
+        <td class="tabledata">Specifies the categories of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">VersionMajor</td>
+        <td class="tabledata">Specifies the major version number of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">VersionMinor</td>
+        <td class="tabledata">Specifies the minor version number of the new database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">VersionRevision</td>
+        <td class="tabledata">Specifies the revision version number of the new database.</td>
+    </tr>
+</table>
+
+<br>
+
+If a database is created but the filename already exists (after checking if it does exist using the dbexists subroutine) then the error returned should be 'DatabaseExists' in the $error scalar.<br><br>
+
+If a database error occurs while adding the database, the error returned should be 'DatabaseError' in the $error scalar and the information about the error placed in the $errorext scalar.
+		</div>
+	</body>
+</html>

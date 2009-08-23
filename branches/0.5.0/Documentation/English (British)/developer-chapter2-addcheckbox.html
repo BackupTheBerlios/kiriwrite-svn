@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.19: addcheckbox</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.19 addcheckbox</span><br><br>
+
+Adds a check box.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addcheckbox(checkboxname, options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addcheckbox(&quot;checkbox&quot;, { OptionDescription => &quot;Check box&quot;, Style => &quot;checkboxstyle&quot;, LineBreak => 1 } );
+</div>
+
+<br>
+
+checkboxname<br>
+Specifies the name of the checkbox.<br><br>
+
+<i>options</i><br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">OptionDescription</td>
+        <td class="tabledata">Specifies a description for the checkbox value.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Style</td>
+        <td class="tabledata">Specifies the CSS style to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Checked</td>
+        <td class="tabledata">Specifies if the checkbox is checked.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">LineBreak</td>
+        <td class="tabledata">Specifies if a line break should be added.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>

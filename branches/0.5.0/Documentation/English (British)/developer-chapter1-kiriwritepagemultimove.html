@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 1.7: kiriwrite_page_multimove</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">1.7 kiriwrite_page_multimove</span><br><br>
+
+kiriwrite_page_multimove will move multiple pages from one database to another database. If no confirm value is specified then it will write a form asking if the selected pages should be moved to another database and which database the pages should be moved to. If no databases or pages were specified then an error is returned.<br><br>
+
+kiriwrite_page_multimove will return data that is intended for kiriwrite_output_page. All parameters are required for this subroutine.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    kiriwrite_page_multimove(database, newdatabase, confirm, filelist);
+</div>
+
+<br>
+
+<spam class="heading">Usage:</span><br><br>
+
+<div class="code">
+$pagedata = kiriwrite_page_multimove(&quot;olddatabase&quot;, &quot;newdatabase&quot;, 0, ['page1.html','page2.html','page3.html','page4.html']);<br>
+$pagedata = kiriwrite_page_multimove(&quot;olddatabase&quot;, &quot;newdatabase&quot;, 1, ['page1.html','page2.html','page3.html','page4.html']);
+</div>
+
+<br>
+
+database<br>
+Specifies the database the pages are going to be moved from.<br><br>
+
+newdatabase<br>
+Specifies the new database the pages are going to be moved to.<br><br>
+
+confirm<br>
+Specifies if the action to delete multiple pages should be confirmed by passing a '1'.<br><br>
+
+filelist<br>
+Specifies an array giving the list of pages to move.
+		</div>
+	</body>
+</html>

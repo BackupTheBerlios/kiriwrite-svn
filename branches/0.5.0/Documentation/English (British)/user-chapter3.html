@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - User Documentation - Chapter 3: Kiriwrite Settings</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">Chapter 3: Kiriwrite Settings</span><br><br>
+
+The settings that are used in Kiriwrite can be viewed by clicking on the 'View Settings' link in the menu which will display a list of settings that are currently in use.<br><br>
+
+<span class="heading">3.1 Editing the settings</span><br><br>
+
+To edit the settings, click on the 'Edit Settings' link in the View Settings sub-menu, a form then appears allowing the settings in Kiriwrite to be edited.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Directory</td>
+        <td class="tabledata">Specifies the database directory to use for storing databases that are created by the file-based database modules. This option is ignored by the server-based modules.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Output Directory</td>
+        <td class="tabledata">Specifies the output directory to use to store the compiled pages.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Images (URI path)</td>
+        <td class="tabledata">Specifies the Images (URI path) to use for displaying images when using the page template with Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Columns</td>
+        <td class="tabledata">Specifies the width of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Text Area Rows</td>
+        <td class="tabledata">Specifies the height of the text area when editing notes, pages and templates.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Pages on browse</td>
+        <td class="tabledata">Specifies the amount of pages that should be viewed when getting the list of pages in the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Filters on browse</td>
+        <td class="tabledata">Specifies the amount of filters that should be viewed when getting the list of filters in the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Templates on browse</td>
+        <td class="tabledata">Specifies the amount of templates that should be viewed when getting the list of templates in the database.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Date Format</td>
+        <td class="tabledata">Specifies the date format to use when list the pages from the database. A selection of date formats are available from the drop down box or a custom one can be entered into the text box next to the drop down box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Language</td>
+        <td class="tabledata">Specifies the system language to use in Kiriwrite. If the language used in the installer script is available as language to use in Kiriwrite then that language will be selected by default.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Presentation Module</td>
+        <td class="tabledata">Specifies the presentation module to use in Kiriwrite.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Module</td>
+        <td class="tabledata">Specifies the database module to use in Kiriwrite. SQLite is a file-based database module which uses the database directory and the SQLite Perl module while MySQL5 is a server-based database module which uses a MySQL 5.x server from the MySQL Perl module.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Output Module</td>
+        <td class="tabledata">Specifies the output module to use in Kiriwrite. Normal is the functionality that was hard-coded into Kiriwrite before version 0.5.0.</td>
+    </tr>
+</table>
+
+<br>
+
+The following options are used only by the server-based database modules:<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Setting</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Server</td>
+        <td class="tabledata">Specifies the database server to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Port</td>
+        <td class="tabledata">Specifies the database port to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Protocol</td>
+        <td class="tabledata">Specifies the database protocol to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Name</td>
+        <td class="tabledata">Specifies the database name to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Username</td>
+        <td class="tabledata">Specifies the database username to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Password</td>
+        <td class="tabledata">Specifies the database password to use.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Database Table Prefix</td>
+        <td class="tabledata">Specifies the table prefix to use. Multiple Kiriwrite installations can use the same server database so long as the table prefix is different.</td>
+    </tr>
+</table>
+
+<br>
+
+To save the new settings, click on the 'Change Settings' button which will display a confirmation message saying that the settings were changed and will take effect on the next page load of Kiriwrite offering a link back to the updated list of settings. Clicking on the 'Restore current settings' button will undo any changes made and will restore the current settings. Clicking on the 'Return to the list of settings.' link will return to the list of currently used settings.
+		</div>
+	</body>
+</html>

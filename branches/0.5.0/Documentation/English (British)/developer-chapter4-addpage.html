@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 4.6: addpage</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">4.6 addpage</span><br><br>
+
+Adds a page for outputting later through the outputall subroutine.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_outputmodule->addpage(options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_outputmodule->addpage({ Page => &quot;index.html &quot;, Data => &quot;Page Data &quot;, Title => &quot;Page Title &quot;, Section =>  &quot;Page Section &quot;, LastModified => $lastmodified, Database => &quot;database &quot;});
+</div>
+
+<br>
+
+options<br>
+Specifies the options as a hash.<br><br>
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Page</td>
+        <td class="tabledata">Specifies the filename of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Data</td>
+        <td class="tabledata">Specifies the data for the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Title</td>
+        <td class="tabledata">Specifies the title of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Section</td>
+        <td class="tabledata">Specifies the section name of the page.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">LastModified</td>
+        <td class="tabledata">Specifies the date of when the page was last modified.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.1: Guidance</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.1 Guidance</span><br><br>
+
+When creating a new presentation module to be used in Kiriwrite, the following is required.<br><br>
+
+When creating a new presentation module, at the top of the page the following should be inserted:<br><br>
+
+<div class="code">
+    package Kiriwrite::Presentation::(modulename);<br><br>
+
+    use strict;<br>
+    use warnings;<br><br>
+
+    our $VERSION = &quot;(version)&quot;;<br>
+    my $pagedata = &quot;&quot;;
+</div>
+
+<br>
+
+Replace (modulename) with the name of the module like HTML4S (which means HTML 4.01 Strict. When specifying the module name it should be the name of the format (HTML) and version (4S as in 4.01 Strict).<br><br>
+'use strict' and 'use warnings' isn't required but it is generally accepted that Perl scripts and modules should have 'use strict' and 'use warnings' lines written.<br><br>
+Replace (version) with the internal version number of the module.<br><br>
+'my $pagedata' doesn't need to be $pagedata and can be something else like $data but it's somewhere where the page data can be stored until it is needed.
+Presentation modules are stored in the Modules/Presentation directory. For an example of a written presentation module look at the HTML4S.pm file.
+		</div>
+	</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+	<head>
+		<link href="style.css" REL="stylesheet" TYPE="text/css" MEDIA="screen">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<title>Kiriwrite Documentation - Developer Documentation - 2.24: addinputbox</title>
+	</head>
+	<body>
+		<div class="menubarback">
+			<div class="menubar">
+				<span class="apptitle">Kiriwrite</span>
+				<a href="index.html">Index</a> | <a href="user.html">User 
+Documentation</a> | <a href="tutorial.html">Tutorial Documentation</a> | 
+<a href="developer.html">Developer Documentation</a>
+			</div>
+		</div>
+		<div class="pageinformation">
+			<span class="pagetitle">2.24 addinputbox</span><br><br>
+
+Adds an input box.<br><br>
+
+<span class="heading">Parameters:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addinputbox(inputboxname, options);
+</div>
+
+<br>
+
+<span class="heading">Usage:</span><br><br>
+
+<div class="code">
+    $kiriwrite_presmodule->addinputbox(&quot;inputbox&quot;, { Size => &quot;64&quot;, MaxLength => &quot;128&quot;, Style => &quot;inputbox&quot;, Value => &quot;Default&quot;, Password => 0 });
+</div>
+
+<br>
+
+inputboxname<br>
+Specifies the input box name to use.<br><br>
+
+<i>options</i><br>
+Specifies the following options as a hash in any order.<br><br>
+
+<table class="infotable">
+    <tr>
+        <td class="tableheading">Value</td>
+        <td class="tableheading">Description</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Size</td>
+        <td class="tabledata">Specifies the size of the input box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">MaxLength</td>
+        <td class="tabledata">Specifies the maximum length of the input box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Style</td>
+        <td class="tabledata">Specifies the CSS style of the input box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Value</td>
+        <td class="tabledata">Specifies the value of the input box.</td>
+    </tr>
+    <tr>
+        <td class="tabledata">Password</td>
+        <td class="tabledata">Specifies if this input box is for a password.</td>
+    </tr>
+</table>
+		</div>
+	</body>
+</html>
